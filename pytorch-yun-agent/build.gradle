@@ -5,5 +5,5 @@ dependencies {
 }
 
 bootJar {
-    archiveFileName = 'zhihuiyun-agent.jar'
+    archiveFileName = 'zhishuyun-agent.jar'
 }

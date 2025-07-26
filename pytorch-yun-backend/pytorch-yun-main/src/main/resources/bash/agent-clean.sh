@@ -26,12 +26,12 @@ fi
 
 # 清理k8s中容器
 if command -v kubectl &>/dev/null; then
-  kubectl delete --all pods --namespace=zhihuiyun-space
+  kubectl delete --all pods --namespace=zhishuyun-space
 fi
 
 # 清理docker中的容器
 if command -v docker &>/dev/null; then
-  docker ps -a | grep 'k8s_POD_zhihuiyun-*' | awk '{print $1}' | xargs docker rm
+  docker ps -a | grep 'k8s_POD_zhishuyun-*' | awk '{print $1}' | xargs docker rm
 fi
 
 # 返回结果

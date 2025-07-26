@@ -38,10 +38,10 @@ for arg in "$@"; do
 done
 
 # 初始化agent_path
-agent_path="${home_path}/zhihuiyun-agent"
+agent_path="${home_path}/zhishuyun-agent"
 
-if [ -e "${agent_path}/zhihuiyun-agent.pid" ]; then
-  pid=$(cat "${agent_path}/zhihuiyun-agent.pid")
+if [ -e "${agent_path}/zhishuyun-agent.pid" ]; then
+  pid=$(cat "${agent_path}/zhishuyun-agent.pid")
   if ps -p $pid >/dev/null 2>&1; then
     json_output="{ \
                 \"status\": \"STOP\", \
@@ -55,19 +55,19 @@ fi
 # 进入代理目录,防止logs文件夹生成错位
 cd ${agent_path}
 
-# 判断zhihuiyun-agent.log是否存在,不存在则新建
-if [ ! -f "${agent_path}/logs/zhihuiyun-agent.log" ]; then
+# 判断zhishuyun-agent.log是否存在,不存在则新建
+if [ ! -f "${agent_path}/logs/zhishuyun-agent.log" ]; then
   mkdir "${agent_path}/logs"
-  touch "${agent_path}/logs/zhihuiyun-agent.log"
+  touch "${agent_path}/logs/zhishuyun-agent.log"
 fi
 
 # 运行代理程序
 if ! command -v java &>/dev/null; then
-  nohup $JAVA_HOME/bin/java -jar -Xmx2048m ${agent_path}/lib/zhihuiyun-agent.jar --server.port=${agent_port} --spring.config.additional-location=${agent_path}/conf/ > /dev/null 2>&1 &
+  nohup $JAVA_HOME/bin/java -jar -Xmx2048m ${agent_path}/lib/zhishuyun-agent.jar --server.port=${agent_port} --spring.config.additional-location=${agent_path}/conf/ > /dev/null 2>&1 &
 else
-  nohup java -jar -Xmx2048m ${agent_path}/lib/zhihuiyun-agent.jar --server.port=${agent_port} --spring.config.additional-location=${agent_path}/conf/ > /dev/null 2>&1 &
+  nohup java -jar -Xmx2048m ${agent_path}/lib/zhishuyun-agent.jar --server.port=${agent_port} --spring.config.additional-location=${agent_path}/conf/ > /dev/null 2>&1 &
 fi
-echo $! >${agent_path}/zhihuiyun-agent.pid
+echo $! >${agent_path}/zhishuyun-agent.pid
 
 # 如果用户指定spark安装,默认帮他启动spark
 if [ ${spark_local} = "true" ]; then

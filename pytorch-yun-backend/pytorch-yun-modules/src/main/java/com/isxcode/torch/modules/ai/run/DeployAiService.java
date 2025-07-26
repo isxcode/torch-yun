@@ -78,7 +78,7 @@ public class DeployAiService {
             String srcPath = PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + File.separator + "file"
                 + File.separator + engineNode.getTenantId() + File.separator + deployAiContext.getModelFileId();
             String distPath =
-                engineNode.getAgentHomePath() + "/zhihuiyun-agent/file/" + deployAiContext.getModelFileId();
+                engineNode.getAgentHomePath() + "/zhishuyun-agent/file/" + deployAiContext.getModelFileId();
 
             // 看看模型是否存在
             boolean fileIsUpload = scpFileService.modelFileIsUpload(scpFileEngineNodeDto, srcPath, distPath);

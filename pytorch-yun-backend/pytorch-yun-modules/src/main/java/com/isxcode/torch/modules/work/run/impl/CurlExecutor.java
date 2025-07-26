@@ -68,7 +68,7 @@ public class CurlExecutor extends WorkExecutor {
         // 将脚本推送到本地
         String bashFile = PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + "/work/"
             + workRunContext.getTenantId() + "/" + workInstance.getId() + ".sh";
-        FileUtil.writeUtf8String(workRunContext.getScript() + " \\\n && echo 'zhihuiyun_success'", bashFile);
+        FileUtil.writeUtf8String(workRunContext.getScript() + " \\\n && echo 'zhishuyun_success'", bashFile);
 
         // 执行命令
         String executeBashWorkCommand = "bash " + PathUtils.parseProjectPath(isxAppProperties.getResourcesPath())
@@ -76,7 +76,7 @@ public class CurlExecutor extends WorkExecutor {
         String result = RuntimeUtil.execForStr(executeBashWorkCommand);
 
         // 保存运行日志
-        String yarnLog = result.replace("&& echo 'zhihuiyun_success'", "").replace("zhihuiyun_success", "");
+        String yarnLog = result.replace("&& echo 'zhishuyun_success'", "").replace("zhishuyun_success", "");
         workInstance.setYarnLog(yarnLog);
         workInstance.setResultData(yarnLog.substring(0, yarnLog.length() - 4));
         logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("保存结果成功 \n");
@@ -93,7 +93,7 @@ public class CurlExecutor extends WorkExecutor {
         }
 
         // 判断脚本运行成功还是失败
-        if (!result.contains("200zhihuiyun_success")) {
+        if (!result.contains("200zhishuyun_success")) {
             throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "任务运行异常" + "\n");
         }
     }

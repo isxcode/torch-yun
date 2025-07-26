@@ -1,4 +1,4 @@
-name: deploy zhihuiyun
+name: deploy zhishuyun
 
 on:
   workflow_dispatch:
@@ -35,7 +35,7 @@ jobs:
           repository: "isxcode/pytorch-yun"
           ref: 'main'
 
-      - name: Download zhihuiyun
+      - name: Download zhishuyun
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
@@ -44,8 +44,8 @@ jobs:
           script_stop: true
           timeout: 1800s
           script: |
-            rm -rf /tmp/zhihuiyun.tar.gz
-            curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhihuiyun/zhihuiyun.tar.gz -o /tmp/zhihuiyun.tar.gz
+            rm -rf /tmp/zhishuyun.tar.gz
+            curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/zhishuyun.tar.gz -o /tmp/zhishuyun.tar.gz
 
   deploy:
     needs: download
@@ -63,7 +63,7 @@ jobs:
           sudo timedatectl set-timezone Asia/Shanghai
           date
 
-      - name: Deploy zhihuiyun
+      - name: Deploy zhishuyun
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
@@ -72,15 +72,15 @@ jobs:
           script_stop: true
           timeout: 1800s
           script: |
-            tar -vzxf /tmp/zhihuiyun.tar.gz -C /opt/
+            tar -vzxf /tmp/zhishuyun.tar.gz -C /opt/
             rm -rf /tmp/zhiliuyun.tar.gz
-            bash /opt/zhihuiyun/bin/stop.sh
-            rm -rf /opt/zhihuiyun/conf/application-local.yml
-            cp /root/application-local.yml /opt/zhihuiyun/conf/application-local.yml
-            cp -r /opt/zhihuiyun/resources /opt/zhihuiyun/resources_bak/resources_$(date +'%Y-%m-%d-%H-%M-%S')_bak
-            bash /opt/zhihuiyun/bin/start.sh --print-log=false
+            bash /opt/zhishuyun/bin/stop.sh
+            rm -rf /opt/zhishuyun/conf/application-local.yml
+            cp /root/application-local.yml /opt/zhishuyun/conf/application-local.yml
+            cp -r /opt/zhishuyun/resources /opt/zhishuyun/resources_bak/resources_$(date +'%Y-%m-%d-%H-%M-%S')_bak
+            bash /opt/zhishuyun/bin/start.sh --print-log=false
             sleep 120
-            until curl -s https://zhihuiyun-demo.isxcode.com/tools/open/health | grep "UP"; do
+            until curl -s https://zhishuyun-demo.isxcode.com/tools/open/health | grep "UP"; do
               echo "Waiting for service to be available..."
               sleep 1
             done

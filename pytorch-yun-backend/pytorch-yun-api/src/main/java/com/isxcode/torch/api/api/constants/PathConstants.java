@@ -13,5 +13,5 @@ public interface PathConstants {
     String LIB_DIR = "lib";
 
     /** 代理文件命令. */
-    String AGENT_PATH_NAME = "zhihuiyun-agent";
+    String AGENT_PATH_NAME = "zhishuyun-agent";
 }

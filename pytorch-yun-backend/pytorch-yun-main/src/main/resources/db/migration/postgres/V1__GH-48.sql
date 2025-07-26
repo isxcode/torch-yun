@@ -980,35 +980,35 @@ CREATE TABLE PY_DATABASE_DRIVER
 
 -- 初始化系统驱动
 INSERT INTO PY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver)
-VALUES ('clickhouse_0.5.0', 'clickhouse_0.5.0', 'CLICKHOUSE', 'clickhouse-jdbc-0.5.0.jar', 'SYSTEM_DRIVER', 'zhihuiyun', '2023-11-01 16:54:34', 'zhihuiyun', '2023-11-01 16:54:39', 1, 0, 'zhihuiyun', '系统自带驱动', true);
+VALUES ('clickhouse_0.5.0', 'clickhouse_0.5.0', 'CLICKHOUSE', 'clickhouse-jdbc-0.5.0.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', true);
 INSERT INTO PY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver)
-VALUES ('db2_11.5.8.0', 'db2_11.5.8.0', 'DB2', 'jcc-11.5.8.0.jar', 'SYSTEM_DRIVER', 'zhihuiyun', '2023-11-01 16:54:34', 'zhihuiyun', '2023-11-01 16:54:39', 1, 0, 'zhihuiyun', '系统自带驱动', true);
+VALUES ('db2_11.5.8.0', 'db2_11.5.8.0', 'DB2', 'jcc-11.5.8.0.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', true);
 INSERT INTO PY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver)
-VALUES ('dm_8.1.1.49', 'dm_8.1.1.49', 'DM', 'Dm8JdbcDriver18-8.1.1.49.jar', 'SYSTEM_DRIVER', 'zhihuiyun', '2023-11-01 16:54:34', 'zhihuiyun', '2023-11-01 16:54:39', 1, 0, 'zhihuiyun', '系统自带驱动', true);
+VALUES ('dm_8.1.1.49', 'dm_8.1.1.49', 'DM', 'Dm8JdbcDriver18-8.1.1.49.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', true);
 INSERT INTO PY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver)
-VALUES ('doris_mysql_5.1.49', 'doris_mysql_5.1.49', 'DORIS', 'mysql-connector-java-5.1.49.jar', 'SYSTEM_DRIVER', 'zhihuiyun', '2023-11-01 16:54:34', 'zhihuiyun', '2023-11-01 16:54:39', 1, 0, 'zhihuiyun', '系统自带驱动', true);
+VALUES ('doris_mysql_5.1.49', 'doris_mysql_5.1.49', 'DORIS', 'mysql-connector-java-5.1.49.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', true);
 INSERT INTO PY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver)
-VALUES ('hana_2.18.13', 'hana_2.18.13', 'HANA_SAP', 'ngdbc-2.18.13.jar', 'SYSTEM_DRIVER', 'zhihuiyun', '2023-11-01 16:54:34', 'zhihuiyun', '2023-11-01 16:54:39', 1, 0, 'zhihuiyun', '系统自带驱动', true);
+VALUES ('hana_2.18.13', 'hana_2.18.13', 'HANA_SAP', 'ngdbc-2.18.13.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', true);
 INSERT INTO PY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver)
-VALUES ('hive_uber_2.6.3.jar', 'hive_uber_2.6.3.jar', 'HIVE', 'hive-jdbc-uber-2.6.3.0-235.jar', 'SYSTEM_DRIVER', 'zhihuiyun', '2023-11-01 16:54:34', 'zhihuiyun', '2023-11-01 16:54:39', 1, 0, 'zhihuiyun', '系统自带驱动', true);
+VALUES ('hive_uber_2.6.3.jar', 'hive_uber_2.6.3.jar', 'HIVE', 'hive-jdbc-uber-2.6.3.0-235.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', true);
 INSERT INTO PY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver)
-VALUES ('hive_3.1.3', 'hive_3.1.3', 'HIVE', 'hive-jdbc-3.1.3-standalone.jar', 'SYSTEM_DRIVER', 'zhihuiyun', '2023-11-01 16:54:34', 'zhihuiyun', '2023-11-01 16:54:39', 1, 0, 'zhihuiyun', '系统自带驱动', false);
+VALUES ('hive_3.1.3', 'hive_3.1.3', 'HIVE', 'hive-jdbc-3.1.3-standalone.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', false);
 INSERT INTO PY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver)
-VALUES ('mysql_5.1.49', 'mysql_5.1.49', 'MYSQL', 'mysql-connector-java-5.1.49.jar', 'SYSTEM_DRIVER', 'zhihuiyun', '2023-11-01 16:54:34', 'zhihuiyun', '2023-11-01 16:54:39', 1, 0, 'zhihuiyun', '系统自带驱动', false);
+VALUES ('mysql_5.1.49', 'mysql_5.1.49', 'MYSQL', 'mysql-connector-java-5.1.49.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', false);
 INSERT INTO PY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver)
-VALUES ('mysql_8.1.0', 'mysql_8.1.0', 'MYSQL', 'mysql-connector-j-8.1.0.jar', 'SYSTEM_DRIVER', 'zhihuiyun', '2023-11-01 16:54:34', 'zhihuiyun', '2023-11-01 16:54:39', 1, 0, 'zhihuiyun', '系统自带驱动', true);
+VALUES ('mysql_8.1.0', 'mysql_8.1.0', 'MYSQL', 'mysql-connector-j-8.1.0.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', true);
 INSERT INTO PY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver)
-VALUES ('oceanbase_2.4.6', 'oceanbase_2.4.6', 'OCEANBASE', 'oceanbase-client-2.4.6.jar', 'SYSTEM_DRIVER', 'zhihuiyun', '2023-11-01 16:54:34', 'zhihuiyun', '2023-11-01 16:54:39', 1, 0, 'zhihuiyun', '系统自带驱动', true);
+VALUES ('oceanbase_2.4.6', 'oceanbase_2.4.6', 'OCEANBASE', 'oceanbase-client-2.4.6.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', true);
 INSERT INTO PY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver)
-VALUES ('oracle_19.20.0.0', 'oracle_19.20.0.0', 'ORACLE', 'ojdbc10-19.20.0.0.jar', 'SYSTEM_DRIVER', 'zhihuiyun', '2023-11-01 16:54:34', 'zhihuiyun', '2023-11-01 16:54:39', 1, 0, 'zhihuiyun', '系统自带驱动', true);
+VALUES ('oracle_19.20.0.0', 'oracle_19.20.0.0', 'ORACLE', 'ojdbc10-19.20.0.0.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', true);
 INSERT INTO PY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver)
-VALUES ('postgre_42.6.0', 'postgre_42.6.0', 'POSTGRE_SQL', 'postgresql-42.6.0.jar', 'SYSTEM_DRIVER', 'zhihuiyun', '2023-11-01 16:54:34', 'zhihuiyun', '2023-11-01 16:54:39', 1, 0, 'zhihuiyun', '系统自带驱动', true);
+VALUES ('postgre_42.6.0', 'postgre_42.6.0', 'POSTGRE_SQL', 'postgresql-42.6.0.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', true);
 INSERT INTO PY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver)
-VALUES ('sqlServer_12.4.2.jre8', 'sqlServer_12.4.2.jre8', 'SQL_SERVER', 'mssql-jdbc-12.4.2.jre8.jar', 'SYSTEM_DRIVER', 'zhihuiyun', '2023-11-01 16:54:34', 'zhihuiyun', '2023-11-01 16:54:39', 1, 0, 'zhihuiyun', '系统自带驱动', true);
+VALUES ('sqlServer_12.4.2.jre8', 'sqlServer_12.4.2.jre8', 'SQL_SERVER', 'mssql-jdbc-12.4.2.jre8.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', true);
 INSERT INTO PY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver)
-VALUES ('star_rocks(mysql_5.1.49)', 'star_rocks(mysql_5.1.49)', 'STAR_ROCKS', 'mysql-connector-java-5.1.49.jar', 'SYSTEM_DRIVER', 'zhihuiyun', '2023-11-01 16:54:34', 'zhihuiyun', '2023-11-01 16:54:39', 1, 0, 'zhihuiyun', '系统自带驱动', true);
+VALUES ('star_rocks(mysql_5.1.49)', 'star_rocks(mysql_5.1.49)', 'STAR_ROCKS', 'mysql-connector-java-5.1.49.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', true);
 INSERT INTO PY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver)
-VALUES ('tidb(mysql_5.1.49)', 'tidb(mysql_5.1.49)', 'TIDB', 'mysql-connector-java-5.1.49.jar', 'SYSTEM_DRIVER', 'zhihuiyun', '2023-11-01 16:54:34', 'zhihuiyun', '2023-11-01 16:54:39', 1, 0, 'zhihuiyun', '系统自带驱动', true);
+VALUES ('tidb(mysql_5.1.49)', 'tidb(mysql_5.1.49)', 'TIDB', 'mysql-connector-java-5.1.49.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', true);
 
 -- 工作流添加默认计算引擎配置
 ALTER TABLE PY_WORKFLOW
@@ -1173,7 +1173,7 @@ COMMENT ON COLUMN PY_DATASOURCE.KAFKA_CONFIG IS 'kafka数据源配置';
 
 -- 新增kafka驱动
 INSERT INTO PY_DATABASE_DRIVER (ID, NAME, DB_TYPE, FILE_NAME, DRIVER_TYPE, IS_DEFAULT_DRIVER, REMARK, CREATE_BY, CREATE_DATE_TIME, LAST_MODIFIED_BY, LAST_MODIFIED_DATE_TIME, VERSION_NUMBER, DELETED, TENANT_ID)
-VALUES ('kafka_client_3.1.2', 'kafka_client_3.1.2', 'KAFKA', 'kafka_client_3.1.2.jar', 'SYSTEM_DRIVER', true, '系统自带驱动', 'zhihuiyun', '2023-11-01 16:54:34', 'zhihuiyun', '2023-11-01 16:54:39', 1, 0, 'zhihuiyun');
+VALUES ('kafka_client_3.1.2', 'kafka_client_3.1.2', 'KAFKA', 'kafka_client_3.1.2.jar', 'SYSTEM_DRIVER', true, '系统自带驱动', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun');
 
 -- 503
 -- 添加监控表

@@ -13,27 +13,27 @@ cd ".." || exit
 source "conf/agent-env.sh"
 
 # 项目已经在运行中
-if [ -e "zhihuiyun-agent.pid" ]; then
-  pid=$(cat "zhihuiyun-agent.pid")
+if [ -e "zhishuyun-agent.pid" ]; then
+  pid=$(cat "zhishuyun-agent.pid")
   if ps -p $pid >/dev/null 2>&1; then
     echo "【至慧云代理】: HAS RUNNING"
     exit 0
   fi
 fi
 
-# 判断zhihuiyun-agent.log是否存在,不存在则新建
-if [ ! -f logs/zhihuiyun-agent.log ]; then
+# 判断zhishuyun-agent.log是否存在,不存在则新建
+if [ ! -f logs/zhishuyun-agent.log ]; then
   mkdir logs
-  touch logs/zhihuiyun-agent.log
+  touch logs/zhishuyun-agent.log
 fi
 
 # 运行代理程序
 if [ -n "$JAVA_HOME" ]; then
-  nohup $JAVA_HOME/bin/java -jar -Xmx2048m lib/zhihuiyun-agent.jar --spring.config.additional-location=conf/ > /dev/null 2>&1 &
+  nohup $JAVA_HOME/bin/java -jar -Xmx2048m lib/zhishuyun-agent.jar --spring.config.additional-location=conf/ > /dev/null 2>&1 &
 else
-  nohup java -jar -Xmx2048m lib/zhihuiyun-agent.jar --spring.config.additional-location=conf/ > /dev/null 2>&1 &
+  nohup java -jar -Xmx2048m lib/zhishuyun-agent.jar --spring.config.additional-location=conf/ > /dev/null 2>&1 &
 fi
-echo $! >zhihuiyun-agent.pid
+echo $! >zhishuyun-agent.pid
 
 echo "【至慧云代理】: STARTING"
-tail -f logs/zhihuiyun-agent.log
+tail -f logs/zhishuyun-agent.log
