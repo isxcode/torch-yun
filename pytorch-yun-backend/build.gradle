@@ -9,7 +9,7 @@ tasks.register('copy_resources_agent', Copy) {
 
     mustRunAfter(":pytorch-yun-dist:build_agent", "clean_resources_agent")
 
-    from rootDir.getAbsolutePath() + '/pytorch-yun-dist/build/distributions/zhihuiyun-agent.tar.gz'
+    from rootDir.getAbsolutePath() + '/pytorch-yun-dist/build/distributions/zhishuyun-agent.tar.gz'
     into rootDir.getAbsolutePath() + '/pytorch-yun-backend/pytorch-yun-main/src/main/resources/agent'
 }
 

@@ -136,13 +136,13 @@ public class PythonExecutor extends WorkExecutor {
         scpFileEngineNodeDto.setPasswd(aesUtils.decrypt(scpFileEngineNodeDto.getPasswd()));
         try {
             // 上传脚本
-            scpText(scpFileEngineNodeDto, script + "\nprint('zhihuiyun_success')",
-                clusterNode.getAgentHomePath() + "/zhihuiyun-agent/works/" + workInstance.getId() + ".py");
+            scpText(scpFileEngineNodeDto, script + "\nprint('zhishuyun_success')",
+                clusterNode.getAgentHomePath() + "/zhishuyun-agent/works/" + workInstance.getId() + ".py");
 
             // 执行命令获取pid
             String executeBashWorkCommand = "nohup python3 " + clusterNode.getAgentHomePath()
-                + "/zhihuiyun-agent/works/" + workInstance.getId() + ".py >> " + clusterNode.getAgentHomePath()
-                + "/zhihuiyun-agent/works/" + workInstance.getId() + ".log 2>&1 & echo $!";
+                + "/zhishuyun-agent/works/" + workInstance.getId() + ".py >> " + clusterNode.getAgentHomePath()
+                + "/zhishuyun-agent/works/" + workInstance.getId() + ".log 2>&1 & echo $!";
             String pid = executeCommand(scpFileEngineNodeDto, executeBashWorkCommand, false).replace("\n", "");
 
             // 保存pid
@@ -197,7 +197,7 @@ public class PythonExecutor extends WorkExecutor {
 
                 // 获取日志
                 String getLogCommand =
-                    "cat " + clusterNode.getAgentHomePath() + "/zhihuiyun-agent/works/" + workInstance.getId() + ".log";
+                    "cat " + clusterNode.getAgentHomePath() + "/zhishuyun-agent/works/" + workInstance.getId() + ".log";
                 String logCommand = "";
                 try {
                     logCommand = executeCommand(scpFileEngineNodeDto, getLogCommand, false);
@@ -207,7 +207,7 @@ public class PythonExecutor extends WorkExecutor {
                 }
 
                 // 保存运行日志
-                String backStr = logCommand.replace("zhihuiyun_success", "");
+                String backStr = logCommand.replace("zhishuyun_success", "");
                 workInstance.setYarnLog(backStr);
                 workInstance.setResultData(backStr.substring(0, backStr.length() - 2));
                 logBuilder.append(LocalDateTime.now()).append(WorkLog.SUCCESS_INFO).append("保存日志成功 \n");
@@ -215,16 +215,16 @@ public class PythonExecutor extends WorkExecutor {
 
                 // 删除脚本和日志
                 try {
-                    String clearWorkRunFile = "rm -f " + clusterNode.getAgentHomePath() + "/zhihuiyun-agent/works/"
+                    String clearWorkRunFile = "rm -f " + clusterNode.getAgentHomePath() + "/zhishuyun-agent/works/"
                         + workInstance.getId() + ".log && " + "rm -f " + clusterNode.getAgentHomePath()
-                        + "/zhihuiyun-agent/works/" + workInstance.getId() + ".py";
+                        + "/zhishuyun-agent/works/" + workInstance.getId() + ".py";
                     SshUtils.executeCommand(scpFileEngineNodeDto, clearWorkRunFile, false);
                 } catch (JSchException | InterruptedException | IOException e) {
                     log.error("删除运行脚本失败");
                 }
 
                 // 判断脚本运行成功还是失败
-                if (!logCommand.contains("zhihuiyun_success")) {
+                if (!logCommand.contains("zhishuyun_success")) {
                     throw new WorkRunException(LocalDateTime.now() + WorkLog.ERROR_INFO + "任务运行异常" + "\n");
                 }
 

@@ -30,7 +30,7 @@ fi
 BASE_PATH=$(cd "$(dirname "$0")" || exit ; pwd)
 cd "${BASE_PATH}" || exit
 
-OSS_DOWNLOAD_URL=https://isxcode.oss-cn-shanghai.aliyuncs.com/zhihuiyun/install
+OSS_DOWNLOAD_URL=https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/install
 
 # 创建系统驱动目录
 JDBC_DIR="${BASE_PATH}"/resources/jdbc/system

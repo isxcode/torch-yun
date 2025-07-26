@@ -24,7 +24,7 @@
             :value="data"
           />
           <template #empty>
-            <p><a href="https://zhihuiyun.isxcode.com" style="color: #506bfe">点击跳转官网</a></p>
+            <p><a href="https://zhishuyun.isxcode.com" style="color: #506bfe">点击跳转官网</a></p>
           </template>
         </ContentRenderer>
       </div>

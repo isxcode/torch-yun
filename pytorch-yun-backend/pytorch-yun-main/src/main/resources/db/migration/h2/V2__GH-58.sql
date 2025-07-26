@@ -22,8 +22,8 @@ create table if not exists PY_MODEL
 INSERT INTO PY_MODEL
 (ID, NAME, CODE, MODEL_TYPE, MODEL_LABEL, STATUS, REMARK, CREATE_BY, CREATE_DATE_TIME, LAST_MODIFIED_BY,
  LAST_MODIFIED_DATE_TIME, DELETED, VERSION_NUMBER, TENANT_ID)
-VALUES ('qwen-plus', '通义千问-Plus', 'Qwen-Plus', 'API', '671b', 'ENABLE', '系统默认', 'zhihuiyun',
-        '2025-03-07 16:02:59.000000', 'zhihuiyun', '2025-03-07 16:03:06.000000', 0, 1, 'zhihuiyun');
+VALUES ('qwen-plus', '通义千问-Plus', 'Qwen-Plus', 'API', '671b', 'ENABLE', '系统默认', 'zhishuyun',
+        '2025-03-07 16:02:59.000000', 'zhishuyun', '2025-03-07 16:03:06.000000', 0, 1, 'zhishuyun');
 
 -- 智能体表
 create table if not exists PY_AI

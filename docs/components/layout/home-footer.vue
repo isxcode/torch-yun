@@ -3,11 +3,11 @@
 
     <div class="content">
       <div class="left">
-        <img class="logo-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhihuiyun/website/web-img/logo.png" alt=""/>
+        <img class="logo-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/web-img/logo.png" alt=""/>
         <div class="logo-name">
           {{ $t("company_name") }}
         </div>
-        <img class="wechat-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhihuiyun/website/web-img/qrcode.jpg" alt=""/>
+        <img class="wechat-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/web-img/qrcode.jpg" alt=""/>
         <div class="wechat-name">
           {{ $t("wechat_official_account") }}
         </div>
@@ -17,7 +17,7 @@
           <div class="title">{{ $t("product") }}</div>
           <div class="link" @click="clickZhiqingyun">{{ $t("zhiqingyun") }}</div>
           <div class="link" @click="clickZhiliuyun">{{ $t("zhiliuyun") }}</div>
-          <div class="link" @click="clickZhihuiyun">{{ $t("zhihuiyun") }}</div>
+          <div class="link" @click="clickzhishuyun">{{ $t("zhishuyun") }}</div>
           <div class="link" @click="clickZhishuyun">{{ $t("zhishuyun") }}</div>
         </div>
         <div class="column">
@@ -324,13 +324,13 @@ import {ElMessage} from "element-plus";
 const switchLocalePath = useSwitchLocalePath();
 const {locale} = useI18n();
 
-// function clickzhihuiyun() {
+// function clickzhishuyun() {
 //   const router = useRouter();
 //   const newLocale = locale.value === "en" ? "zh" : "en";
 //   router.push({path: switchLocalePath(newLocale)});
 // }
 
-function clickZhihuiyun() {
+function clickzhishuyun() {
   const router = useRouter();
   router.push("/");
 }
@@ -382,19 +382,19 @@ function clickLinked() {
 }
 
 function clickDockerHub() {
-  window.open("https://hub.docker.com/r/isxcode/zhihuiyun");
+  window.open("https://hub.docker.com/r/isxcode/zhishuyun");
 }
 
 function downloadLicense() {
-  window.open("https://isxcode.oss-cn-shanghai.aliyuncs.com/zhihuiyun/license.lic");
+  window.open("https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/license.lic");
 }
 
 function downloadPdf() {
-  window.open("https://isxcode.oss-cn-shanghai.aliyuncs.com/zhihuiyun/zhihuiyun.pdf");
+  window.open("https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/zhishuyun.pdf");
 }
 
 function downloadPackage() {
-  window.open("https://isxcode.oss-cn-shanghai.aliyuncs.com/zhihuiyun/zhihuiyun.tar.gz");
+  window.open("https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/zhishuyun.tar.gz");
 }
 
 function clickBlogs() {

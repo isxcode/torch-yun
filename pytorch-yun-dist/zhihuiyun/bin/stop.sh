@@ -6,11 +6,11 @@ cd "${BASE_PATH}" || exit
 cd ".." || exit
 
 # 关闭进程
-if [ -e "zhihuiyun.pid" ]; then
-  pid=$(cat "zhihuiyun.pid")
+if [ -e "zhishuyun.pid" ]; then
+  pid=$(cat "zhishuyun.pid")
   if ps -p $pid >/dev/null 2>&1; then
    kill -9 ${pid}
-   rm zhihuiyun.pid
+   rm zhishuyun.pid
    echo "【至慧云】: CLOSED"
    exit 0
   fi
