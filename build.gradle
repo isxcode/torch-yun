@@ -105,19 +105,11 @@ tasks.register('package', GradleBuild) {
 tasks.register('start', Exec) {
 
     commandLine 'sh', '-c', '''
-      rm -rf pytorch-yun-dist/build/distributions/zhihuiyun
-      tar -vzxf pytorch-yun-dist/build/distributions/zhihuiyun.tar.gz -C pytorch-yun-dist/build/distributions/
-      cd pytorch-yun-dist/build/distributions/zhihuiyun/bin
+      rm -rf pytorch-yun-dist/build/distributions/zhishuyun
+      tar -vzxf pytorch-yun-dist/build/distributions/zhishuyun.tar.gz -C pytorch-yun-dist/build/distributions/
+      cd pytorch-yun-dist/build/distributions/zhishuyun/bin
       bash start.sh
     '''
-}
-
-tasks.register('docker', Exec) {
-
-    commandLine 'sh', '-c', '''
-      docker buildx uninstall
-      docker build -t isxcode/zhihuiyun:''' + version_number + ''' -f ./Dockerfile .
-     '''
 }
 
 tasks.register('website', Exec) {
@@ -145,11 +137,49 @@ tasks.register('backend', GradleBuild) {
     tasks = [":pytorch-yun-backend:pytorch-yun-main:bootRun"]
 }
 
-tasks.register('autotest', GradleBuild) {
-
-    tasks = [":pytorch-yun-autotest:autotest"]
+tasks.register('install', Exec) {
+    if (!System.properties['os.name'].toString().contains('Mac OS X')) {
+        doFirst {
+            exec {
+                commandLine 'sh', '-c', "sed -i 's/\\r\$//' install.sh"
+            }
+        }
+    }
+    commandLine 'sh', '-c', 'bash install.sh'
 }
 
-tasks.register('install', Exec) {
-    commandLine 'sh', '-c', 'bash install.sh'
+tasks.register('docker', Exec) {
+
+    commandLine 'sh', '-c', '''
+      docker buildx uninstall
+      docker build -t isxcode/zhishuyun:''' + version_number + ''' -f ./Dockerfile .
+     '''
+}
+
+tasks.register('upload-ali-oss', Exec) {
+
+    commandLine 'sh', '-c', '''
+      ossutil cp spark-yun-dist/build/distributions/zhishuyun.tar.gz oss://isxcode/zhishuyun/
+     '''
+}
+
+tasks.register('upload-docker-hub', Exec) {
+
+    commandLine 'sh', '-c', '''
+      docker buildx install
+      docker buildx build --platform linux/amd64,linux/arm64/v8 -t isxcode/zhishuyun:latest -f ./Dockerfile . --push
+     '''
+}
+
+tasks.register('upload-ali-hub', Exec) {
+
+    commandLine 'sh', '-c', '''
+      docker buildx install
+      docker rmi registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun:latest-amd64
+      docker buildx build --platform linux/amd64 -t registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun:latest-amd64 -f ./Dockerfile . --load
+      docker push registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun:latest-amd64
+      docker rmi registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun:latest-arm64
+      docker buildx build --platform linux/arm64/v8 -t registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun:latest-arm64 -f ./Dockerfile . --load
+      docker push registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun:latest-arm64      
+     '''
 }

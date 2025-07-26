@@ -14,11 +14,11 @@ for arg in "$@"; do
 done
 
 # 导入用户指定环境变量
-source "conf/zhihuiyun-env.sh"
+source "conf/zhishuyun-env.sh"
 
 # 项目已经在运行中
-if [ -e "zhihuiyun.pid" ]; then
-  pid=$(cat "zhihuiyun.pid")
+if [ -e "zhishuyun.pid" ]; then
+  pid=$(cat "zhishuyun.pid")
   if ps -p $pid >/dev/null 2>&1; then
     echo "【至慧云】: HAS RUNNING"
     exit 0
@@ -33,11 +33,11 @@ fi
 
 # 运行至慧云程序
 if [ -n "$JAVA_HOME" ]; then
-  nohup $JAVA_HOME/bin/java -jar -Xmx2048m lib/zhihuiyun.jar --spring.profiles.active=local --spring.config.additional-location=conf/ > /dev/null 2>&1 &
+  nohup $JAVA_HOME/bin/java -jar -Xmx2048m lib/zhishuyun.jar --spring.profiles.active=local --spring.config.additional-location=conf/ > /dev/null 2>&1 &
 else
-  nohup java -jar -Xmx2048m lib/zhihuiyun.jar --spring.profiles.active=local --spring.config.additional-location=conf/ > /dev/null 2>&1 &
+  nohup java -jar -Xmx2048m lib/zhishuyun.jar --spring.profiles.active=local --spring.config.additional-location=conf/ > /dev/null 2>&1 &
 fi
-echo $! >zhihuiyun.pid
+echo $! >zhishuyun.pid
 
 echo "【至慧云】: STARTING"
 if [ "$print_log" == "true" ]; then

@@ -95,13 +95,13 @@ public class RunAgentInstallService {
         }
 
         // 异步上传安装包
-        clusterNodeService.scpAgentFile(scpFileEngineNodeDto, "classpath:agent/zhihuiyun-agent.tar.gz",
-            sparkYunProperties.getTmpDir() + "/zhihuiyun-agent.tar.gz");
+        clusterNodeService.scpAgentFile(scpFileEngineNodeDto, "classpath:agent/zhishuyun-agent.tar.gz",
+            sparkYunProperties.getTmpDir() + "/zhishuyun-agent.tar.gz");
         log.debug("代理安装包上传中");
 
         // 同步监听进度
-        clusterNodeService.checkScpPercent(scpFileEngineNodeDto, "classpath:agent/zhihuiyun-agent.tar.gz",
-            sparkYunProperties.getTmpDir() + "/zhihuiyun-agent.tar.gz", engineNode);
+        clusterNodeService.checkScpPercent(scpFileEngineNodeDto, "classpath:agent/zhishuyun-agent.tar.gz",
+            sparkYunProperties.getTmpDir() + "/zhishuyun-agent.tar.gz", engineNode);
         log.debug("下载安装包成功");
 
         String bashFilePath = sparkYunProperties.getTmpDir() + "/agent-install.sh";

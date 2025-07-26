@@ -35,8 +35,8 @@ public class PytorchYunAgentBizService {
 
         // 先解压
         String unzipModelCommand =
-            "unzip -oj " + deployAiReq.getAgentHomePath() + "/zhihuiyun-agent/file/" + deployAiReq.getModelFileId()
-                + " -d " + deployAiReq.getAgentHomePath() + "/zhihuiyun-agent/ai/" + deployAiReq.getAiId();
+            "unzip -oj " + deployAiReq.getAgentHomePath() + "/zhishuyun-agent/file/" + deployAiReq.getModelFileId()
+                + " -d " + deployAiReq.getAgentHomePath() + "/zhishuyun-agent/ai/" + deployAiReq.getAiId();
 
         // 执行命令
         Process execUnzip = RuntimeUtil.exec(unzipModelCommand);
@@ -58,8 +58,8 @@ public class PytorchYunAgentBizService {
         int aiPort = findUnusedPort();
 
         // 部署命令
-        String aiPath = deployAiReq.getAgentHomePath() + "/zhihuiyun-agent/ai/" + deployAiReq.getAiId();
-        String pluginPath = deployAiReq.getAgentHomePath() + "/zhihuiyun-agent/plugins/" + pluginName;
+        String aiPath = deployAiReq.getAgentHomePath() + "/zhishuyun-agent/ai/" + deployAiReq.getAiId();
+        String pluginPath = deployAiReq.getAgentHomePath() + "/zhishuyun-agent/plugins/" + pluginName;
         String[] deployCommand =
             {"bash", "-c", "nohup bash -c \"MODEL_PATH='" + aiPath + "' uvicorn ai:app --host 127.0.0.1 --app-dir "
                 + pluginPath + " --port " + aiPort + " \" > " + aiPath + "/ai.log 2>&1 & echo $!"};
@@ -84,7 +84,7 @@ public class PytorchYunAgentBizService {
 
     public GetAgentAiLogRes getAiLog(GetAgentAiLogReq getAgentAiLogReq) {
 
-        String aiPath = getAgentAiLogReq.getAgentHomePath() + "/zhihuiyun-agent/ai/" + getAgentAiLogReq.getAiId();
+        String aiPath = getAgentAiLogReq.getAgentHomePath() + "/zhishuyun-agent/ai/" + getAgentAiLogReq.getAiId();
 
         // 如果ai.log文件不存在则报错，再部署中
         if (!FileUtil.exist(aiPath + "/ai.log")) {

@@ -127,14 +127,14 @@ jobs:
         with:
           context: .
           platforms: linux/amd64,linux/arm64
-          tags: isxcode/zhihuiyun:${{ inputs.version_number }}
+          tags: isxcode/zhishuyun:${{ inputs.version_number }}
           push: true
 
-      - name: Upload zhihuiyun tar
+      - name: Upload zhishuyun tar
         uses: actions/upload-artifact@v4
         with:
-          name: zhihuiyun
-          path: ./pytorch-yun-dist/build/distributions/zhihuiyun.tar.gz
+          name: zhishuyun
+          path: ./pytorch-yun-dist/build/distributions/zhishuyun.tar.gz
 
   # 上传阿里oss使用单独任务，原因：上传失败后，可以使用github重跑任务，不需要重新打包
   upload-oss:
@@ -159,10 +159,10 @@ jobs:
         run: |
           mkdir distributions
 
-      - name: Download zhihuiyun tar
+      - name: Download zhishuyun tar
         uses: actions/download-artifact@v4
         with:
-          name: zhihuiyun
+          name: zhishuyun
           path: ./distributions
 
       - name: Upload Package to Ali oss
@@ -174,7 +174,7 @@ jobs:
           bucket: isxcode
           timeout: 1200
           assets: |
-            distributions/**:/zhihuiyun/
+            distributions/**:/zhishuyun/
 
   # 上传阿里镜像仓库使用单独任务，原因：上传失败后，可以使用github重跑任务，不需要重新打包
   upload-ali:
@@ -204,10 +204,10 @@ jobs:
 
       - name: Pull docker images
         run: |
-          docker pull --platform=linux/amd64 isxcode/zhihuiyun
-          docker tag isxcode/zhihuiyun registry.cn-shanghai.aliyuncs.com/isxcode/zhihuiyun:latest-amd64
-          docker push registry.cn-shanghai.aliyuncs.com/isxcode/zhihuiyun:latest-amd64
-          docker rmi isxcode/zhihuiyun
-          docker pull --platform=linux/arm64 isxcode/zhihuiyun
-          docker tag isxcode/zhihuiyun registry.cn-shanghai.aliyuncs.com/isxcode/zhihuiyun:latest-arm64
-          docker push registry.cn-shanghai.aliyuncs.com/isxcode/zhihuiyun:latest-arm64
+          docker pull --platform=linux/amd64 isxcode/zhishuyun
+          docker tag isxcode/zhishuyun registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun:latest-amd64
+          docker push registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun:latest-amd64
+          docker rmi isxcode/zhishuyun
+          docker pull --platform=linux/arm64 isxcode/zhishuyun
+          docker tag isxcode/zhishuyun registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun:latest-arm64
+          docker push registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun:latest-arm64

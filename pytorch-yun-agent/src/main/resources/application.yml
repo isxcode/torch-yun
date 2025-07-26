@@ -4,7 +4,7 @@ server:
 logging:
   exception-conversion-word: '%wEx'
   file:
-    name: ./logs/zhihuiyun-agent.log
+    name: ./logs/zhishuyun-agent.log
   pattern:
     level: '%5p'
     dateformat: 'yyyy-MM-dd HH:mm:ss.SSS'

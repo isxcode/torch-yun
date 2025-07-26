@@ -8,11 +8,11 @@ BASE_PATH=$(cd "$(dirname "$0")" || exit ; pwd)
 cd "${BASE_PATH}" || exit
 cd ".." || exit
 
-if [ -e "zhihuiyun-agent.pid" ]; then
-  pid=$(cat "zhihuiyun-agent.pid")
+if [ -e "zhishuyun-agent.pid" ]; then
+  pid=$(cat "zhishuyun-agent.pid")
   if ps -p $pid >/dev/null 2>&1; then
    kill -9 ${pid}
-   rm zhihuiyun-agent.pid
+   rm zhishuyun-agent.pid
    echo "【至慧云代理】: CLOSED"
    exit 0
   fi

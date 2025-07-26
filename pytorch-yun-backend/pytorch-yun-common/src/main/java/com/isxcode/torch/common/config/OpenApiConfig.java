@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 
 @OpenAPIDefinition(info = @Info(title = "至慧云", description = "企业级模型训练平台"),
     servers = {@Server(url = "http://localhost:8080", description = "本地环境"),
-            @Server(url = "https://zhihuiyun-demo.isxcode.com", description = "远程环境")})
+            @Server(url = "https://zhishuyun-demo.isxcode.com", description = "远程环境")})
 @Configuration
 public class OpenApiConfig {
 
