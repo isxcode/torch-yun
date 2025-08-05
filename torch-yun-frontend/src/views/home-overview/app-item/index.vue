@@ -149,8 +149,9 @@ defineExpose({
 
 <style lang="scss">
  .ai-app-list {
-    // padding: 0 20px;
-    // box-sizing: border-box;
+    // 与输入框对齐：使用相同的宽度和边距
+    width: 80%;
+    margin: 0 auto;
     .zqy-seach {
         height: 50px;
         display: flex;
