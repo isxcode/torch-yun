@@ -163,7 +163,7 @@ fi
 if ! python3 -c "import fastapi" &>/dev/null; then
     json_output="{ \
     \"status\": \"INSTALL_ERROR\", \
-    \"log\": \"当前Python环境中未安装fastapi依赖, 请运行 pip3 install fastapi' 安装\" \
+    \"log\": \"当前Python环境中未安装fastapi依赖, 请运行 pip3 install fastapi 安装\" \
     }"
     echo $json_output
     rm ${BASE_PATH}/agent-HuggingFace.sh
