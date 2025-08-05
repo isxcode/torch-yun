@@ -42,7 +42,7 @@ docker run \
 #### 修改配置
 
 默认配置文件模版参考链接:   
-https://raw.githubusercontent.com/isxcode/pytorch-yun/refs/heads/main/pytorch-yun-backend/pytorch-yun-main/src/main/resources/application-docker.yml
+https://raw.githubusercontent.com/isxcode/torch-yun/refs/heads/main/torch-yun-backend/torch-yun-main/src/main/resources/application-docker.yml
 
 ```bash
 vim /Users/ispong/zhihuiyun/conf/application-docker.yml

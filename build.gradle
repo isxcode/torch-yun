@@ -6,7 +6,7 @@ plugins {
     id "com.diffplug.spotless" version "${SPOTLESS_VERSION}"
 }
 
-def version_number = new File(rootDir.getAbsolutePath(), 'pytorch-yun-backend/pytorch-yun-main/src/main/resources/VERSION').readLines()[0].trim()
+def version_number = new File(rootDir.getAbsolutePath(), 'torch-yun-backend/torch-yun-main/src/main/resources/VERSION').readLines()[0].trim()
 
 allprojects {
 
@@ -99,15 +99,15 @@ tasks.register('format', GradleBuild) {
 
 tasks.register('package', GradleBuild) {
 
-    tasks = [":pytorch-yun-dist:make"]
+    tasks = [":torch-yun-dist:make"]
 }
 
 tasks.register('start', Exec) {
 
     commandLine 'sh', '-c', '''
-      rm -rf pytorch-yun-dist/build/distributions/zhishuyun
-      tar -vzxf pytorch-yun-dist/build/distributions/zhishuyun.tar.gz -C pytorch-yun-dist/build/distributions/
-      cd pytorch-yun-dist/build/distributions/zhishuyun/bin
+      rm -rf torch-yun-dist/build/distributions/zhishuyun
+      tar -vzxf torch-yun-dist/build/distributions/zhishuyun.tar.gz -C torch-yun-dist/build/distributions/
+      cd torch-yun-dist/build/distributions/zhishuyun/bin
       bash start.sh
     '''
 }
@@ -125,7 +125,7 @@ tasks.register('website', Exec) {
 tasks.register('frontend', Exec) {
 
     commandLine 'sh', '-c', '''
-      cd pytorch-yun-frontend
+      cd torch-yun-frontend
       rm -rf node_modules
       pnpm install --force
       pnpm run dev --host
@@ -134,7 +134,7 @@ tasks.register('frontend', Exec) {
 
 tasks.register('backend', GradleBuild) {
 
-    tasks = [":pytorch-yun-backend:pytorch-yun-main:bootRun"]
+    tasks = [":torch-yun-backend:torch-yun-main:bootRun"]
 }
 
 tasks.register('install', Exec) {
@@ -159,7 +159,7 @@ tasks.register('docker', Exec) {
 tasks.register('upload-ali-oss', Exec) {
 
     commandLine 'sh', '-c', '''
-      ossutil cp pytorch-yun-dist/build/distributions/zhishuyun.tar.gz oss://isxcode/zhishuyun/
+      ossutil cp torch-yun-dist/build/distributions/zhishuyun.tar.gz oss://isxcode/zhishuyun/
      '''
 }
 

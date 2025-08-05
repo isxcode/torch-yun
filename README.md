@@ -3,16 +3,16 @@
 ### 超轻量级大模型训练平台/人工智能/智能中心
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/isxcode/zhishuyun)](https://hub.docker.com/r/isxcode/zhishuyun)
-[![build](https://github.com/isxcode/pytorch-yun/actions/workflows/build-zhishuyun.yml/badge.svg?branch=main)](https://github.com/isxcode/pytorch-yun/actions/workflows/build-zhishuyun.yml)
-[![GitHub Repo stars](https://img.shields.io/github/stars/isxcode/pytorch-yun)](https://github.com/isxcode/pytorch-yun)
-[![GitHub forks](https://img.shields.io/github/forks/isxcode/pytorch-yun)](https://github.com/isxcode/pytorch-yun/fork)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fisxcode%2Fpytorch-yun.svg?type=shield&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fisxcode%2Fpytorch-yun?ref=badge_shield&issueType=license)
-[![GitHub License](https://img.shields.io/github/license/isxcode/pytorch-yun)](https://github.com/isxcode/pytorch-yun/blob/main/LICENSE)
+[![build](https://github.com/isxcode/torch-yun/actions/workflows/build-zhishuyun.yml/badge.svg?branch=main)](https://github.com/isxcode/torch-yun/actions/workflows/build-zhishuyun.yml)
+[![GitHub Repo stars](https://img.shields.io/github/stars/isxcode/torch-yun)](https://github.com/isxcode/torch-yun)
+[![GitHub forks](https://img.shields.io/github/forks/isxcode/torch-yun)](https://github.com/isxcode/torch-yun/fork)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fisxcode%2Ftorch-yun.svg?type=shield&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fisxcode%2Ftorch-yun?ref=badge_shield&issueType=license)
+[![GitHub License](https://img.shields.io/github/license/isxcode/torch-yun)](https://github.com/isxcode/torch-yun/blob/main/LICENSE)
 
 |             |                                                                                                                                                         |
 |-------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
 | 官网地址:       | https://zhishuyun.isxcode.com                                                                                                                           |
-| 源码地址:       | https://github.com/isxcode/pytorch-yun                                                                                                                  |
+| 源码地址:       | https://github.com/isxcode/torch-yun                                                                                                                  |
 | 演示环境:       | https://zhishuyun-demo.isxcode.com                                                                                                                      |
 | 安装包下载:      | https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/zhishuyun.tar.gz                                                                                 |
 | 许可证下载:      | https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/license.lic                                                                                      |
@@ -59,13 +59,13 @@ docker run -p 8080:8080 -d isxcode/zhishuyun
 ### 源码构建
 
 > [!IMPORTANT]
-> 安装包路径: /tmp/pytorch-yun/pytorch-yun-dist/build/distributions/zhishuyun.tar.gz
+> 安装包路径: /tmp/torch-yun/torch-yun-dist/build/distributions/zhishuyun.tar.gz
 
 ```bash
 cd /tmp
-git clone https://github.com/isxcode/pytorch-yun.git
+git clone https://github.com/isxcode/torch-yun.git
 docker run --rm \
-  -v /tmp/pytorch-yun:/pytorch-yun \
-  -w /pytorch-yun -it registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun-build:amd-latest \
+  -v /tmp/torch-yun:/torch-yun \
+  -w /torch-yun -it registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun-build:amd-latest \
   /bin/bash -c "source /etc/profile && gradle install clean package"
 ```
