@@ -273,7 +273,7 @@ ALTER TABLE QRTZ_TRIGGERS
 COMMIT;
 
 -- 租户表
-create table if not exists PY_TENANT
+create table if not exists TY_TENANT
 (
   id                      varchar(200)  not null unique primary key comment '租户唯一id',
   name                    varchar(200)  not null comment '租户名称',
@@ -294,7 +294,7 @@ create table if not exists PY_TENANT
 );
 
 -- 用户表
-create table if not exists PY_USER
+create table if not exists TY_USER
 (
   id                      varchar(200)  not null unique primary key comment '用户唯一id',
   username                varchar(200)  not null comment '用户名称',
@@ -316,13 +316,13 @@ create table if not exists PY_USER
 );
 
 -- 初始化系统管理员
-insert into PY_USER (id, username, account, passwd, role_code, status, create_by, create_date_time, last_modified_by,
+insert into TY_USER (id, username, account, passwd, role_code, status, create_by, create_date_time, last_modified_by,
                      last_modified_date_time, version_number)
 values ('admin_id', '系统管理员', 'admin', '', 'ROLE_SYS_ADMIN', 'ENABLE', 'admin_id', now(), 'admin_id', now(),
         0);
 
 -- 租户用户关系表
-create table if not exists PY_TENANT_USERS
+create table if not exists TY_TENANT_USERS
 (
   id                      varchar(200)  not null unique primary key comment '关系唯一id',
   user_id                 varchar(200)  not null comment '用户id',
@@ -339,7 +339,7 @@ create table if not exists PY_TENANT_USERS
 );
 
 -- 集群表
-create table if not exists PY_CLUSTER
+create table if not exists TY_CLUSTER
 (
   id                      varchar(200)  not null unique primary key comment '集群唯一id',
   name                    varchar(200)  not null comment '集群名称',
@@ -362,7 +362,7 @@ create table if not exists PY_CLUSTER
 );
 
 -- 集群节点表
-create table if not exists PY_CLUSTER_NODE
+create table if not exists TY_CLUSTER_NODE
 (
   id                      varchar(200)  not null unique primary key comment '集群节点唯一id',
   name                    varchar(200)  not null comment '节点名称',
@@ -392,7 +392,7 @@ create table if not exists PY_CLUSTER_NODE
 );
 
 -- 数据源表
-create table if not exists PY_DATASOURCE
+create table if not exists TY_DATASOURCE
 (
   id                      varchar(200)  not null unique primary key comment '数据源唯一id',
   name                    varchar(200)  not null comment '数据源名称',
@@ -414,7 +414,7 @@ create table if not exists PY_DATASOURCE
 );
 
 -- 作业流表
-create table if not exists PY_WORKFLOW
+create table if not exists TY_WORKFLOW
 (
   id                      varchar(200)  not null unique primary key comment '作业流唯一id',
   name                    varchar(200)  not null comment '作业流名称',
@@ -430,7 +430,7 @@ create table if not exists PY_WORKFLOW
 );
 
 -- 作业表
-create table if not exists PY_WORK
+create table if not exists TY_WORK
 (
   id                      varchar(200)  not null unique primary key comment '作业唯一id',
   name                    varchar(200)  not null comment '作业名称',
@@ -450,7 +450,7 @@ create table if not exists PY_WORK
 );
 
 -- 作业配置表
-create table if not exists PY_WORK_CONFIG
+create table if not exists TY_WORK_CONFIG
 (
   id                      varchar(200)  not null unique primary key comment '作业配置唯一id',
   datasource_id           varchar(200) comment '数据源id',
@@ -468,7 +468,7 @@ create table if not exists PY_WORK_CONFIG
 );
 
 -- 许可证表
-create table if not exists PY_LICENSE
+create table if not exists TY_LICENSE
 (
   id                      varchar(200)  not null unique primary key comment '许可证唯一id',
   code                    varchar(200)  not null comment '许可证编号',
@@ -491,7 +491,7 @@ create table if not exists PY_LICENSE
 );
 
 -- 自定义API表
-create table if not exists PY_API
+create table if not exists TY_API
 (
   id                      varchar(200)  not null unique primary key comment '唯一API的id',
   name                    varchar(200)  not null comment 'API名称',
@@ -514,7 +514,7 @@ create table if not exists PY_API
 );
 
 -- 作业配置版本表
-create table if not exists PY_WORK_VERSION
+create table if not exists TY_WORK_VERSION
 (
   id                      varchar(200)  not null unique primary key comment '版本唯一id',
   work_id                 varchar(200)  not null comment '作业id',
@@ -534,7 +534,7 @@ create table if not exists PY_WORK_VERSION
 );
 
 -- 作业运行实例表
-create table if not exists PY_WORK_INSTANCE
+create table if not exists TY_WORK_INSTANCE
 (
   id                      varchar(200)  not null unique primary key comment '实例唯一id',
   version_id              varchar(200) comment '实例版本id',
@@ -558,7 +558,7 @@ create table if not exists PY_WORK_INSTANCE
 );
 
 -- 用户行为记录表
-create table if not exists PY_USER_ACTION
+create table if not exists TY_USER_ACTION
 (
   id               varchar(200) not null unique primary key comment '用户行为唯一id',
   user_id          varchar(200) comment '用户id',
@@ -574,23 +574,23 @@ create table if not exists PY_USER_ACTION
   create_date_time datetime     not null comment '创建时间'
 );
 
-alter table PY_CLUSTER
+alter table TY_CLUSTER
   add cluster_type varchar(100) null comment '集群的类型';
 
-update PY_CLUSTER
+update TY_CLUSTER
 set cluster_type='yarn'
 where 1 = 1;
 
 -- 给作业实例，添加作业流实例id
-alter table PY_WORK_INSTANCE
+alter table TY_WORK_INSTANCE
   add workflow_instance_id varchar(100) null comment '工作流实例id';
 
 -- 给作业实例，添加是否被定时器触发过
-alter table PY_WORK_INSTANCE
+alter table TY_WORK_INSTANCE
   add quartz_has_run boolean null comment '是否被定时器触发过';
 
 -- 创建工作流配置表
-create table PY_WORKFLOW_CONFIG
+create table TY_WORKFLOW_CONFIG
 (
   id                      varchar(200)  not null comment '作业流配置唯一id'
     primary key,
@@ -610,7 +610,7 @@ create table PY_WORKFLOW_CONFIG
 );
 
 -- 创建工作流实例表
-create table PY_WORKFLOW_INSTANCE
+create table TY_WORKFLOW_INSTANCE
 (
   id                      varchar(200)  not null comment '实例唯一id'
     primary key,
@@ -633,7 +633,7 @@ create table PY_WORKFLOW_INSTANCE
 );
 
 -- 创建工作流版本表
-create table PY_WORKFLOW_VERSION
+create table TY_WORKFLOW_VERSION
 (
   id                      varchar(200)  not null comment '工作流版本唯一id'
     primary key,
@@ -656,23 +656,23 @@ create table PY_WORKFLOW_VERSION
 );
 
 -- 工作流添加工作流配置id
-alter table PY_WORKFLOW
+alter table TY_WORKFLOW
   add config_id varchar(100) null comment '工作流配置id';
 
 -- 工作流添加工作流当前版本id
-alter table PY_WORKFLOW
+alter table TY_WORKFLOW
   add version_id varchar(100) null comment '版本id';
 
 -- 工作流添加工作流类型
-alter table PY_WORKFLOW
+alter table TY_WORKFLOW
   add type varchar(200) null comment '工作流类型';
 
 -- 作业添加置顶标志
-alter table PY_WORK
+alter table TY_WORK
   add top_index int null comment '作业置顶标志';
 
 -- 工作流收藏表
-create table PY_WORKFLOW_FAVOUR
+create table TY_WORKFLOW_FAVOUR
 (
   id                      varchar(200)  not null comment '工作流收藏唯一id'
     primary key,
@@ -689,17 +689,17 @@ create table PY_WORKFLOW_FAVOUR
 );
 
 -- 自定义锁表
-CREATE TABLE PY_LOCKER
+CREATE TABLE TY_LOCKER
 (
   id    BIGINT AUTO_INCREMENT PRIMARY KEY,
   name  VARCHAR(2000) not null,
   box VARCHAR(2000) null
 );
 
-alter table PY_CLUSTER_NODE alter column passwd varchar(5000) not null comment '节点服务器密码';
+alter table TY_CLUSTER_NODE alter column passwd varchar(5000) not null comment '节点服务器密码';
 
 -- 创建资源文件表
-create table PY_FILE
+create table TY_FILE
 (
   id                      varchar(200)  not null comment '文件配置唯一id'
     primary key,
@@ -717,55 +717,55 @@ create table PY_FILE
 );
 
 -- 添加同步作业的配置
-alter table PY_WORK_CONFIG
+alter table TY_WORK_CONFIG
   add sync_work_config text null comment '同步作业的配置' after corn;
 
 -- 将cluster_id和spark_config合并成cluster_config
-alter table PY_WORK_CONFIG
+alter table TY_WORK_CONFIG
     drop column cluster_id;
 
-alter table PY_WORK_CONFIG
+alter table TY_WORK_CONFIG
     drop column spark_config;
 
-alter table PY_WORK_CONFIG
+alter table TY_WORK_CONFIG
     add cluster_config text null comment '计算集群配置' after sync_work_config;
 
 -- 添加数据同步规则
-alter table PY_WORK_CONFIG
+alter table TY_WORK_CONFIG
     add sync_rule text null comment '数据同步规则' after cluster_config;
 
 -- 将cron扩展成cron_config
-alter table PY_WORK_CONFIG ALTER COLUMN corn RENAME TO cron_config;
-alter table PY_WORK_CONFIG
+alter table TY_WORK_CONFIG ALTER COLUMN corn RENAME TO cron_config;
+alter table TY_WORK_CONFIG
     alter cron_config text null comment '定时表达式';
 
 -- 统一脚本内容
-alter table PY_WORK_CONFIG ALTER COLUMN sql_script RENAME TO script;
-alter table PY_WORK_CONFIG
+alter table TY_WORK_CONFIG ALTER COLUMN sql_script RENAME TO script;
+alter table TY_WORK_CONFIG
     alter script text null comment '统一脚本内容，包括sql、bash、python脚本';
 
 -- 添加spark_home_path
-alter table PY_CLUSTER_NODE
+alter table TY_CLUSTER_NODE
     add spark_home_path varchar(200) null comment 'standalone模式spark的安装目录' after hadoop_home_path;;
 
 -- 添加默认集群
-alter table PY_CLUSTER
+alter table TY_CLUSTER
     add default_cluster boolean null default false comment '默认计算集群' after used_storage_num;
 
 -- 作业运行实例中，添加作业运行的pid
-alter table PY_WORK_INSTANCE
+alter table TY_WORK_INSTANCE
     add work_pid varchar(100) null comment '作业运行的进程pid' after result_data;
 
 -- hive数据源，添加hive.metastore.uris配置项
-alter table PY_DATASOURCE
+alter table TY_DATASOURCE
     add metastore_uris varchar(200) null comment 'hive数据源 hive.metastore.uris 配置' after db_type;
 
 -- 数据源支持驱动添加
-alter table PY_DATASOURCE
+alter table TY_DATASOURCE
     add driver_id varchar(100) not null comment '数据库驱动id' after metastore_uris;
 
 -- 新增数据源驱动表
-create table PY_DATABASE_DRIVER
+create table TY_DATABASE_DRIVER
 (
     id                      varchar(200)  not null comment '数据源驱动唯一id'
         primary key,
@@ -785,162 +785,162 @@ create table PY_DATABASE_DRIVER
 );
 
 -- 初始化系统驱动
-INSERT INTO PY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver) VALUES ('clickhouse_0.5.0', 'clickhouse_0.5.0', 'CLICKHOUSE', 'clickhouse-jdbc-0.5.0.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', 1);
-INSERT INTO PY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver) VALUES ('db2_11.5.8.0', 'db2_11.5.8.0', 'DB2', 'jcc-11.5.8.0.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', 1);
-INSERT INTO PY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver) VALUES ('dm_8.1.1.49', 'dm_8.1.1.49', 'DM', 'Dm8JdbcDriver18-8.1.1.49.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', 1);
-INSERT INTO PY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver) VALUES ('doris_mysql_5.1.49', 'doris_mysql_5.1.49', 'DORIS', 'mysql-connector-java-5.1.49.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', 1);
-INSERT INTO PY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver) VALUES ('hana_2.18.13', 'hana_2.18.13', 'HANA_SAP', 'ngdbc-2.18.13.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', 1);
-INSERT INTO PY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver) VALUES ('hive_uber_2.6.3.jar', 'hive_uber_2.6.3.jar', 'HIVE', 'hive-jdbc-uber-2.6.3.0-235.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', 1);
-INSERT INTO PY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver) VALUES ('hive_3.1.3', 'hive_3.1.3', 'HIVE', 'hive-jdbc-3.1.3-standalone.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', 0);
-INSERT INTO PY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver) VALUES ('mysql_5.1.49', 'mysql_5.1.49', 'MYSQL', 'mysql-connector-java-5.1.49.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', 0);
-INSERT INTO PY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver) VALUES ('mysql_8.1.0', 'mysql_8.1.0', 'MYSQL', 'mysql-connector-j-8.1.0.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', 1);
-INSERT INTO PY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver) VALUES ('oceanbase_2.4.6', 'oceanbase_2.4.6', 'OCEANBASE', 'oceanbase-client-2.4.6.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', 1);
-INSERT INTO PY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver) VALUES ('oracle_19.20.0.0', 'oracle_19.20.0.0', 'ORACLE', 'ojdbc10-19.20.0.0.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', 1);
-INSERT INTO PY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver) VALUES ('postgre_42.6.0', 'postgre_42.6.0', 'POSTGRE_SQL', 'postgresql-42.6.0.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', 1);
-INSERT INTO PY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver) VALUES ('sqlServer_12.4.2.jre8', 'sqlServer_12.4.2.jre8', 'SQL_SERVER', 'mssql-jdbc-12.4.2.jre8.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', 1);
-INSERT INTO PY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver) VALUES ('star_rocks(mysql_5.1.49)', 'star_rocks(mysql_5.1.49)', 'STAR_ROCKS', 'mysql-connector-java-5.1.49.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', 1);
-INSERT INTO PY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver) VALUES ('tidb(mysql_5.1.49)', 'tidb(mysql_5.1.49)', 'TIDB', 'mysql-connector-java-5.1.49.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', 1);
+INSERT INTO TY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver) VALUES ('clickhouse_0.5.0', 'clickhouse_0.5.0', 'CLICKHOUSE', 'clickhouse-jdbc-0.5.0.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', 1);
+INSERT INTO TY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver) VALUES ('db2_11.5.8.0', 'db2_11.5.8.0', 'DB2', 'jcc-11.5.8.0.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', 1);
+INSERT INTO TY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver) VALUES ('dm_8.1.1.49', 'dm_8.1.1.49', 'DM', 'Dm8JdbcDriver18-8.1.1.49.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', 1);
+INSERT INTO TY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver) VALUES ('doris_mysql_5.1.49', 'doris_mysql_5.1.49', 'DORIS', 'mysql-connector-java-5.1.49.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', 1);
+INSERT INTO TY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver) VALUES ('hana_2.18.13', 'hana_2.18.13', 'HANA_SAP', 'ngdbc-2.18.13.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', 1);
+INSERT INTO TY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver) VALUES ('hive_uber_2.6.3.jar', 'hive_uber_2.6.3.jar', 'HIVE', 'hive-jdbc-uber-2.6.3.0-235.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', 1);
+INSERT INTO TY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver) VALUES ('hive_3.1.3', 'hive_3.1.3', 'HIVE', 'hive-jdbc-3.1.3-standalone.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', 0);
+INSERT INTO TY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver) VALUES ('mysql_5.1.49', 'mysql_5.1.49', 'MYSQL', 'mysql-connector-java-5.1.49.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', 0);
+INSERT INTO TY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver) VALUES ('mysql_8.1.0', 'mysql_8.1.0', 'MYSQL', 'mysql-connector-j-8.1.0.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', 1);
+INSERT INTO TY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver) VALUES ('oceanbase_2.4.6', 'oceanbase_2.4.6', 'OCEANBASE', 'oceanbase-client-2.4.6.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', 1);
+INSERT INTO TY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver) VALUES ('oracle_19.20.0.0', 'oracle_19.20.0.0', 'ORACLE', 'ojdbc10-19.20.0.0.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', 1);
+INSERT INTO TY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver) VALUES ('postgre_42.6.0', 'postgre_42.6.0', 'POSTGRE_SQL', 'postgresql-42.6.0.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', 1);
+INSERT INTO TY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver) VALUES ('sqlServer_12.4.2.jre8', 'sqlServer_12.4.2.jre8', 'SQL_SERVER', 'mssql-jdbc-12.4.2.jre8.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', 1);
+INSERT INTO TY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver) VALUES ('star_rocks(mysql_5.1.49)', 'star_rocks(mysql_5.1.49)', 'STAR_ROCKS', 'mysql-connector-java-5.1.49.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', 1);
+INSERT INTO TY_DATABASE_DRIVER (id, name, db_type, file_name, driver_type, create_by, create_date_time, last_modified_by, last_modified_date_time, version_number, deleted, tenant_id, remark, is_default_driver) VALUES ('tidb(mysql_5.1.49)', 'tidb(mysql_5.1.49)', 'TIDB', 'mysql-connector-java-5.1.49.jar', 'SYSTEM_DRIVER', 'zhishuyun', '2023-11-01 16:54:34', 'zhishuyun', '2023-11-01 16:54:39', 1, 0, 'zhishuyun', '系统自带驱动', 1);
 
 -- 工作流添加默认计算引擎配置
-alter table PY_WORKFLOW
+alter table TY_WORKFLOW
     add default_cluster_id varchar(200) null comment '默认计算引擎' after status;
 
 -- 数据源日志长度扩大
-alter table PY_DATASOURCE
+alter table TY_DATASOURCE
     alter connect_log text null comment '测试连接日志';
 
--- PY_WORKFLOW_CONFIG将cron扩展成cron_config
-alter table PY_WORKFLOW_CONFIG ALTER COLUMN corn RENAME TO cron_config;
-alter table PY_WORKFLOW_CONFIG
+-- TY_WORKFLOW_CONFIG将cron扩展成cron_config
+alter table TY_WORKFLOW_CONFIG ALTER COLUMN corn RENAME TO cron_config;
+alter table TY_WORKFLOW_CONFIG
     alter cron_config text null comment '定时表达式';
 
--- PY_WORK_VERSION将cron扩展成cron_config
-alter table PY_WORK_VERSION ALTER COLUMN corn RENAME TO cron_config;
-alter table PY_WORK_VERSION
+-- TY_WORK_VERSION将cron扩展成cron_config
+alter table TY_WORK_VERSION ALTER COLUMN corn RENAME TO cron_config;
+alter table TY_WORK_VERSION
     alter cron_config text null comment '定时表达式';
 
--- PY_WORK_VERSION将cluster_id改成cluster_config
-alter table PY_WORK_VERSION ALTER COLUMN cluster_id RENAME TO cluster_config;
-alter table PY_WORK_VERSION
+-- TY_WORK_VERSION将cluster_id改成cluster_config
+alter table TY_WORK_VERSION ALTER COLUMN cluster_id RENAME TO cluster_config;
+alter table TY_WORK_VERSION
     alter cluster_config text null comment '集群配置';
 
--- PY_WORK_VERSION将sql_script扩展成script
-alter table PY_WORK_VERSION ALTER COLUMN sql_script RENAME TO script;
-alter table PY_WORK_VERSION
+-- TY_WORK_VERSION将sql_script扩展成script
+alter table TY_WORK_VERSION ALTER COLUMN sql_script RENAME TO script;
+alter table TY_WORK_VERSION
     alter script text null comment '脚本内容';
 
--- 删除PY_WORK_VERSION的spark_config
-alter table PY_WORK_VERSION
+-- 删除TY_WORK_VERSION的spark_config
+alter table TY_WORK_VERSION
     drop column spark_config;
 
 -- 添加同步作业的配置
-alter table PY_WORK_VERSION
+alter table TY_WORK_VERSION
     add sync_work_config text null comment '同步作业的配置' after cron_config;
 
 -- 添加数据同步规则
-alter table PY_WORK_VERSION
+alter table TY_WORK_VERSION
     add sync_rule text null comment '数据同步规则' after sync_work_config;
 
 -- 修改错别字
-alter table PY_WORKFLOW_VERSION ALTER COLUMN corn RENAME TO cron;
+alter table TY_WORKFLOW_VERSION ALTER COLUMN corn RENAME TO cron;
 
 -- 作业流版本里加dag图
-alter table PY_WORKFLOW_VERSION
+alter table TY_WORKFLOW_VERSION
     add web_config text null comment '作业流的dag图' after cron;
 
 -- 作业流实例添加耗时
-alter table PY_WORKFLOW_INSTANCE
+alter table TY_WORKFLOW_INSTANCE
     add duration int null comment '耗时时间（秒）' after exec_end_date_time;
 
 -- 作业流实例添加耗时
-alter table PY_WORK_INSTANCE
+alter table TY_WORK_INSTANCE
     add duration int null comment '耗时时间（秒）' after exec_end_date_time;
 
--- PY_WORK_VERSION将cron扩展成cron_config
-alter table PY_WORKFLOW_VERSION ALTER COLUMN cron RENAME TO cron_config;
-alter table PY_WORKFLOW_VERSION
+-- TY_WORK_VERSION将cron扩展成cron_config
+alter table TY_WORKFLOW_VERSION ALTER COLUMN cron RENAME TO cron_config;
+alter table TY_WORKFLOW_VERSION
     alter cron_config text null comment '调度配置';
 
-alter table PY_API
+alter table TY_API
     add token_type varchar(200) null comment '认证方式' after status;
 
-alter table PY_API
+alter table TY_API
     add page_type varchar(50) null comment '分页状态' after token_type;
 
-alter table PY_API
+alter table TY_API
     alter page_type boolean null comment '分页状态';
           
-alter table PY_API
+alter table TY_API
     alter column API_SQL set null;
 
 -- 删除资源文件的路径
-alter table PY_FILE
+alter table TY_FILE
     drop column FILE_PATH;
 
 -- 添加备注字段
-alter table PY_FILE
+alter table TY_FILE
     add REMARK varchar2(500);
-comment on column PY_FILE.REMARK is '备注';
+comment on column TY_FILE.REMARK is '备注';
 
 -- 添加自定义jar作业配置
-alter table PY_WORK_CONFIG
+alter table TY_WORK_CONFIG
     add JAR_JOB_CONFIG text;
-comment on column PY_WORK_CONFIG.JAR_JOB_CONFIG is '自定义jar作业配置';
+comment on column TY_WORK_CONFIG.JAR_JOB_CONFIG is '自定义jar作业配置';
 
 -- 版本添加自定义作业配置
-alter table PY_WORK_VERSION
+alter table TY_WORK_VERSION
     add JAR_JOB_CONFIG text;
-comment on column PY_WORK_VERSION.JAR_JOB_CONFIG is '自定义作业配置';
+comment on column TY_WORK_VERSION.JAR_JOB_CONFIG is '自定义作业配置';
 
 -- 依赖配置
-alter table PY_WORK_CONFIG
+alter table TY_WORK_CONFIG
     add LIB_CONFIG text;
-comment on column PY_WORK_CONFIG.LIB_CONFIG is '作业依赖文件';
+comment on column TY_WORK_CONFIG.LIB_CONFIG is '作业依赖文件';
 
 -- 自定义配置
-alter table PY_WORK_CONFIG
+alter table TY_WORK_CONFIG
     add FUNC_CONFIG text;
-comment on column PY_WORK_CONFIG.FUNC_CONFIG is '自定义函数配置';
+comment on column TY_WORK_CONFIG.FUNC_CONFIG is '自定义函数配置';
 
-alter table PY_WORK_VERSION
+alter table TY_WORK_VERSION
     add LIB_CONFIG text;
-comment on column PY_WORK_VERSION.LIB_CONFIG is '依赖配置';
+comment on column TY_WORK_VERSION.LIB_CONFIG is '依赖配置';
 
-alter table PY_WORK_VERSION
+alter table TY_WORK_VERSION
     add FUNC_CONFIG text;
-comment on column PY_WORK_VERSION.FUNC_CONFIG is '自定义函数配置';
+comment on column TY_WORK_VERSION.FUNC_CONFIG is '自定义函数配置';
 
 -- 作业支持容器sql
-alter table PY_WORK_CONFIG
+alter table TY_WORK_CONFIG
     add CONTAINER_ID varchar(200);
 
-comment on column PY_WORK_CONFIG.CONTAINER_ID is '容器id';
+comment on column TY_WORK_CONFIG.CONTAINER_ID is '容器id';
 
 -- 作业版本支持容器sql
-alter table PY_WORK_VERSION
+alter table TY_WORK_VERSION
     add CONTAINER_ID varchar(200);
 
-comment on column PY_WORK_VERSION.CONTAINER_ID is '容器id';
+comment on column TY_WORK_VERSION.CONTAINER_ID is '容器id';
 
 -- 添加接口调用作业配置
-alter table PY_WORK_CONFIG
+alter table TY_WORK_CONFIG
   add API_WORK_CONFIG text null comment '接口调用作业的配置';
 
 -- 版本中添加接口调用作业配置
-alter table PY_WORK_VERSION
+alter table TY_WORK_VERSION
   add API_WORK_CONFIG text null comment '接口调用作业的配置';
 
 -- 新增kafka数据源配置
-alter table PY_DATASOURCE
+alter table TY_DATASOURCE
   add KAFKA_CONFIG text;
-comment on column PY_DATASOURCE.KAFKA_CONFIG is 'kafka数据源配置';
+comment on column TY_DATASOURCE.KAFKA_CONFIG is 'kafka数据源配置';
 
 -- 新增kafka驱动
-INSERT INTO PY_DATABASE_DRIVER (ID, NAME, DB_TYPE, FILE_NAME, DRIVER_TYPE, IS_DEFAULT_DRIVER, REMARK, CREATE_BY, CREATE_DATE_TIME, LAST_MODIFIED_BY, LAST_MODIFIED_DATE_TIME, VERSION_NUMBER, DELETED, TENANT_ID)
+INSERT INTO TY_DATABASE_DRIVER (ID, NAME, DB_TYPE, FILE_NAME, DRIVER_TYPE, IS_DEFAULT_DRIVER, REMARK, CREATE_BY, CREATE_DATE_TIME, LAST_MODIFIED_BY, LAST_MODIFIED_DATE_TIME, VERSION_NUMBER, DELETED, TENANT_ID)
 VALUES ('kafka_client_3.1.2', 'kafka_client_3.1.2', 'KAFKA', 'kafka_client_3.1.2.jar', 'SYSTEM_DRIVER', true, '系统自带驱动', 'zhishuyun', '2023-11-01 16:54:34.000000', 'zhishuyun', '2023-11-01 16:54:39.000000', 1, 0, 'zhishuyun');
 
 -- 添加监控表
-create table PY_MONITOR
+create table TY_MONITOR
 (
   id                      varchar(200)  not null comment '分享表单链接id'
     primary key,
@@ -962,22 +962,22 @@ create table PY_MONITOR
 );
 
 -- standalone集群节点支持安装spark-local组件
-alter table PY_CLUSTER_NODE
+alter table TY_CLUSTER_NODE
   add INSTALL_SPARK_LOCAL BOOLEAN default FALSE;
 
-comment on column PY_CLUSTER_NODE.INSTALL_SPARK_LOCAL is '是否安装spark-local组件';
+comment on column TY_CLUSTER_NODE.INSTALL_SPARK_LOCAL is '是否安装spark-local组件';
         
 -- 将ojdbc10-19.20.0.0.jar更新为ojdbc8-19.23.0.0.jar
-UPDATE PY_DATABASE_DRIVER SET ID = 'ojdbc8-19.23.0.0', NAME = 'ojdbc8-19.23.0.0', FILE_NAME = 'ojdbc8-19.23.0.0.jar' WHERE ID LIKE 'oracle#_19.20.0.0';
+UPDATE TY_DATABASE_DRIVER SET ID = 'ojdbc8-19.23.0.0', NAME = 'ojdbc8-19.23.0.0', FILE_NAME = 'ojdbc8-19.23.0.0.jar' WHERE ID LIKE 'oracle#_19.20.0.0';
 
 -- 添加下次执行时间
-alter table PY_WORKFLOW
+alter table TY_WORKFLOW
     add next_date_time datetime;
 
-comment on column PY_WORKFLOW.next_date_time is '下次执行时间';
+comment on column TY_WORKFLOW.next_date_time is '下次执行时间';
         
 -- 添加消息体表
-create table PY_MESSAGE
+create table TY_MESSAGE
 (
   id                      varchar(200)  not null comment '消息消息体id'
     primary key,
@@ -997,7 +997,7 @@ create table PY_MESSAGE
 );
 
 -- 添加告警表
-create table PY_ALARM
+create table TY_ALARM
 (
   id                      varchar(200)  not null comment '告警id'
     primary key,
@@ -1019,7 +1019,7 @@ create table PY_ALARM
 );
 
 -- 添加消息告警实例表
-create table PY_ALARM_INSTANCE
+create table TY_ALARM_INSTANCE
 (
   id               varchar(200)  not null comment '告警实例id'
     primary key,
@@ -1039,52 +1039,52 @@ create table PY_ALARM_INSTANCE
 );
 
 -- 作业添加基线
-alter table PY_WORK_CONFIG
+alter table TY_WORK_CONFIG
   add ALARM_LIST text;
 
-comment on column PY_WORK_CONFIG.ALARM_LIST is '绑定的基线';
+comment on column TY_WORK_CONFIG.ALARM_LIST is '绑定的基线';
 
 -- 作业流添加基线
-alter table PY_WORKFLOW_CONFIG
+alter table TY_WORKFLOW_CONFIG
   add ALARM_LIST text;
 
-comment on column PY_WORKFLOW_CONFIG.ALARM_LIST is '绑定的基线';
+comment on column TY_WORKFLOW_CONFIG.ALARM_LIST is '绑定的基线';
 
 -- 作业添加基线
-alter table PY_WORK_VERSION
+alter table TY_WORK_VERSION
   add ALARM_LIST text;
 
-comment on column PY_WORK_VERSION.ALARM_LIST is '绑定的基线';
+comment on column TY_WORK_VERSION.ALARM_LIST is '绑定的基线';
 
 -- 作业流添加基线
-alter table PY_WORKFLOW_VERSION
+alter table TY_WORKFLOW_VERSION
   add ALARM_LIST text;
 
-comment on column PY_WORKFLOW_VERSION.ALARM_LIST is '绑定的基线';
+comment on column TY_WORKFLOW_VERSION.ALARM_LIST is '绑定的基线';
 
 
 -- 添加外部调用开关状态
-alter table PY_WORKFLOW_CONFIG
+alter table TY_WORKFLOW_CONFIG
     add INVOKE_STATUS varchar(100) default 'OFF' not null;
 
-comment on column PY_WORKFLOW_CONFIG.INVOKE_STATUS is '是否启动外部调用';
+comment on column TY_WORKFLOW_CONFIG.INVOKE_STATUS is '是否启动外部调用';
 
 -- 新增excel同步配置字段
-alter table PY_WORK_CONFIG
+alter table TY_WORK_CONFIG
     add EXCEL_SYNC_CONFIG longtext;
 
 -- 实例表中添加EXCEL_SYNC_CONFIG字段
-alter table PY_WORK_VERSION
+alter table TY_WORK_VERSION
     add EXCEL_SYNC_CONFIG longtext;
 
 -- 修复作业调度信息无法配置分钟级别配置
-alter table PY_WORK_CONFIG
+alter table TY_WORK_CONFIG
     alter column CRON_CONFIG varchar(2000);
 
 -- 修复作业调度信息无法配置分钟级别配置
-alter table PY_WORKFLOW_VERSION
+alter table TY_WORKFLOW_VERSION
     alter column CRON_CONFIG varchar(2000);
 
 -- 添加外部调用url
-alter table PY_WORKFLOW_CONFIG
+alter table TY_WORKFLOW_CONFIG
     add INVOKE_URL longtext;

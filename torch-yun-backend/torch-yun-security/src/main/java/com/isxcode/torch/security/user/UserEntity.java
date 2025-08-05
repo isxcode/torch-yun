@@ -21,9 +21,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Data
 @Entity
-@SQLDelete(sql = "UPDATE PY_USER SET deleted = 1 WHERE id = ? and version_number = ?")
+@SQLDelete(sql = "UPDATE TY_USER SET deleted = 1 WHERE id = ? and version_number = ?")
 @Where(clause = "deleted = 0")
-@Table(name = "PY_USER")
+@Table(name = "TY_USER")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 @EntityListeners(AuditingEntityListener.class)
 public class UserEntity {

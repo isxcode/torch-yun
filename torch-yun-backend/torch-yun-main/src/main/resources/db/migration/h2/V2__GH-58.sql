@@ -1,5 +1,5 @@
 -- 模型仓库表
-create table if not exists PY_MODEL
+create table if not exists TY_MODEL
 (
     id                      varchar(200)  not null unique primary key comment '模型唯一id',
     name                    varchar(200)  not null comment '模型名称',
@@ -19,14 +19,14 @@ create table if not exists PY_MODEL
 );
 
 -- 插入默认支持的数据
-INSERT INTO PY_MODEL
+INSERT INTO TY_MODEL
 (ID, NAME, CODE, MODEL_TYPE, MODEL_LABEL, STATUS, REMARK, CREATE_BY, CREATE_DATE_TIME, LAST_MODIFIED_BY,
  LAST_MODIFIED_DATE_TIME, DELETED, VERSION_NUMBER, TENANT_ID)
 VALUES ('qwen-plus', '通义千问-Plus', 'Qwen-Plus', 'API', '671b', 'ENABLE', '系统默认', 'zhishuyun',
         '2025-03-07 16:02:59.000000', 'zhishuyun', '2025-03-07 16:03:06.000000', 0, 1, 'zhishuyun');
 
 -- 智能体表
-create table if not exists PY_AI
+create table if not exists TY_AI
 (
     id                      varchar(200)  not null unique primary key comment 'ai唯一id',
     name                    varchar(200)  not null comment 'ai名称',
@@ -49,7 +49,7 @@ create table if not exists PY_AI
 );
 
 -- 智能应用表
-create table if not exists PY_APP
+create table if not exists TY_APP
 (
     id                      varchar(200)  not null unique primary key comment '应用唯一id',
     name                    varchar(200)  not null comment '应用名称',
@@ -72,7 +72,7 @@ create table if not exists PY_APP
 );
 
 -- 聊天表
-create table if not exists PY_CHAT
+create table if not exists TY_CHAT
 (
     id                      varchar(200)  not null unique primary key comment '对话唯一id',
     app_id                  varchar(500) comment '应用id',
@@ -88,7 +88,7 @@ create table if not exists PY_CHAT
 );
 
 -- 聊天对话表
-create table if not exists PY_CHAT_SESSION
+create table if not exists TY_CHAT_SESSION
 (
     id                      varchar(200)  not null unique primary key comment '回话唯一id',
     chat_id                 varchar(200)  not null comment '对话唯一id',

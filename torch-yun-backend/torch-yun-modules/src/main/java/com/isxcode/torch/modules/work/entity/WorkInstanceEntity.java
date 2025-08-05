@@ -30,9 +30,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@SQLDelete(sql = "UPDATE PY_WORK_INSTANCE SET deleted = 1 WHERE id = ?")
+@SQLDelete(sql = "UPDATE TY_WORK_INSTANCE SET deleted = 1 WHERE id = ?")
 @Where(clause = "deleted = 0 ${TENANT_FILTER} ")
-@Table(name = "PY_WORK_INSTANCE")
+@Table(name = "TY_WORK_INSTANCE")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 @EntityListeners(AuditingEntityListener.class)
 public class WorkInstanceEntity {
