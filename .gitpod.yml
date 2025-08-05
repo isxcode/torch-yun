@@ -5,7 +5,7 @@ tasks:
 ports:
   - name: server
     port: 8080
-    description: 至慧云开放访问端口
+    description: 至数云开放访问端口
     visibility: public
   - name: agent
     port: 30177

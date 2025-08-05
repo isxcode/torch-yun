@@ -7,7 +7,7 @@
             @loading-refresh="getChatDetailListData"
         >
             <div class="ai-top-container">
-                <div class="guide-title" v-if="!appInfo">欢迎使用至慧云！</div>
+                <div class="guide-title" v-if="!appInfo">欢迎使用至数云</div>
                 <div class="app-title" :class="{ 'app-title__show': !!appInfo }">
                     <div class="close-chat">
                         <el-button link type="primary" @click="stopChat">退出对话</el-button>

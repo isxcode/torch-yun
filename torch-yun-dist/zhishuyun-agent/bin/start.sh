@@ -16,7 +16,7 @@ source "conf/agent-env.sh"
 if [ -e "zhishuyun-agent.pid" ]; then
   pid=$(cat "zhishuyun-agent.pid")
   if ps -p $pid >/dev/null 2>&1; then
-    echo "【至慧云代理】: HAS RUNNING"
+    echo "【至数云代理】: HAS RUNNING"
     exit 0
   fi
 fi
@@ -35,5 +35,5 @@ else
 fi
 echo $! >zhishuyun-agent.pid
 
-echo "【至慧云代理】: STARTING"
+echo "【至数云代理】: STARTING"
 tail -f logs/zhishuyun-agent.log

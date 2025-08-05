@@ -20,7 +20,7 @@ source "conf/zhishuyun-env.sh"
 if [ -e "zhishuyun.pid" ]; then
   pid=$(cat "zhishuyun.pid")
   if ps -p $pid >/dev/null 2>&1; then
-    echo "【至慧云】: HAS RUNNING"
+    echo "【至数云】: HAS RUNNING"
     exit 0
   fi
 fi
@@ -31,7 +31,7 @@ if [ ! -f logs/torch-yun.log ]; then
   touch logs/torch-yun.log
 fi
 
-# 运行至慧云程序
+# 运行至数云程序
 if [ -n "$JAVA_HOME" ]; then
   nohup $JAVA_HOME/bin/java -jar -Xmx2048m lib/zhishuyun.jar --spring.profiles.active=local --spring.config.additional-location=conf/ > /dev/null 2>&1 &
 else
@@ -39,7 +39,7 @@ else
 fi
 echo $! >zhishuyun.pid
 
-echo "【至慧云】: STARTING"
+echo "【至数云】: STARTING"
 if [ "$print_log" == "true" ]; then
   tail -f logs/torch-yun.log
 fi

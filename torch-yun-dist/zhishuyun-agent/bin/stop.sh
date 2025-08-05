@@ -13,10 +13,10 @@ if [ -e "zhishuyun-agent.pid" ]; then
   if ps -p $pid >/dev/null 2>&1; then
    kill -9 ${pid}
    rm zhishuyun-agent.pid
-   echo "【至慧云代理】: CLOSED"
+   echo "【至数云代理】: CLOSED"
    exit 0
   fi
 fi
 
-echo "【至慧云代理】: HAS CLOSED"
+echo "【至数云代理】: HAS CLOSED"
 exit 0

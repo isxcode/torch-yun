@@ -2,7 +2,7 @@
 title: "Rancher部署"
 ---
 
-## Rancher部署至慧云
+## Rancher部署至数云
 
 #### 创建资源目录
 

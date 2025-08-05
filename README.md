@@ -1,4 +1,4 @@
-# 至慧云
+# 至数云
 
 ### 超轻量级大模型训练平台/人工智能/智能中心
 
@@ -17,13 +17,13 @@
 | 安装包下载:      | https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/zhishuyun.tar.gz                                                                                 |
 | 许可证下载:      | https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/license.lic                                                                                      |
 | Docker Hub: | https://hub.docker.com/r/isxcode/zhishuyun                                                                                                              |
-| 产品矩阵:       | [至轻云](https://zhiqingyun.isxcode.com), [至流云](https://zhiliuyun.isxcode.com), [至慧云](https://zhishuyun.isxcode.com), [至数云](https://zhishuyun.isxcode.com) |
+| 产品矩阵:       | [至轻云](https://zhiqingyun.isxcode.com), [至流云](https://zhiliuyun.isxcode.com), [至数云](https://zhishuyun.isxcode.com), [至数云](https://zhishuyun.isxcode.com) |
 | 关键词:        | 大模型训练, 智能中心, 模型调用, 模型编排, 人工智能, Pytorch, Pytorch, Docker                                                                                                 |
 |             |                                                                                                                                                         |
 
 ### 产品介绍
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;至慧云是一款超轻量级、企业级模型训练平台，基于Pytorch生态打造。一键部署，开箱即用。快速实现大模型离线部署、离线训练、模型调用、机器人代理、模型编排、自定义接口等多种功能，为企业提供高效便捷的大模型解决方案。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;至数云是一款超轻量级、企业级模型训练平台，基于Pytorch生态打造。一键部署，开箱即用。快速实现大模型离线部署、离线训练、模型调用、机器人代理、模型编排、自定义接口等多种功能，为企业提供高效便捷的大模型解决方案。
 
 ### 功能特点
 

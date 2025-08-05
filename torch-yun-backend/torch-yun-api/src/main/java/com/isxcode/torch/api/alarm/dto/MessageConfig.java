@@ -18,7 +18,7 @@ public class MessageConfig {
     @Schema(title = "阿里云短信模版", example = "SMS_154950909")
     private String templateCode;
 
-    @Schema(title = "阿里短信signName", example = "至慧云")
+    @Schema(title = "阿里短信signName", example = "至数云")
     private String signName;
 
     @Schema(title = "阿里短信templateParam", example = "cn-hangzhou")

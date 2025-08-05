@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class AddClusterReq {
 
-    @Schema(title = "计算引擎名称", example = "至慧云内部计算引擎")
+    @Schema(title = "计算引擎名称", example = "至数云内部计算引擎")
     @NotEmpty(message = "引擎名称不能为空")
     private String name;
 

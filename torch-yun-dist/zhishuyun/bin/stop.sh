@@ -11,10 +11,10 @@ if [ -e "zhishuyun.pid" ]; then
   if ps -p $pid >/dev/null 2>&1; then
    kill -9 ${pid}
    rm zhishuyun.pid
-   echo "【至慧云】: CLOSED"
+   echo "【至数云】: CLOSED"
    exit 0
   fi
 fi
 
-echo "【至慧云】: HAS CLOSED"
+echo "【至数云】: HAS CLOSED"
 exit 0

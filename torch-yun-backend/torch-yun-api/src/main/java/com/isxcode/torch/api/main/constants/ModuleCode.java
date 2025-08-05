@@ -46,7 +46,7 @@ public interface ModuleCode {
     String TENANT_USER = "tenant-user";
 
     /**
-     * 至慧云代理模块
+     * 至数云代理模块
      */
     String PYTORCH_YUN_AGENT = "torch-yun-agent";
 
