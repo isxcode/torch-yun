@@ -23,7 +23,7 @@ export default defineComponent({
         <div class="zqy-home__sidebar">
           <div class="zqy-home__nav">
             <img class="zqy-home__logo" src={ isCollapse.value ? logoURLSmall : logoURL} alt="logo" />
-            {/* <span class="zqy-home__title">至慧云</span> */}
+            {/* <span class="zqy-home__title">至数云</span> */}
           </div>
           { renderHomeMenu() }
         </div>

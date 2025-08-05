@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 
-@Tag(name = "至慧云代理模块")
+@Tag(name = "至数云代理模块")
 @RestController
 @RequiredArgsConstructor
 public class PytorchYunAgentController {

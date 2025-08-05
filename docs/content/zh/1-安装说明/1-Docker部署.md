@@ -2,7 +2,7 @@
 title: "Docker部署"
 ---
 
-## 使用Docker快速部署至慧云
+## 使用Docker快速部署至数云
 
 #### 镜像地址
 
@@ -15,7 +15,7 @@ registry.cn-shanghai.aliyuncs.com/isxcode/zhihuiyun:latest-amd64
 registry.cn-shanghai.aliyuncs.com/isxcode/zhihuiyun:latest-arm64
 ```
 
-#### 快速启动至慧云
+#### 快速启动至数云
 
 ```bash
 docker run \

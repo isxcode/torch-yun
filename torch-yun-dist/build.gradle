@@ -29,7 +29,7 @@ tasks.register('build_agent_plugins', Copy) {
     into 'build/zhishuyun-agent/plugins'
 }
 
-// 构建至慧云代理
+// 构建至数云代理
 tasks.register('build_agent', Tar) {
 
     mustRunAfter(":torch-yun-frontend:make")
@@ -72,7 +72,7 @@ tasks.register('build_agent', Tar) {
     }
 }
 
-// 构建至慧云
+// 构建至数云
 tasks.register('build_zhishuyun', Tar) {
 
     mustRunAfter(":torch-yun-backend:make")
