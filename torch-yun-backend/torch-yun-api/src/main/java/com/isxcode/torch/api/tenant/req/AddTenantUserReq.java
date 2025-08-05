@@ -17,6 +17,6 @@ public class AddTenantUserReq {
     @Schema(title = "备注", example = "ispong")
     private String remark;
 
-    @Schema(title = "租户id", example = "py_123")
+    @Schema(title = "租户id", example = "ty_123")
     private String tenantId;
 }

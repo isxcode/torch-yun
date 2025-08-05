@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class GetWorkReq {
 
-    @Schema(title = "作业唯一id", example = "py_123456789")
+    @Schema(title = "作业唯一id", example = "ty_123456789")
     @NotEmpty(message = "作业id不能为空")
     private String workId;
 }

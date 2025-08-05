@@ -101,7 +101,7 @@ public class WorkflowController {
     @PostMapping("/importWorkflow")
     @SuccessResponse("导入成功")
     public void importWorkflow(@RequestParam("workflowConfigFile") MultipartFile workflowConfigFile,
-        @Schema(description = "作业流唯一id", example = "py_ba1f12b5c8154f999a02a5be2373a438")
+        @Schema(description = "作业流唯一id", example = "ty_ba1f12b5c8154f999a02a5be2373a438")
         @RequestParam(required = false) String workflowId) {
 
         workflowBizService.importWorkflow(workflowConfigFile, workflowId);

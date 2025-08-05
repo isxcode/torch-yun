@@ -5,7 +5,7 @@ tasks.register('clean_resources_agent', Delete) {
 }
 
 // 把插件拷贝到resource中
-tasks.register('copy_resources_agent', Copy) {
+tasks.register('coty_resources_agent', Copy) {
 
     mustRunAfter(":torch-yun-dist:build_agent", "clean_resources_agent")
 
@@ -17,7 +17,7 @@ tasks.register('copy_resources_agent', Copy) {
 tasks.register('make', GradleBuild) {
 
     mustRunAfter(":torch-yun-dist:build_agent")
-    dependsOn("clean_resources_agent", "copy_resources_agent")
+    dependsOn("clean_resources_agent", "coty_resources_agent")
 
     // 构建后端
     tasks = [":torch-yun-backend:torch-yun-main:bootJar"]

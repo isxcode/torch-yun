@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 public class KillWorkflowReq {
 
-    @Schema(description = "作业流唯一id", example = "py_344c3d583fa344f7a2403b19c5a654dc")
+    @Schema(description = "作业流唯一id", example = "ty_344c3d583fa344f7a2403b19c5a654dc")
     private String workflowId;
 }

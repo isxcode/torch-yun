@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 public class ConfigAppReq {
 
-    @Schema(title = "应用唯一id", example = "py_123456789")
+    @Schema(title = "应用唯一id", example = "ty_123456789")
     @NotEmpty(message = "应用id不能为空")
     private String id;
 

@@ -9,13 +9,13 @@ import java.util.List;
 @Data
 public class SyncWorkConfig {
 
-    @Schema(title = "作业唯一id", example = "py_4f07ab7b1fe54dab9be884e410c53af4")
+    @Schema(title = "作业唯一id", example = "ty_4f07ab7b1fe54dab9be884e410c53af4")
     private String workId;
 
     @Schema(title = "来源数据库类型", example = "mysql")
     private String sourceDBType;
 
-    @Schema(title = "来源数据库唯一id", example = "py_4f07ab7b1fe54dab9be884e410c53af4")
+    @Schema(title = "来源数据库唯一id", example = "ty_4f07ab7b1fe54dab9be884e410c53af4")
     private String sourceDBId;
 
     @Schema(title = "来源数据库表名", example = "part_table")
@@ -30,7 +30,7 @@ public class SyncWorkConfig {
     @Schema(title = "目标数据库类型", example = "mysql")
     private String targetDBType;
 
-    @Schema(title = "目标数据库唯一id", example = "py_4f07ab7b1fe54dab9be884e410c53af4")
+    @Schema(title = "目标数据库唯一id", example = "ty_4f07ab7b1fe54dab9be884e410c53af4")
     private String targetDBId;
 
     @Schema(title = "目标数据库表名", example = "part")

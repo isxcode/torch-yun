@@ -25,11 +25,11 @@ public class AddAlarmReq {
     @NotEmpty(message = "告警事件不能为空")
     private String alarmEvent;
 
-    @Schema(title = "消息体", example = "py_123")
+    @Schema(title = "消息体", example = "ty_123")
     @NotEmpty(message = "消息体不能为空")
     private String msgId;
 
-    @Schema(title = "通知的人", example = "py_123")
+    @Schema(title = "通知的人", example = "ty_123")
     @NotEmpty(message = "通知的人不能为空")
     private List<String> receiverList;
 

@@ -16,7 +16,7 @@ CREATE TABLE TY_MODEL
     version_number          int           not null,
     deleted                 int default 0 not null,
     tenant_id               varchar(200)  not null,
-    CONSTRAINT pk_py_model PRIMARY KEY (id)
+    CONSTRAINT pk_ty_model PRIMARY KEY (id)
 );
 
 -- 为列添加注释
@@ -57,7 +57,7 @@ CREATE TABLE TY_AI
     version_number          int           not null,
     deleted                 int default 0 not null,
     tenant_id               varchar(200)  not null,
-    CONSTRAINT pk_py_ai PRIMARY KEY (id)
+    CONSTRAINT pk_ty_ai PRIMARY KEY (id)
 );
 
 -- 为列添加注释
@@ -101,7 +101,7 @@ CREATE TABLE TY_APP
     version_number          int           not null,
     deleted                 int default 0 not null,
     tenant_id               varchar(200)  not null,
-    CONSTRAINT pk_py_app PRIMARY KEY (id)
+    CONSTRAINT pk_ty_app PRIMARY KEY (id)
 );
 
 -- 为列添加注释
@@ -138,7 +138,7 @@ CREATE TABLE TY_CHAT
     version_number          int           not null,
     deleted                 int default 0 not null,
     tenant_id               varchar(200)  not null,
-    CONSTRAINT pk_py_chat PRIMARY KEY (id)
+    CONSTRAINT pk_ty_chat PRIMARY KEY (id)
 );
 
 -- 为列添加注释
@@ -171,7 +171,7 @@ CREATE TABLE TY_CHAT_SESSION
     deleted                 int default 0 not null,
     version_number          int           not null,
     tenant_id               varchar(200)  not null,
-    CONSTRAINT pk_py_chat_session PRIMARY KEY (id)
+    CONSTRAINT pk_ty_chat_session PRIMARY KEY (id)
 );
 
 -- 为列添加注释

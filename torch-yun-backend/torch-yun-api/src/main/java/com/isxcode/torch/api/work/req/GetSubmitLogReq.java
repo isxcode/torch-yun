@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class GetSubmitLogReq {
 
-    @Schema(description = "实例唯一id", example = "py_12baf74d710c43a78858e547bf41a586")
+    @Schema(description = "实例唯一id", example = "ty_12baf74d710c43a78858e547bf41a586")
     @NotEmpty(message = "实例id不能为空")
     private String instanceId;
 }

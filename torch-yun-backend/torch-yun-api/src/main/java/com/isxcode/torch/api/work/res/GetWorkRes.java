@@ -12,11 +12,11 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class GetWorkRes {
 
-    @Schema(title = "作业唯一id", example = "py_4f07ab7b1fe54dab9be884e410c53af4")
+    @Schema(title = "作业唯一id", example = "ty_4f07ab7b1fe54dab9be884e410c53af4")
     @NotEmpty(message = "workId不能为空")
     private String workId;
 
-    @Schema(title = "数据源唯一id", example = "py_fd34e4a53db640f5943a4352c4d549b9")
+    @Schema(title = "数据源唯一id", example = "ty_fd34e4a53db640f5943a4352c4d549b9")
     private String datasourceId;
 
     @Schema(title = "运行脚本", example = "show databases;")

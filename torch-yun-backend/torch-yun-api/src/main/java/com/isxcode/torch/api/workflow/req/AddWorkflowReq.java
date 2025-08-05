@@ -14,6 +14,6 @@ public class AddWorkflowReq {
     @Schema(title = "备注", example = "所属安全部门，其他人勿动")
     private String remark;
 
-    @Schema(title = "默认计算引擎", example = "py_1234")
+    @Schema(title = "默认计算引擎", example = "ty_1234")
     private String defaultClusterId;
 }

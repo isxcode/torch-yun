@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 @Data
 public class UpdateMessageReq {
 
-    @Schema(title = "消息体id", example = "py_123")
+    @Schema(title = "消息体id", example = "ty_123")
     @NotEmpty(message = "消息体id不能为空")
     private String id;
 

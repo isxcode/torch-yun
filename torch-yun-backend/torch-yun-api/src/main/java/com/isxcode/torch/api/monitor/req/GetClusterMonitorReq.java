@@ -9,7 +9,7 @@ import javax.validation.constraints.Pattern;
 @Data
 public class GetClusterMonitorReq {
 
-    @Schema(title = "集群id", example = "py_123")
+    @Schema(title = "集群id", example = "ty_123")
     @NotEmpty(message = "clusterId不能为空")
     private String clusterId;
 

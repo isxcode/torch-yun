@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 public class UpdateApiReq {
 
-    @Schema(title = "API id", example = "py_123")
+    @Schema(title = "API id", example = "ty_123")
     @NotEmpty(message = "id不能为空")
     private String id;
 
@@ -26,7 +26,7 @@ public class UpdateApiReq {
     @NotEmpty(message = "path不能为空")
     private String path;
 
-    @Schema(title = "数据源id", example = "py_a05cfc7bda0b41c196ada563052f68fe")
+    @Schema(title = "数据源id", example = "ty_a05cfc7bda0b41c196ada563052f68fe")
     @NotEmpty(message = "datasourceId不能为空")
     private String datasourceId;
 

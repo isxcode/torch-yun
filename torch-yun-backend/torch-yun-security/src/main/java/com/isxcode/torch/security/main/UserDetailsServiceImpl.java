@@ -32,7 +32,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
 
-        if ("py_anonymous".equals(userId)) {
+        if ("ty_anonymous".equals(userId)) {
 
             // 返回用户信息
             return User.withUsername(userId).password("")
