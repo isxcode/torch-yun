@@ -159,7 +159,7 @@ tasks.register('docker', Exec) {
 tasks.register('upload-ali-oss', Exec) {
 
     commandLine 'sh', '-c', '''
-      ossutil cp torch-yun-dist/build/distributions/zhishuyun.tar.gz oss://isxcode/zhishuyun/
+      ossutil cp torch-yun-dist/build/distributions/zhishuyun.tar.gz oss://isxcode/zhishuyun/ -f
      '''
 }
 
