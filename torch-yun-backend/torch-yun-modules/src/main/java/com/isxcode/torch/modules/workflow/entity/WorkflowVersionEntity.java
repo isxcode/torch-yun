@@ -23,9 +23,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@SQLDelete(sql = "UPDATE PY_WORKFLOW_VERSION SET deleted = 1 WHERE id = ? and version_number = ?")
+@SQLDelete(sql = "UPDATE TY_WORKFLOW_VERSION SET deleted = 1 WHERE id = ? and version_number = ?")
 @Where(clause = "deleted = 0 ${TENANT_FILTER} ")
-@Table(name = "PY_WORKFLOW_VERSION")
+@Table(name = "TY_WORKFLOW_VERSION")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 @EntityListeners(AuditingEntityListener.class)
 public class WorkflowVersionEntity {

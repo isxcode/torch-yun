@@ -132,7 +132,7 @@ isx-app:
     - /druid/** # http://localhost:8080/druid/index.html
     - /tools/setLogLevel # http://localhost:8080/tools/setLogLevel?level=debug
     - /tools/getCacheList # http://localhost:8080/tools/getCacheList
-    - /tools/getCache # http://localhost:8080/tools/getCache?name=PY_USERS
+    - /tools/getCache # http://localhost:8080/tools/getCache?name=TY_USERS
   anonymous-url:
     - / # 让页面可以访问前端
     - /static/** # 放行前端资源文件

@@ -150,9 +150,9 @@ public class OracleService extends Datasource {
             throw new IsxAppException("需要首单词为select的查询语句");
         }
         String firstCol = split[0].toLowerCase().trim().substring(7);
-        String firstKey = "ROW_NUMBER() OVER (ORDER BY " + firstCol + " ) AS PY_ROW_NUM";
-        return "SELECT * FROM ( SELECT PY_TMP.* ," + firstKey + " FROM (" + sql
-            + ") PY_TMP ) WHERE PY_ROW_NUM BETWEEN '${page}' AND '${pageSize}'";
+        String firstKey = "ROW_NUMBER() OVER (ORDER BY " + firstCol + " ) AS TY_ROW_NUM";
+        return "SELECT * FROM ( SELECT TY_TMP.* ," + firstKey + " FROM (" + sql
+            + ") TY_TMP ) WHERE TY_ROW_NUM BETWEEN '${page}' AND '${pageSize}'";
     }
 
     @Override

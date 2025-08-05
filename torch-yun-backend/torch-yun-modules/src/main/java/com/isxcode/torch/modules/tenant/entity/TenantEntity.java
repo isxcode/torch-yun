@@ -19,10 +19,10 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-@SQLDelete(sql = "UPDATE PY_TENANT SET deleted = 1 WHERE id = ? and version_number = ?")
+@SQLDelete(sql = "UPDATE TY_TENANT SET deleted = 1 WHERE id = ? and version_number = ?")
 @Data
 @Entity
-@Table(name = "PY_TENANT")
+@Table(name = "TY_TENANT")
 @Where(clause = "deleted = 0")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 @EntityListeners(AuditingEntityListener.class)

@@ -22,13 +22,13 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-@SQLDelete(sql = "UPDATE PY_TENANT_USERS SET deleted = 1 WHERE id = ? and version_number = ?")
+@SQLDelete(sql = "UPDATE TY_TENANT_USERS SET deleted = 1 WHERE id = ? and version_number = ?")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "PY_TENANT_USERS")
+@Table(name = "TY_TENANT_USERS")
 @Where(clause = "deleted = 0")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 @EntityListeners(AuditingEntityListener.class)

@@ -30,9 +30,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@SQLDelete(sql = "UPDATE PY_CLUSTER_NODE SET deleted = 1 WHERE id = ?")
+@SQLDelete(sql = "UPDATE TY_CLUSTER_NODE SET deleted = 1 WHERE id = ?")
 @Where(clause = "deleted = 0 ${TENANT_FILTER} ")
-@Table(name = "PY_CLUSTER_NODE")
+@Table(name = "TY_CLUSTER_NODE")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 @EntityListeners(AuditingEntityListener.class)
 public class ClusterNodeEntity {

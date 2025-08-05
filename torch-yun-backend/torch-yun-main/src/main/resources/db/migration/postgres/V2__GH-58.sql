@@ -1,5 +1,5 @@
 -- 模型仓库表
-CREATE TABLE PY_MODEL
+CREATE TABLE TY_MODEL
 (
     id                      varchar(200)  not null,
     name                    varchar(200)  not null,
@@ -20,24 +20,24 @@ CREATE TABLE PY_MODEL
 );
 
 -- 为列添加注释
-COMMENT ON COLUMN PY_MODEL.id IS '模型唯一id';
-COMMENT ON COLUMN PY_MODEL.name IS '模型名称';
-COMMENT ON COLUMN PY_MODEL.code IS '模型编码';
-COMMENT ON COLUMN PY_MODEL.model_type IS '模型类型';
-COMMENT ON COLUMN PY_MODEL.model_label IS '模型标签';
-COMMENT ON COLUMN PY_MODEL.model_file IS '模型文件';
-COMMENT ON COLUMN PY_MODEL.status IS '模型状态';
-COMMENT ON COLUMN PY_MODEL.remark IS '模型描述';
-COMMENT ON COLUMN PY_MODEL.create_by IS '创建人';
-COMMENT ON COLUMN PY_MODEL.create_date_time IS '创建时间';
-COMMENT ON COLUMN PY_MODEL.last_modified_by IS '更新人';
-COMMENT ON COLUMN PY_MODEL.last_modified_date_time IS '更新时间';
-COMMENT ON COLUMN PY_MODEL.version_number IS '版本号';
-COMMENT ON COLUMN PY_MODEL.deleted IS '逻辑删除';
-COMMENT ON COLUMN PY_MODEL.tenant_id IS '租户id';
+COMMENT ON COLUMN TY_MODEL.id IS '模型唯一id';
+COMMENT ON COLUMN TY_MODEL.name IS '模型名称';
+COMMENT ON COLUMN TY_MODEL.code IS '模型编码';
+COMMENT ON COLUMN TY_MODEL.model_type IS '模型类型';
+COMMENT ON COLUMN TY_MODEL.model_label IS '模型标签';
+COMMENT ON COLUMN TY_MODEL.model_file IS '模型文件';
+COMMENT ON COLUMN TY_MODEL.status IS '模型状态';
+COMMENT ON COLUMN TY_MODEL.remark IS '模型描述';
+COMMENT ON COLUMN TY_MODEL.create_by IS '创建人';
+COMMENT ON COLUMN TY_MODEL.create_date_time IS '创建时间';
+COMMENT ON COLUMN TY_MODEL.last_modified_by IS '更新人';
+COMMENT ON COLUMN TY_MODEL.last_modified_date_time IS '更新时间';
+COMMENT ON COLUMN TY_MODEL.version_number IS '版本号';
+COMMENT ON COLUMN TY_MODEL.deleted IS '逻辑删除';
+COMMENT ON COLUMN TY_MODEL.tenant_id IS '租户id';
 
 -- 智能体表
-CREATE TABLE PY_AI
+CREATE TABLE TY_AI
 (
     id                      varchar(200)  not null,
     name                    varchar(200)  not null,
@@ -61,27 +61,27 @@ CREATE TABLE PY_AI
 );
 
 -- 为列添加注释
-COMMENT ON COLUMN PY_AI.id IS 'ai唯一id';
-COMMENT ON COLUMN PY_AI.name IS 'ai名称';
-COMMENT ON COLUMN PY_AI.remark IS 'ai描述';
-COMMENT ON COLUMN PY_AI.status IS 'ai状态';
-COMMENT ON COLUMN PY_AI.check_date_time IS 'ai检测时间';
-COMMENT ON COLUMN PY_AI.model_id IS '模型id';
-COMMENT ON COLUMN PY_AI.cluster_config IS '集群配置';
-COMMENT ON COLUMN PY_AI.ai_log IS 'ai部署日志';
-COMMENT ON COLUMN PY_AI.ai_port IS 'ai端口';
-COMMENT ON COLUMN PY_AI.ai_pid IS 'ai进程';
-COMMENT ON COLUMN PY_AI.auth_config IS 'ai认证配置';
-COMMENT ON COLUMN PY_AI.create_by IS '创建人';
-COMMENT ON COLUMN PY_AI.create_date_time IS '创建时间';
-COMMENT ON COLUMN PY_AI.last_modified_by IS '更新人';
-COMMENT ON COLUMN PY_AI.last_modified_date_time IS '更新时间';
-COMMENT ON COLUMN PY_AI.version_number IS '版本号';
-COMMENT ON COLUMN PY_AI.deleted IS '逻辑删除';
-COMMENT ON COLUMN PY_AI.tenant_id IS '租户id';
+COMMENT ON COLUMN TY_AI.id IS 'ai唯一id';
+COMMENT ON COLUMN TY_AI.name IS 'ai名称';
+COMMENT ON COLUMN TY_AI.remark IS 'ai描述';
+COMMENT ON COLUMN TY_AI.status IS 'ai状态';
+COMMENT ON COLUMN TY_AI.check_date_time IS 'ai检测时间';
+COMMENT ON COLUMN TY_AI.model_id IS '模型id';
+COMMENT ON COLUMN TY_AI.cluster_config IS '集群配置';
+COMMENT ON COLUMN TY_AI.ai_log IS 'ai部署日志';
+COMMENT ON COLUMN TY_AI.ai_port IS 'ai端口';
+COMMENT ON COLUMN TY_AI.ai_pid IS 'ai进程';
+COMMENT ON COLUMN TY_AI.auth_config IS 'ai认证配置';
+COMMENT ON COLUMN TY_AI.create_by IS '创建人';
+COMMENT ON COLUMN TY_AI.create_date_time IS '创建时间';
+COMMENT ON COLUMN TY_AI.last_modified_by IS '更新人';
+COMMENT ON COLUMN TY_AI.last_modified_date_time IS '更新时间';
+COMMENT ON COLUMN TY_AI.version_number IS '版本号';
+COMMENT ON COLUMN TY_AI.deleted IS '逻辑删除';
+COMMENT ON COLUMN TY_AI.tenant_id IS '租户id';
 
 -- 智能应用表
-CREATE TABLE PY_APP
+CREATE TABLE TY_APP
 (
     id                      varchar(200)  not null,
     name                    varchar(200)  not null,
@@ -105,27 +105,27 @@ CREATE TABLE PY_APP
 );
 
 -- 为列添加注释
-COMMENT ON COLUMN PY_APP.id IS '应用唯一id';
-COMMENT ON COLUMN PY_APP.name IS '应用名称';
-COMMENT ON COLUMN PY_APP.logo_id IS 'logo_id';
-COMMENT ON COLUMN PY_APP.logo_id IS 'ai_id';
-COMMENT ON COLUMN PY_APP.remark IS '应用描述';
-COMMENT ON COLUMN PY_APP.status IS '应用状态';
-COMMENT ON COLUMN PY_APP.check_date_time IS '智能体检测时间';
-COMMENT ON COLUMN PY_APP.prompt IS '提示词';
-COMMENT ON COLUMN PY_APP.base_config IS '基础参数配置';
-COMMENT ON COLUMN PY_APP.resources IS '知识库配置';
-COMMENT ON COLUMN PY_APP.default_app IS '是否为默认app';
-COMMENT ON COLUMN PY_APP.create_by IS '创建人';
-COMMENT ON COLUMN PY_APP.create_date_time IS '创建时间';
-COMMENT ON COLUMN PY_APP.last_modified_by IS '更新人';
-COMMENT ON COLUMN PY_APP.last_modified_date_time IS '更新时间';
-COMMENT ON COLUMN PY_APP.version_number IS '版本号';
-COMMENT ON COLUMN PY_APP.deleted IS '逻辑删除';
-COMMENT ON COLUMN PY_APP.tenant_id IS '租户id';
+COMMENT ON COLUMN TY_APP.id IS '应用唯一id';
+COMMENT ON COLUMN TY_APP.name IS '应用名称';
+COMMENT ON COLUMN TY_APP.logo_id IS 'logo_id';
+COMMENT ON COLUMN TY_APP.logo_id IS 'ai_id';
+COMMENT ON COLUMN TY_APP.remark IS '应用描述';
+COMMENT ON COLUMN TY_APP.status IS '应用状态';
+COMMENT ON COLUMN TY_APP.check_date_time IS '智能体检测时间';
+COMMENT ON COLUMN TY_APP.prompt IS '提示词';
+COMMENT ON COLUMN TY_APP.base_config IS '基础参数配置';
+COMMENT ON COLUMN TY_APP.resources IS '知识库配置';
+COMMENT ON COLUMN TY_APP.default_app IS '是否为默认app';
+COMMENT ON COLUMN TY_APP.create_by IS '创建人';
+COMMENT ON COLUMN TY_APP.create_date_time IS '创建时间';
+COMMENT ON COLUMN TY_APP.last_modified_by IS '更新人';
+COMMENT ON COLUMN TY_APP.last_modified_date_time IS '更新时间';
+COMMENT ON COLUMN TY_APP.version_number IS '版本号';
+COMMENT ON COLUMN TY_APP.deleted IS '逻辑删除';
+COMMENT ON COLUMN TY_APP.tenant_id IS '租户id';
 
 -- 聊天表
-CREATE TABLE PY_CHAT
+CREATE TABLE TY_CHAT
 (
     id                      varchar(200)  not null,
     app_id                  varchar(500),
@@ -142,20 +142,20 @@ CREATE TABLE PY_CHAT
 );
 
 -- 为列添加注释
-COMMENT ON COLUMN PY_CHAT.id IS '对话唯一id';
-COMMENT ON COLUMN PY_CHAT.app_id IS '应用id';
-COMMENT ON COLUMN PY_CHAT.submitter IS '提交人';
-COMMENT ON COLUMN PY_CHAT.chat_type IS '会话类型，测试聊天还是正式聊天';
-COMMENT ON COLUMN PY_CHAT.create_by IS '创建人';
-COMMENT ON COLUMN PY_CHAT.create_date_time IS '创建时间';
-COMMENT ON COLUMN PY_CHAT.last_modified_by IS '更新人';
-COMMENT ON COLUMN PY_CHAT.last_modified_date_time IS '更新时间';
-COMMENT ON COLUMN PY_CHAT.version_number IS '版本号';
-COMMENT ON COLUMN PY_CHAT.deleted IS '逻辑删除';
-COMMENT ON COLUMN PY_CHAT.tenant_id IS '租户id';
+COMMENT ON COLUMN TY_CHAT.id IS '对话唯一id';
+COMMENT ON COLUMN TY_CHAT.app_id IS '应用id';
+COMMENT ON COLUMN TY_CHAT.submitter IS '提交人';
+COMMENT ON COLUMN TY_CHAT.chat_type IS '会话类型，测试聊天还是正式聊天';
+COMMENT ON COLUMN TY_CHAT.create_by IS '创建人';
+COMMENT ON COLUMN TY_CHAT.create_date_time IS '创建时间';
+COMMENT ON COLUMN TY_CHAT.last_modified_by IS '更新人';
+COMMENT ON COLUMN TY_CHAT.last_modified_date_time IS '更新时间';
+COMMENT ON COLUMN TY_CHAT.version_number IS '版本号';
+COMMENT ON COLUMN TY_CHAT.deleted IS '逻辑删除';
+COMMENT ON COLUMN TY_CHAT.tenant_id IS '租户id';
 
 -- 聊天对话表
-CREATE TABLE PY_CHAT_SESSION
+CREATE TABLE TY_CHAT_SESSION
 (
     id                      varchar(200)  not null,
     chat_id                 varchar(200)  not null,
@@ -175,23 +175,23 @@ CREATE TABLE PY_CHAT_SESSION
 );
 
 -- 为列添加注释
-COMMENT ON COLUMN PY_CHAT_SESSION.id IS '回话唯一id';
-COMMENT ON COLUMN PY_CHAT_SESSION.chat_id IS '对话唯一id';
-COMMENT ON COLUMN PY_CHAT_SESSION.app_id IS '应用唯一id';
-COMMENT ON COLUMN PY_CHAT_SESSION.session_index IS '会话顺序';
-COMMENT ON COLUMN PY_CHAT_SESSION.status IS '会话状态';
-COMMENT ON COLUMN PY_CHAT_SESSION.session_type IS '会话类型';
-COMMENT ON COLUMN PY_CHAT_SESSION.session_content IS '会话内容';
-COMMENT ON COLUMN PY_CHAT_SESSION.create_by IS '创建人';
-COMMENT ON COLUMN PY_CHAT_SESSION.create_date_time IS '创建时间';
-COMMENT ON COLUMN PY_CHAT_SESSION.last_modified_by IS '更新人';
-COMMENT ON COLUMN PY_CHAT_SESSION.last_modified_date_time IS '更新时间';
-COMMENT ON COLUMN PY_CHAT_SESSION.version_number IS '版本号';
-COMMENT ON COLUMN PY_CHAT_SESSION.deleted IS '逻辑删除';
-COMMENT ON COLUMN PY_CHAT_SESSION.tenant_id IS '租户id';
+COMMENT ON COLUMN TY_CHAT_SESSION.id IS '回话唯一id';
+COMMENT ON COLUMN TY_CHAT_SESSION.chat_id IS '对话唯一id';
+COMMENT ON COLUMN TY_CHAT_SESSION.app_id IS '应用唯一id';
+COMMENT ON COLUMN TY_CHAT_SESSION.session_index IS '会话顺序';
+COMMENT ON COLUMN TY_CHAT_SESSION.status IS '会话状态';
+COMMENT ON COLUMN TY_CHAT_SESSION.session_type IS '会话类型';
+COMMENT ON COLUMN TY_CHAT_SESSION.session_content IS '会话内容';
+COMMENT ON COLUMN TY_CHAT_SESSION.create_by IS '创建人';
+COMMENT ON COLUMN TY_CHAT_SESSION.create_date_time IS '创建时间';
+COMMENT ON COLUMN TY_CHAT_SESSION.last_modified_by IS '更新人';
+COMMENT ON COLUMN TY_CHAT_SESSION.last_modified_date_time IS '更新时间';
+COMMENT ON COLUMN TY_CHAT_SESSION.version_number IS '版本号';
+COMMENT ON COLUMN TY_CHAT_SESSION.deleted IS '逻辑删除';
+COMMENT ON COLUMN TY_CHAT_SESSION.tenant_id IS '租户id';
 
 -- 插入默认支持的数据
-INSERT INTO PY_MODEL
+INSERT INTO TY_MODEL
 (ID, NAME, CODE, MODEL_TYPE, MODEL_LABEL, STATUS, REMARK, CREATE_BY, CREATE_DATE_TIME, LAST_MODIFIED_BY,
  LAST_MODIFIED_DATE_TIME, DELETED, VERSION_NUMBER, TENANT_ID)
 VALUES ('qwen-plus', '通义千问-Plus', 'Qwen-Plus', 'API', '671b', 'ENABLE', '系统默认', 'zhishuyun',

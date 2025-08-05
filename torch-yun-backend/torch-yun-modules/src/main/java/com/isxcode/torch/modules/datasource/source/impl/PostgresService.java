@@ -136,7 +136,7 @@ public class PostgresService extends Datasource {
 
     @Override
     public String getPageSql(String sql) throws IsxAppException {
-        return "SELECT * FROM (" + sql + ") AS PY_TMP LIMIT '${pageSize}' OFFSET '${page}' ";
+        return "SELECT * FROM (" + sql + ") AS TY_TMP LIMIT '${pageSize}' OFFSET '${page}' ";
     }
 
     @Override

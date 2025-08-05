@@ -17,9 +17,9 @@ import static com.isxcode.torch.common.config.CommonConfig.TENANT_ID;
 
 @Data
 @Entity
-@SQLDelete(sql = "UPDATE PY_ALARM_INSTANCE SET deleted = 1 WHERE id = ?")
+@SQLDelete(sql = "UPDATE TY_ALARM_INSTANCE SET deleted = 1 WHERE id = ?")
 @Where(clause = "deleted = 0 ${TENANT_FILTER} ")
-@Table(name = "PY_ALARM_INSTANCE")
+@Table(name = "TY_ALARM_INSTANCE")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 @EntityListeners(AuditingEntityListener.class)
 @Builder(toBuilder = true)
