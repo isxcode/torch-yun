@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping(value = "/")
 @SpringBootApplication
-public class PytorchYunApplication {
+public class TorchYunApplication {
 
     public static void main(String[] args) {
 
-        SpringApplication.run(PytorchYunApplication.class, args);
+        SpringApplication.run(TorchYunApplication.class, args);
     }
 
     @RequestMapping(value = {"/*", "/home/**"})
