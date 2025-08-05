@@ -1,10 +1,21 @@
 ${AnsiColor.BLUE}
-.___________.  ______   .______        ______  __    __       ____    ____  __    __  .__   __.
-|           | /  __  \  |   _  \      /      ||  |  |  |      \   \  /   / |  |  |  | |  \ |  |
-`---|  |----`|  |  |  | |  |_)  |    |  ,----'|  |__|  |  _____\   \/   /  |  |  |  | |   \|  |
-    |  |     |  |  |  | |      /     |  |     |   __   | |______\_    _/   |  |  |  | |  . `  |
-    |  |     |  `--'  | |  |\  \----.|  `----.|  |  |  |          |  |     |  `--'  | |  |\   |
-    |__|      \______/  | _| `._____| \______||__|  |__|          |__|      \______/  |__| \__|
+
+TTTTTTTTTTTTTTTTTTTTTTT                                                     hhhhhhh                              YYYYYYY       YYYYYYY
+T:::::::::::::::::::::T                                                     h:::::h                              Y:::::Y       Y:::::Y
+T:::::::::::::::::::::T                                                     h:::::h                              Y:::::Y       Y:::::Y
+T:::::TT:::::::TT:::::T                                                     h:::::h                              Y::::::Y     Y::::::Y
+TTTTTT  T:::::T  TTTTTTooooooooooo   rrrrr   rrrrrrrrr       cccccccccccccccch::::h hhhhh                        YYY:::::Y   Y:::::YYYuuuuuu    uuuuuunnnn  nnnnnnnn
+        T:::::T      oo:::::::::::oo r::::rrr:::::::::r    cc:::::::::::::::ch::::hh:::::hhh                        Y:::::Y Y:::::Y   u::::u    u::::un:::nn::::::::nn
+        T:::::T     o:::::::::::::::or:::::::::::::::::r  c:::::::::::::::::ch::::::::::::::hh                       Y:::::Y:::::Y    u::::u    u::::un::::::::::::::nn
+        T:::::T     o:::::ooooo:::::orr::::::rrrrr::::::rc:::::::cccccc:::::ch:::::::hhh::::::h  ---------------      Y:::::::::Y     u::::u    u::::unn:::::::::::::::n
+        T:::::T     o::::o     o::::o r:::::r     r:::::rc::::::c     ccccccch::::::h   h::::::h -:::::::::::::-       Y:::::::Y      u::::u    u::::u  n:::::nnnn:::::n
+        T:::::T     o::::o     o::::o r:::::r     rrrrrrrc:::::c             h:::::h     h:::::h ---------------        Y:::::Y       u::::u    u::::u  n::::n    n::::n
+        T:::::T     o::::o     o::::o r:::::r            c:::::c             h:::::h     h:::::h                        Y:::::Y       u::::u    u::::u  n::::n    n::::n
+        T:::::T     o::::o     o::::o r:::::r            c::::::c     ccccccch:::::h     h:::::h                        Y:::::Y       u:::::uuuu:::::u  n::::n    n::::n
+      TT:::::::TT   o:::::ooooo:::::o r:::::r            c:::::::cccccc:::::ch:::::h     h:::::h                        Y:::::Y       u:::::::::::::::uun::::n    n::::n
+      T:::::::::T   o:::::::::::::::o r:::::r             c:::::::::::::::::ch:::::h     h:::::h                     YYYY:::::YYYY     u:::::::::::::::un::::n    n::::n
+      T:::::::::T    oo:::::::::::oo  r:::::r              cc:::::::::::::::ch:::::h     h:::::h                     Y:::::::::::Y      uu::::::::uu:::un::::n    n::::n
+      TTTTTTTTTTT      ooooooooooo    rrrrrrr                cccccccccccccccchhhhhhh     hhhhhhh                     YYYYYYYYYYYYY        uuuuuuuu  uuuunnnnnn    nnnnnn
 
 ${AnsiColor.CYAN}
 项目: ${application.title}
