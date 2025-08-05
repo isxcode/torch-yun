@@ -1251,7 +1251,7 @@ CREATE TABLE TY_MESSAGE
   version_number          int          NOT NULL,
   deleted                 int          NOT NULL DEFAULT 0,
   tenant_id               varchar(200) NOT NULL,
-  CONSTRAINT pk_py_message PRIMARY KEY (id)
+  CONSTRAINT pk_ty_message PRIMARY KEY (id)
 );
 
 -- 为列添加注释
@@ -1289,7 +1289,7 @@ CREATE TABLE TY_ALARM
   version_number          int          NOT NULL,
   deleted                 int          NOT NULL DEFAULT 0,
   tenant_id               varchar(200) NOT NULL,
-  CONSTRAINT pk_py_alarm PRIMARY KEY (id)
+  CONSTRAINT pk_ty_alarm PRIMARY KEY (id)
 );
 
 -- 为列添加注释
@@ -1327,7 +1327,7 @@ CREATE TABLE TY_ALARM_INSTANCE
   create_date_time timestamp    NOT NULL,
   deleted          int          NOT NULL DEFAULT 0,
   tenant_id        varchar(200) NOT NULL,
-  CONSTRAINT pk_py_alarm_instance PRIMARY KEY (id)
+  CONSTRAINT pk_ty_alarm_instance PRIMARY KEY (id)
 );
 
 -- 为列添加注释
@@ -1381,11 +1381,11 @@ ALTER TABLE TY_WORK_VERSION
     ADD COLUMN EXCEL_SYNC_CONFIG TEXT;
 
 -- 修复作业调度信息无法配置分钟级别配置
-alter table py_work_config
+alter table ty_work_config
     alter column cron_config type varchar(2000) using cron_config::varchar(2000);
 
 -- 修复作业调度信息无法配置分钟级别配置
-alter table py_workflow_version
+alter table ty_workflow_version
     alter column cron_config type varchar(2000) using cron_config::varchar(2000);
         
 -- 添加外部调用url

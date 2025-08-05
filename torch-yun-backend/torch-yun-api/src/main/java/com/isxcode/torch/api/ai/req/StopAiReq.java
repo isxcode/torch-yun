@@ -8,7 +8,7 @@ import javax.validation.constraints.NotEmpty;
 @Data
 public class StopAiReq {
 
-    @Schema(title = "ai的id", example = "py_123456789")
+    @Schema(title = "ai的id", example = "ty_123456789")
     @NotEmpty(message = "智能体id不能为空")
     private String id;
 }

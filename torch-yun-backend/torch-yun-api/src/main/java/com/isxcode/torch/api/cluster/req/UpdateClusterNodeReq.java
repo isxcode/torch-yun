@@ -7,11 +7,11 @@ import lombok.Data;
 @Data
 public class UpdateClusterNodeReq {
 
-    @Schema(title = "引擎节点唯一id", example = "py_fd34e4a53db640f5943a4352c4d549b9")
+    @Schema(title = "引擎节点唯一id", example = "ty_fd34e4a53db640f5943a4352c4d549b9")
     @NotEmpty(message = "id不能为空")
     private String id;
 
-    @Schema(title = "计算引擎唯一id", example = "py_fd34e4a53db640f5943a4352c4d549b9")
+    @Schema(title = "计算引擎唯一id", example = "ty_fd34e4a53db640f5943a4352c4d549b9")
     @NotEmpty(message = "clusterId不能为空")
     private String clusterId;
 

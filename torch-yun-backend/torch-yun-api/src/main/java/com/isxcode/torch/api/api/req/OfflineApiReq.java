@@ -8,7 +8,7 @@ import javax.validation.constraints.NotEmpty;
 @Data
 public class OfflineApiReq {
 
-    @Schema(title = "API id", example = "py_123")
+    @Schema(title = "API id", example = "ty_123")
     @NotEmpty(message = "id不能为空")
     private String id;
 }

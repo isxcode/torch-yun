@@ -294,7 +294,7 @@ public class UserBizService {
 
     public GetAnonymousTokenRes getAnonymousToken(GetAnonymousTokenReq getAnonymousTokenReq) {
 
-        String jwtToken = JwtUtils.encrypt(isxAppProperties.getAesSlat(), "py_anonymous", isxAppProperties.getJwtKey(),
+        String jwtToken = JwtUtils.encrypt(isxAppProperties.getAesSlat(), "ty_anonymous", isxAppProperties.getJwtKey(),
             getAnonymousTokenReq.getValidDay() * 24 * 60);
 
         return GetAnonymousTokenRes.builder().token(jwtToken).build();

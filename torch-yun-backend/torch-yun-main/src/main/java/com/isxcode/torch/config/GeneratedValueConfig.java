@@ -15,6 +15,6 @@ public class GeneratedValueConfig implements IdentifierGenerator {
     public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
 
         Snowflake snowflake = IdUtil.getSnowflake();
-        return "py_" + snowflake.nextIdStr();
+        return "ty_" + snowflake.nextIdStr();
     }
 }

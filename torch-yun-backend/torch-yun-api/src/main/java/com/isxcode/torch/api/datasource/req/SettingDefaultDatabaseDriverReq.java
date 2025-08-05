@@ -8,7 +8,7 @@ import javax.validation.constraints.NotEmpty;
 @Data
 public class SettingDefaultDatabaseDriverReq {
 
-    @Schema(description = "数据源驱动唯一id", example = "py_344c3d583fa344f7a2403b19c5a654dc")
+    @Schema(description = "数据源驱动唯一id", example = "ty_344c3d583fa344f7a2403b19c5a654dc")
     @NotEmpty(message = "数据源驱动id不能为空")
     private String driverId;
 

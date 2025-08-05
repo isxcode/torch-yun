@@ -20,7 +20,7 @@ public class AddTenantReq {
     @Schema(title = "最大成员数", example = "10")
     private Integer maxMemberNum;
 
-    @Schema(title = "管理员用户id", example = "py_1234567890")
+    @Schema(title = "管理员用户id", example = "ty_1234567890")
     @NotEmpty(message = "租户管理员不能为空")
     private String adminUserId;
 }

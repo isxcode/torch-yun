@@ -8,7 +8,7 @@ import javax.validation.constraints.NotEmpty;
 @Data
 public class SetDefaultClusterReq {
 
-    @Schema(title = "计算引擎唯一id", example = "py_b0288cadb2ab4325ae519ff329a95cda")
+    @Schema(title = "计算引擎唯一id", example = "ty_b0288cadb2ab4325ae519ff329a95cda")
     @NotEmpty(message = "集群id不能为空")
     private String clusterId;
 }

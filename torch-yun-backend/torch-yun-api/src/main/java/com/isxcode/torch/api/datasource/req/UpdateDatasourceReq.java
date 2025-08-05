@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 public class UpdateDatasourceReq {
 
-    @Schema(title = "数据源唯一id", example = "py_123456789")
+    @Schema(title = "数据源唯一id", example = "ty_123456789")
     @NotEmpty(message = "数据源id不能为空")
     private String id;
 
@@ -38,7 +38,7 @@ public class UpdateDatasourceReq {
     @Schema(title = "hive特殊配置hive.metastore.uris", example = "默认值：thrift://localhost:9083，非必填")
     private String metastoreUris;
 
-    @Schema(title = "数据源驱动", example = "py_123")
+    @Schema(title = "数据源驱动", example = "ty_123")
     private String driverId;
 
     @Schema(title = "kafka数据源配置")

@@ -8,7 +8,7 @@ import javax.validation.constraints.NotEmpty;
 @Data
 public class EnableAppReq {
 
-    @Schema(title = "应用唯一id", example = "py_123456789")
+    @Schema(title = "应用唯一id", example = "ty_123456789")
     @NotEmpty(message = "应用id不能为空")
     private String id;
 }

@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 @Data
 public class GetExcelColumnsReq {
 
-    @Schema(title = "文件一id", example = "py_123456789")
+    @Schema(title = "文件一id", example = "ty_123456789")
     @NotEmpty(message = "文件id不能为空")
     private String fileId;
 

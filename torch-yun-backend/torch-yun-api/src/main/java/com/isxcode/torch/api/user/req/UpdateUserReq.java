@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class UpdateUserReq {
 
-    @Schema(title = "用户id", example = "py_f8402cd43898421687fcc7c8b98a359c")
+    @Schema(title = "用户id", example = "ty_f8402cd43898421687fcc7c8b98a359c")
     @NotEmpty(message = "用户id不能为空")
     private String id;
 

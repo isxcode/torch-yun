@@ -8,11 +8,11 @@ import javax.validation.constraints.NotEmpty;
 @Data
 public class UpdateModelReq {
 
-    @Schema(title = "模型id", example = "py_123")
+    @Schema(title = "模型id", example = "ty_123")
     @NotEmpty(message = "模型id不能为空")
     private String id;
 
-    @Schema(title = "模型名称", example = "py_123")
+    @Schema(title = "模型名称", example = "ty_123")
     @NotEmpty(message = "模型名称不能为空")
     private String name;
 
@@ -23,7 +23,7 @@ public class UpdateModelReq {
     @Schema(title = "模型标签", example = "0.5b")
     private String modelLabel;
 
-    @Schema(title = "模型文件", example = "py_123")
+    @Schema(title = "模型文件", example = "ty_123")
     @NotEmpty(message = "模型文件不能为空")
     private String modelFile;
 

@@ -25,7 +25,7 @@ public class AddApiReq {
     @NotEmpty(message = "path不能为空")
     private String path;
 
-    @Schema(title = "数据源id", example = "py_a05cfc7bda0b41c196ada563052f68fe")
+    @Schema(title = "数据源id", example = "ty_a05cfc7bda0b41c196ada563052f68fe")
     @NotEmpty(message = "datasourceId不能为空")
     private String datasourceId;
 

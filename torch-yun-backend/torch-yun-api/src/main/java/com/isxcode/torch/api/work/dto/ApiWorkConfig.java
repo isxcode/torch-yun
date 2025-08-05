@@ -8,7 +8,7 @@ import java.util.List;
 @Data
 public class ApiWorkConfig {
 
-    @Schema(title = "作业唯一id", example = "py_4f07ab7b1fe54dab9be884e410c53af4")
+    @Schema(title = "作业唯一id", example = "ty_4f07ab7b1fe54dab9be884e410c53af4")
     private String workId;
 
     @Schema(title = "接口请求url", example = "http(s)://zhishuyun-demo.isxcode.com/xxxx/xxxx")

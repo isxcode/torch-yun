@@ -23,7 +23,7 @@ public class AddWorkReq {
         message = "作业类型不支持")
     private String workType;
 
-    @Schema(title = "工作流唯一id", example = "py_48c4304593ea4897b6af999e48685896")
+    @Schema(title = "工作流唯一id", example = "ty_48c4304593ea4897b6af999e48685896")
     @NotEmpty(message = "工作流id不能为空")
     private String workflowId;
 
