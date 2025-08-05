@@ -1,0 +1,9 @@
+dependencies {
+
+    api(project(':torch-yun-backend:torch-yun-api'))
+    api(project(':torch-yun-backend:torch-yun-common'))
+}
+
+bootJar {
+    archiveFileName = 'zhishuyun-agent.jar'
+}

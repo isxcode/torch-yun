@@ -2,7 +2,7 @@
 title: "Docker部署"
 ---
 
-## 使用Docker快速部署至慧云
+## 使用Docker快速部署至数云
 
 #### 镜像地址
 
@@ -15,7 +15,7 @@ registry.cn-shanghai.aliyuncs.com/isxcode/zhihuiyun:latest-amd64
 registry.cn-shanghai.aliyuncs.com/isxcode/zhihuiyun:latest-arm64
 ```
 
-#### 快速启动至慧云
+#### 快速启动至数云
 
 ```bash
 docker run \
@@ -42,7 +42,7 @@ docker run \
 #### 修改配置
 
 默认配置文件模版参考链接:   
-https://raw.githubusercontent.com/isxcode/pytorch-yun/refs/heads/main/pytorch-yun-backend/pytorch-yun-main/src/main/resources/application-docker.yml
+https://raw.githubusercontent.com/isxcode/torch-yun/refs/heads/main/torch-yun-backend/torch-yun-main/src/main/resources/application-docker.yml
 
 ```bash
 vim /Users/ispong/zhihuiyun/conf/application-docker.yml

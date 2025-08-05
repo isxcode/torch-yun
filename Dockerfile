@@ -9,8 +9,8 @@ ARG ADMIN_PASSWORD='admin123'
 ARG ACTIVE_ENV='docker'
 ARG LOG_LEVEL='info'
 
-COPY ./pytorch-yun-backend/pytorch-yun-main/build/libs/zhishuyun.jar /opt/zhishuyun/zhishuyun.jar
-COPY ./pytorch-yun-backend/pytorch-yun-main/src/main/resources/application-docker.yml /etc/zhishuyun/conf/
+COPY ./torch-yun-backend/torch-yun-main/build/libs/zhishuyun.jar /opt/zhishuyun/zhishuyun.jar
+COPY ./torch-yun-backend/torch-yun-main/src/main/resources/application-docker.yml /etc/zhishuyun/conf/
 
 EXPOSE 8080
 

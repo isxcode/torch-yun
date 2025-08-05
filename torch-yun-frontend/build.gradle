@@ -1,0 +1,43 @@
+// 清理后端的resources中的前端文件
+tasks.register('clean_backend_resources', Delete) {
+
+    delete '../torch-yun-backend/torch-yun-main/src/main/resources/templates'
+    delete '../torch-yun-backend/torch-yun-main/src/main/resources/static'
+}
+
+// 打包前端项目
+tasks.register('npm_build', Exec) {
+
+    mustRunAfter("clean_backend_resources")
+
+    commandLine 'sh', '-c', '''
+      rm -rf node_modules
+      pnpm install --force
+      pnpm run build
+    '''
+}
+
+// 拷贝后端resources中的templates里
+tasks.register('coty_to_templates', Copy) {
+
+    mustRunAfter("npm_build")
+
+    from 'dist/index.html'
+    into '../torch-yun-backend/torch-yun-main/src/main/resources/templates/'
+}
+
+// 拷贝到static中
+tasks.register('coty_to_static', Copy) {
+
+    mustRunAfter("npm_build")
+
+    from 'dist/static'
+    into '../torch-yun-backend/torch-yun-main/src/main/resources/static/'
+}
+
+// 打包并安装前端项目
+tasks.register('make', GradleBuild) {
+
+    // 串行执行
+    tasks = ["clean_backend_resources", "npm_build", "coty_to_templates", "coty_to_static"]
+}

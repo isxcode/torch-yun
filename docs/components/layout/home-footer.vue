@@ -362,11 +362,11 @@ function clickGithubProject() {
 }
 
 function clickGitee() {
-  window.open("https://gitee.com/isxcode/pytorch-yun");
+  window.open("https://gitee.com/isxcode/torch-yun");
 }
 
 function clickGithub() {
-  window.open("https://github.com/isxcode/pytorch-yun/discussions");
+  window.open("https://github.com/isxcode/torch-yun/discussions");
 }
 
 function clickSlack() {
