@@ -49,7 +49,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, onMounted } from 'vue'
+import { reactive, ref, onMounted, onUnmounted } from 'vue'
 import Breadcrumb from '@/layout/bread-crumb/index.vue'
 import LoadingPage from '@/components/loading/index.vue'
 import { BreadCrumbList, TableConfig } from './list.config'
@@ -75,11 +75,12 @@ const loading = ref<boolean>(false)
 const networkError = ref<boolean>(false)
 const addModalRef = ref<any>(null)
 const showLogRef = ref<any>(null)
+const timer = ref<any>(null)
 
 const breadCrumbList = reactive(BreadCrumbList)
 const tableConfig: any = reactive(TableConfig)
 
-function initData(tableLoading?: boolean) {
+function initData(tableLoading?: boolean, type?: string) {
     loading.value = tableLoading ? false : true
     networkError.value = networkError.value || false
     QueryAiItemList({
@@ -183,6 +184,18 @@ onMounted(() => {
     tableConfig.pagination.currentPage = 1
     tableConfig.pagination.pageSize = 10
     initData()
+    // 启动自动刷新定时器，每3秒刷新一次
+    timer.value = setInterval(() => {
+        initData(true, 'interval')
+    }, 3000)
+})
+
+onUnmounted(() => {
+    // 清理定时器
+    if (timer.value) {
+        clearInterval(timer.value)
+        timer.value = null
+    }
 })
 </script>
 
