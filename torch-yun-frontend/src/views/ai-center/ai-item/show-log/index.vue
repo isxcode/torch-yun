@@ -52,7 +52,7 @@ function getLogData(data: any) {
     isRequest.value = true
     modelConfig.title = '运行日志'
     GetAiItemLogData({ id: data }).then((res: any) => {
-        logMsg.value = res.data.runningLog
+        logMsg.value = res.data.log
         status.value = true
         isRequest.value = false
         loading.value = false
