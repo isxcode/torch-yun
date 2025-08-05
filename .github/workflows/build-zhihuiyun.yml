@@ -49,20 +49,20 @@ jobs:
           sudo timedatectl set-timezone Asia/Shanghai
           date
 
-      - name: Checkout pytorch-yun
+      - name: Checkout torch-yun
         uses: actions/checkout@v4
         with:
           token: ${{ env.ADMIN_GITHUB_TOKEN }}
-          repository: ${{ inputs.repository_account }}/pytorch-yun
+          repository: ${{ inputs.repository_account }}/torch-yun
           ref: ${{ inputs.branch_number }}
 
-      - name: Checkout pytorch-yun-vip
+      - name: Checkout torch-yun-vip
         uses: actions/checkout@v4
         with:
           token: ${{ env.ADMIN_GITHUB_TOKEN }}
-          repository: ${{ inputs.repository_account }}/pytorch-yun-vip
+          repository: ${{ inputs.repository_account }}/torch-yun-vip
           ref: ${{ inputs.branch_number }}
-          path: "/home/runner/work/pytorch-yun/pytorch-yun/pytorch-yun-vip"
+          path: "/home/runner/work/torch-yun/torch-yun/torch-yun-vip"
 
       - name: Cache gradle
         uses: actions/cache@v3
@@ -134,7 +134,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: zhishuyun
-          path: ./pytorch-yun-dist/build/distributions/zhishuyun.tar.gz
+          path: ./torch-yun-dist/build/distributions/zhishuyun.tar.gz
 
   # 上传阿里oss使用单独任务，原因：上传失败后，可以使用github重跑任务，不需要重新打包
   upload-oss:

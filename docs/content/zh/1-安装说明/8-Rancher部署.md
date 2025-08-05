@@ -16,7 +16,7 @@ sudo chown -R zhihuiyun:zhihuiyun /data/zhihuiyun
 ```bash
 mkdir -p /data/zhihuiyun/conf
 cd /data/zhihuiyun/conf
-wget https://gitee.com/isxcode/pytorch-yun/raw/main/pytorch-yun-backend/pytorch-yun-main/src/main/resources/application-docker.yml
+wget https://gitee.com/isxcode/torch-yun/raw/main/torch-yun-backend/torch-yun-main/src/main/resources/application-docker.yml
 ```
 
 #### 编辑配置文件(可选操作)
@@ -47,7 +47,7 @@ jasypt:
 
 logging:
   file:
-    name: /var/lib/zhihuiyun/logs/pytorch-yun.log
+    name: /var/lib/zhihuiyun/logs/torch-yun.log
 
 # 应用配置
 isx-app:

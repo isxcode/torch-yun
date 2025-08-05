@@ -1,0 +1,5 @@
+dependencies {
+
+    api(project(':torch-yun-backend:torch-yun-common'))
+}
+

@@ -14,14 +14,14 @@
 **/.DS_Store
 
 # 前端打包不提交
-pytorch-yun-backend/pytorch-yun-main/src/main/resources/templates
-pytorch-yun-backend/pytorch-yun-main/src/main/resources/static
+torch-yun-backend/torch-yun-main/src/main/resources/templates
+torch-yun-backend/torch-yun-main/src/main/resources/static
 
 # 代理安装包不提交
-pytorch-yun-backend/pytorch-yun-main/src/main/resources/agent
+torch-yun-backend/torch-yun-main/src/main/resources/agent
 
 # 企业版代码不提交
-pytorch-yun-vip
+torch-yun-vip
 
 # 资源文件不提交
 resources/file
@@ -32,11 +32,11 @@ resources/tmp
 resources/cdc
 
 # flink-min不提交
-pytorch-yun-dist/flink-min
+torch-yun-dist/flink-min
 
 # 日志不提交
 logs
 
 # prql二进制文件不提交
-pytorch-yun-backend/pytorch-yun-main/src/main/resources/libprql_java-osx-arm64.dylib
-pytorch-yun-backend/pytorch-yun-main/src/main/resources/libprql_java-linux64.so
+torch-yun-backend/torch-yun-main/src/main/resources/libprql_java-osx-arm64.dylib
+torch-yun-backend/torch-yun-main/src/main/resources/libprql_java-linux64.so
