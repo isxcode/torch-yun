@@ -7,13 +7,13 @@ import com.isxcode.torch.api.main.constants.ModuleCode;
  */
 public interface AgentUrl {
 
-    String HEART_CHECK_URL = "/" + ModuleCode.PYTORCH_YUN_AGENT + "/heartCheck";
+    String HEART_CHECK_URL = "/" + ModuleCode.torch_YUN_AGENT + "/heartCheck";
 
-    String DEPLOY_AI_URL = "/" + ModuleCode.PYTORCH_YUN_AGENT + "/deployAi";
+    String DEPLOY_AI_URL = "/" + ModuleCode.torch_YUN_AGENT + "/deployAi";
 
-    String STOP_AI_URL = "/" + ModuleCode.PYTORCH_YUN_AGENT + "/stopAi";
+    String STOP_AI_URL = "/" + ModuleCode.torch_YUN_AGENT + "/stopAi";
 
-    String GET_AI_LOG_URL = "/" + ModuleCode.PYTORCH_YUN_AGENT + "/getAiLog";
+    String GET_AI_LOG_URL = "/" + ModuleCode.torch_YUN_AGENT + "/getAiLog";
 
-    String CHAT_AI_URL = "/" + ModuleCode.PYTORCH_YUN_AGENT + "/chatAi";
+    String CHAT_AI_URL = "/" + ModuleCode.torch_YUN_AGENT + "/chatAi";
 }

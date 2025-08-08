@@ -1,6 +1,6 @@
 package com.isxcode.torch.agent.controller;
 
-import com.isxcode.torch.agent.service.PytorchYunAgentBizService;
+import com.isxcode.torch.agent.service.torchYunAgentBizService;
 import com.isxcode.torch.api.agent.req.ChatAgentAiReq;
 import com.isxcode.torch.api.agent.req.DeployAiReq;
 import com.isxcode.torch.api.agent.constants.AgentUrl;
@@ -23,16 +23,16 @@ import javax.validation.Valid;
 @Tag(name = "至数云代理模块")
 @RestController
 @RequiredArgsConstructor
-public class PytorchYunAgentController {
+public class torchYunAgentController {
 
-    private final PytorchYunAgentBizService pytorchYunAgentBizService;
+    private final torchYunAgentBizService torchYunAgentBizService;
 
     @Operation(summary = "部署ai接口")
     @PostMapping(AgentUrl.DEPLOY_AI_URL)
     @SuccessResponse("部署成功")
     public DeployAiRes deployAi(@Valid @RequestBody DeployAiReq deployAiReq) {
 
-        return pytorchYunAgentBizService.deployAi(deployAiReq);
+        return torchYunAgentBizService.deployAi(deployAiReq);
     }
 
     @Operation(summary = "停止ai接口")
@@ -40,7 +40,7 @@ public class PytorchYunAgentController {
     @SuccessResponse("停止成功")
     public void stopAi(@Valid @RequestBody StopAgentAiReq stopAgentAiReq) {
 
-        pytorchYunAgentBizService.stopAi(stopAgentAiReq);
+        torchYunAgentBizService.stopAi(stopAgentAiReq);
     }
 
     @Operation(summary = "获取ai日志接口")
@@ -48,7 +48,7 @@ public class PytorchYunAgentController {
     @SuccessResponse("获取成功")
     public GetAgentAiLogRes getAiLog(@Valid @RequestBody GetAgentAiLogReq getAgentAiLogReq) {
 
-        return pytorchYunAgentBizService.getAiLog(getAgentAiLogReq);
+        return torchYunAgentBizService.getAiLog(getAgentAiLogReq);
     }
 
     @Operation(summary = "调用ai接口")
@@ -56,7 +56,7 @@ public class PytorchYunAgentController {
     @SuccessResponse("对话请求成功")
     public ChatAgentAiRes chatAi(@Valid @RequestBody ChatAgentAiReq chatAgentAiReq) {
 
-        return pytorchYunAgentBizService.chatAi(chatAgentAiReq);
+        return torchYunAgentBizService.chatAi(chatAgentAiReq);
     }
 
     @Operation(summary = "心跳检测接口")
