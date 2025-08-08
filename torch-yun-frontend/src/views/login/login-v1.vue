@@ -50,7 +50,7 @@
           </el-button>
         </el-form-item>
         <el-form-item class="registered-content">
-          <span class="registered">超智慧级一体化应用平台
+          <span class="registered">超轻量级人工智能应用平台
             <!-- <a class="do-registered" @click="clickRegistered"
                             >免费注册</a -->
           </span>

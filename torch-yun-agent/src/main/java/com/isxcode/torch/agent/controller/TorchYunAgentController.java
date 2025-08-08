@@ -1,6 +1,6 @@
 package com.isxcode.torch.agent.controller;
 
-import com.isxcode.torch.agent.service.torchYunAgentBizService;
+import com.isxcode.torch.agent.service.TorchYunAgentBizService;
 import com.isxcode.torch.api.agent.req.ChatAgentAiReq;
 import com.isxcode.torch.api.agent.req.DeployAiReq;
 import com.isxcode.torch.api.agent.constants.AgentUrl;
@@ -23,9 +23,9 @@ import javax.validation.Valid;
 @Tag(name = "至数云代理模块")
 @RestController
 @RequiredArgsConstructor
-public class torchYunAgentController {
+public class TorchYunAgentController {
 
-    private final torchYunAgentBizService torchYunAgentBizService;
+    private final TorchYunAgentBizService torchYunAgentBizService;
 
     @Operation(summary = "部署ai接口")
     @PostMapping(AgentUrl.DEPLOY_AI_URL)

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 @ConfigurationProperties(prefix = "torch-yun")
-@EnableConfigurationProperties(com.isxcode.torch.agent.properties.torchYunAgentProperties.class)
-public class torchYunAgentProperties {
+@EnableConfigurationProperties(com.isxcode.torch.agent.properties.TorchYunAgentProperties.class)
+public class TorchYunAgentProperties {
 
 }
