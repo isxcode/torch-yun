@@ -48,7 +48,7 @@ public interface ModuleCode {
     /**
      * 至数云代理模块
      */
-    String PYTORCH_YUN_AGENT = "torch-yun-agent";
+    String torch_YUN_AGENT = "torch-yun-agent";
 
     /**
      * 资源文件模块
