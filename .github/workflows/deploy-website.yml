@@ -44,11 +44,11 @@ jobs:
           sudo timedatectl set-timezone Asia/Shanghai
           date
 
-      - name: Checkout torch-yun
+      - name: Checkout spark-yun
         uses: actions/checkout@v4
         with:
           token: ${{ env.ADMIN_GITHUB_TOKEN }}
-          repository: ${{ inputs.repository_account }}/torch-yun
+          repository: ${{ inputs.repository_account }}/spark-yun
           ref: ${{ inputs.branch_number }}
 
       - name: Install pnpm
@@ -83,9 +83,9 @@ jobs:
 
       - name: Tar dist
         run: |
-          cd /home/runner/work/torch-yun/torch-yun/docs
+          cd /home/runner/work/spark-yun/spark-yun/docs
           tar -czf website.tar.gz ./.output
-          mv website.tar.gz /home/runner/work/torch-yun/torch-yun/
+          mv website.tar.gz /home/runner/work/spark-yun/spark-yun/
 
       - name: Copy website via ssh password
         uses: appleboy/scp-action@v0.1.7
