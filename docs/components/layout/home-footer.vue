@@ -3,11 +3,11 @@
 
     <div class="content">
       <div class="left">
-        <img class="logo-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/web-img/logo.png" alt=""/>
+        <img class="logo-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/logo.jpg" alt=""/>
         <div class="logo-name">
           {{ $t("company_name") }}
         </div>
-        <img class="wechat-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/web-img/qrcode.jpg" alt=""/>
+        <img class="wechat-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/qrcode.jpg" alt=""/>
         <div class="wechat-name">
           {{ $t("wechat_official_account") }}
         </div>
@@ -16,29 +16,24 @@
         <div class="column">
           <div class="title">{{ $t("product") }}</div>
           <div class="link" @click="clickZhiqingyun">{{ $t("zhiqingyun") }}</div>
-          <div class="link" @click="clickZhiliuyun">{{ $t("zhiliuyun") }}</div>
-          <div class="link" @click="clickzhishuyun">{{ $t("zhishuyun") }}</div>
           <div class="link" @click="clickZhishuyun">{{ $t("zhishuyun") }}</div>
         </div>
         <div class="column">
           <div class="title">{{ $t("community") }}</div>
           <div class="link" @click="clickGithub">{{ $t("github") }}</div>
           <div class="link" @click="clickGitee">{{ $t("gitee") }}</div>
-          <div class="link" @click="clickSlack">{{ $t("slack") }}</div>
           <div class="link" @click="clickDiscord">{{ $t("discord") }}</div>
         </div>
         <div class="column">
           <div class="title">{{ $t("resources") }}</div>
           <div class="link" @click="clickDocs">{{ $t("docs") }}</div>
           <div class="link" @click="clickBlogs">{{ $t("blogs") }}</div>
-          <div class="link" @click="clickDockerHub">{{ $t("docker_hub") }}</div>
           <div class="link" @click="downloadPackage">{{ $t("download_package") }}</div>
           <div class="link" @click="downloadLicense"> {{ $t("download_license") }}</div>
         </div>
         <div class="column">
           <div class="title">{{ $t("about_us") }}</div>
           <div class="link" @click="aboutUs">{{ $t("company_intro") }}</div>
-          <div class="link" @click="joinUs">{{ $t("join_us") }}</div>
           <div class="link" @click="clickGithubProject"> {{ $t("development_progress") }}</div>
           <div class="link" @click="downloadPdf"> {{ $t("download_pdf") }}</div>
         </div>
@@ -196,7 +191,7 @@
     height: 50px;
     line-height: 50px;
     text-align: center;
-    background: #9bbdff;
+    background: #ffccb4;
 
     .content {
       width: 130px;
@@ -324,13 +319,13 @@ import {ElMessage} from "element-plus";
 const switchLocalePath = useSwitchLocalePath();
 const {locale} = useI18n();
 
-// function clickzhishuyun() {
+// function clickZhiqingyun() {
 //   const router = useRouter();
 //   const newLocale = locale.value === "en" ? "zh" : "en";
 //   router.push({path: switchLocalePath(newLocale)});
 // }
 
-function clickzhishuyun() {
+function clickZhiqingyun() {
   const router = useRouter();
   router.push("/");
 }
@@ -339,22 +334,26 @@ function clickZhiliuyun() {
   window.open("https://zhiliuyun.isxcode.com");
 }
 
+function clickZhishiyun() {
+  window.open("https://zhishiyun.isxcode.com");
+}
+
+function clickZhihuiyun() {
+  window.open("https://zhihuiyun.isxcode.com");
+}
+
 function clickZhishuyun() {
   window.open("https://zhishuyun.isxcode.com");
 }
 
-function clickZhiqingyun() {
-  window.open("https://zhiqingyun.isxcode.com");
-}
-
 function joinUs() {
   const router = useRouter();
-  router.push("/zh/docs/zh/6/0");
+  router.push("/zh/docs/zh/5/13");
 }
 
 function aboutUs() {
   const router = useRouter();
-  router.push("/zh/docs/zh/7/0");
+  router.push("/zh/docs/zh/6/0");
 }
 
 function clickGithubProject() {
@@ -362,7 +361,7 @@ function clickGithubProject() {
 }
 
 function clickGitee() {
-  window.open("https://gitee.com/isxcode/torch-yun");
+  window.open("https://gitee.com/isxcode/torch-yun/issues");
 }
 
 function clickGithub() {
@@ -382,23 +381,23 @@ function clickLinked() {
 }
 
 function clickDockerHub() {
-  window.open("https://hub.docker.com/r/isxcode/zhishuyun");
+  window.open("https://hub.docker.com/r/isxcode/zhiqingyun");
 }
 
 function downloadLicense() {
-  window.open("https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/license.lic");
+  window.open("https://zhishuyun-demo.isxcode.com/tools/open/file/license.lic");
 }
 
 function downloadPdf() {
-  window.open("https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/zhishuyun.pdf");
+  window.open("https://zhishuyun-demo.isxcode.com/tools/open/file/zhishuyun.pdf");
 }
 
 function downloadPackage() {
-  window.open("https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/zhishuyun.tar.gz");
+  window.open("https://zhishuyun-demo.isxcode.com/tools/open/file/zhishuyun.tar.gz");
 }
 
 function clickBlogs() {
-  window.open("https://ispong.isxcode.com/tags/torch/");
+  window.open("https://ispong.isxcode.com/tags/pytorch/");
 }
 
 function clickDocs() {

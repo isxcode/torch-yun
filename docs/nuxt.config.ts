@@ -6,6 +6,15 @@ export default defineNuxtConfig({
   build: {
     transpile: ['vueuc']
   },
+  // 性能优化配置
+  experimental: {
+    payloadExtraction: false, // 禁用payload提取以提高首屏加载速度
+    inlineSSRStyles: false, // 禁用内联SSR样式以减少HTML大小
+  },
+  // 渲染配置
+  nitro: {
+    compressPublicAssets: true, // 启用静态资源压缩
+  },
   modules: [
     "@nuxt/content",
     "@pinia/nuxt",
@@ -19,7 +28,12 @@ export default defineNuxtConfig({
   pinia: {
     autoImports: ["defineStore"],
   },
-  plugins: [{ src: "~/plugins/svgicon.client.ts" }],
+  plugins: [
+    { src: "~/plugins/preload-loading.client.ts", mode: "client" },
+    { src: "~/plugins/resource-preloader.client.ts", mode: "client" },
+    { src: "~/plugins/svgicon.client.ts" },
+    { src: "~/plugins/loading.client.ts" }
+  ],
   css: [
     "element-plus/dist/index.css",
     "element-plus/theme-chalk/dark/css-vars.css",
@@ -30,7 +44,24 @@ export default defineNuxtConfig({
       createSvgIconsPlugin({
         iconDirs: [path.resolve(process.cwd(), "assets/svg")],
       }),
-    ]
+    ],
+    build: {
+      rollupOptions: {
+        output: {
+          // 确保关键组件优先加载
+          manualChunks: {
+            'loading': ['~/components/loading/TopLoadingBar.vue'],
+            'critical': ['~/pages/index.vue', '~/layouts/home.vue']
+          }
+        }
+      }
+    },
+    // 开发服务器配置
+    server: {
+      hmr: {
+        overlay: false // 禁用错误覆盖层以提高开发体验
+      }
+    }
   },
   lodash: {
     prefix: "_",
@@ -74,10 +105,18 @@ export default defineNuxtConfig({
     locales: [
       { name: "中文", code: "zh", iso: "zh-CN", dir: "ltr" },
       { name: "English", code: "en", iso: "en-US", dir: "ltr" },
+      { name: "日本語", code: "ja", iso: "ja-JP", dir: "ltr" },
+      { name: "한국어", code: "ko", iso: "ko-KR", dir: "ltr" },
+      { name: "Français", code: "fr", iso: "fr-FR", dir: "ltr" },
+      { name: "Deutsch", code: "de", iso: "de-DE", dir: "ltr" },
+      { name: "Español", code: "es", iso: "es-ES", dir: "ltr" },
+      { name: "Русский", code: "ru", iso: "ru-RU", dir: "ltr" },
     ],
     detectBrowserLanguage: false,
     vueI18n: "./locales/i18n.config.ts",
     defaultLocale: "zh",
     strategy: "prefix_and_default",
   },
+
+  compatibilityDate: "2025-07-01",
 });
