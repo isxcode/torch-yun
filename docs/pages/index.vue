@@ -435,7 +435,7 @@ $module-intro-img-width: 600px;
       .why-content {
         margin: 25px auto auto;
         text-indent: 2em;
-        width: 860px;
+        width: 910px;
         line-height: 26px;
         font-size: 18px;
       }
