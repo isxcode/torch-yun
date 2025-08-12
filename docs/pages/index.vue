@@ -50,12 +50,12 @@
           {{ $t("related_technologies") }}
         </div>
         <div class="tech-img-div">
-          <img class="tech-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/t-0.png" alt=""/>
-          <img class="tech-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/t-1.png" alt=""/>
-          <img class="tech-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/t-2.png" alt=""/>
-          <img class="tech-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/t-3.png" alt=""/>
-          <img class="tech-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/t-4.png" alt=""/>
-          <img class="tech-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/t-5.png" alt=""/>
+          <img class="tech-img" style="height: 45px; margin-top: 5px" src="https://zhishuyun-demo.isxcode.com/tools/open/file/t-0.png" alt=""/>
+          <img class="tech-img" style="height: 45px; margin-top: 4px" src="https://zhishuyun-demo.isxcode.com/tools/open/file/t-1.png" alt=""/>
+          <img class="tech-img" style="height: 48px; margin-top: 6px" src="https://zhishuyun-demo.isxcode.com/tools/open/file/t-2.png" alt=""/>
+          <img class="tech-img" style="height: 49px; margin-top: 4px" src="https://zhishuyun-demo.isxcode.com/tools/open/file/t-3.png" alt=""/>
+          <img class="tech-img" style="height: 51px; margin-top: 3px" src="https://zhishuyun-demo.isxcode.com/tools/open/file/t-4.png" alt=""/>
+          <img class="tech-img" style="height: 43px; margin-top: 7px" src="https://zhishuyun-demo.isxcode.com/tools/open/file/t-5.png" alt=""/>
         </div>
       </div>
     </div>
@@ -186,7 +186,7 @@ onMounted(async () => {
   mediumZoom(document.querySelectorAll('#zoom'), {
     margin: 100,
     scrollOffset: 1,
-    background: 'rgb(220 234 254)',
+    background: '#f4f9fe',
   })
 })
 
@@ -435,7 +435,7 @@ $module-intro-img-width: 600px;
       .why-content {
         margin: 25px auto auto;
         text-indent: 2em;
-        width: 860px;
+        width: 910px;
         line-height: 26px;
         font-size: 18px;
       }

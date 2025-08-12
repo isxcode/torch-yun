@@ -167,7 +167,7 @@ function showModal(cb: () => void, data: any): void {
         renderSence.value = 'new'
         formData.name = ''
         formData.modelId = ''
-        formData.aiType = 'API'
+        formData.aiType = 'local'
         formData.remark = ''
         formData.authConfig = { apiKey: '' }
     }
