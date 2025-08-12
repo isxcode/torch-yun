@@ -206,7 +206,14 @@ public class AiBizService {
         }
 
         // 获取模型仓库
-        ModelEntity model = modelService.getModel(ai.getModelId());
+        ModelEntity model;
+        if ("Qwen2.5-0.5B".equals(ai.getModelId())) {
+            model = new ModelEntity();
+            model.setCode("Qwen2.5-0.5B");
+            model.setModelFile("Qwen2.5-0.5B.zip");
+        } else {
+            model = modelService.getModel(ai.getModelId());
+        }
 
         // 封装请求体
         DeployAiContext deployAiContext = DeployAiContext.builder().aiId(ai.getId())

@@ -34,4 +34,4 @@ resources/tmp
 logs
 
 # 大模型不提交
-torch-yun-dist/zhishuyun-agent/ai/*
+torch-yun-dist/zhishuyun-agent/file/*

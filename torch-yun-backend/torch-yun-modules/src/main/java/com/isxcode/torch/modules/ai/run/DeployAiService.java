@@ -75,29 +75,34 @@ public class DeployAiService {
         scpFileEngineNodeDto.setPasswd(aesUtils.decrypt(scpFileEngineNodeDto.getPasswd()));
 
         try {
-            String srcPath = PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + File.separator + "file"
-                + File.separator + engineNode.getTenantId() + File.separator + deployAiContext.getModelFileId();
-            String distPath =
-                engineNode.getAgentHomePath() + "/zhishuyun-agent/file/" + deployAiContext.getModelFileId();
 
-            // 看看模型是否存在
-            boolean fileIsUpload = scpFileService.modelFileIsUpload(scpFileEngineNodeDto, srcPath, distPath);
-            if (!fileIsUpload) {
-                // 异步上传安装包
-                scpFileService.scpFile(scpFileEngineNodeDto, srcPath, distPath);
+            // 非系统模型需要上传
+            if (!"Qwen2.5-0.5B.zip".equals(deployAiContext.getModelFileId())) {
+                String srcPath =
+                    PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + File.separator + "file"
+                        + File.separator + engineNode.getTenantId() + File.separator + deployAiContext.getModelFileId();
+                String distPath =
+                    engineNode.getAgentHomePath() + "/zhishuyun-agent/file/" + deployAiContext.getModelFileId();
 
-                // 添加日志
-                ai = aiService.getAi(deployAiContext.getAiId());
-                ai.setAiLog("开始上传模型");
-                ai = aiRepository.save(ai);
+                // 看看模型是否存在
+                boolean fileIsUpload = scpFileService.modelFileIsUpload(scpFileEngineNodeDto, srcPath, distPath);
+                if (!fileIsUpload) {
+                    // 异步上传安装包
+                    scpFileService.scpFile(scpFileEngineNodeDto, srcPath, distPath);
 
-                // 同步监听进度
-                scpFileService.listenScpPercent(scpFileEngineNodeDto, srcPath, distPath, ai);
-            } else {
-                // 添加日志
-                ai = aiService.getAi(deployAiContext.getAiId());
-                ai.setAiLog("模型已经上传");
-                aiRepository.save(ai);
+                    // 添加日志
+                    ai = aiService.getAi(deployAiContext.getAiId());
+                    ai.setAiLog("开始上传模型");
+                    ai = aiRepository.save(ai);
+
+                    // 同步监听进度
+                    scpFileService.listenScpPercent(scpFileEngineNodeDto, srcPath, distPath, ai);
+                } else {
+                    // 添加日志
+                    ai = aiService.getAi(deployAiContext.getAiId());
+                    ai.setAiLog("模型已经上传");
+                    aiRepository.save(ai);
+                }
             }
 
             // 调用模型部署接口
