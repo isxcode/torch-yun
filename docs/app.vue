@@ -59,10 +59,10 @@ body {
 
 .top-loading-bar__progress {
   height: 100% !important;
-  background: linear-gradient(90deg, #506bfe 0%, #d4461a 50%, #c73e1d 100%) !important;
+  background: linear-gradient(90deg, #506bfe 0%, #2721ec 50%, #2721ec 100%) !important;
   transition: width 0.3s ease !important;
   border-radius: 0 3px 3px 0 !important;
-  box-shadow: 0 0 12px rgba(226, 90, 27, 0.6) !important;
+  box-shadow: 0 0 12px #7050fe !important;
 }
 
 /* 预加载动画 */
@@ -76,7 +76,7 @@ body {
 }
 
 .top-loading-bar--loading .top-loading-bar__progress {
-  background: linear-gradient(90deg, #506bfe 0%, #d4461a 100%) !important;
+  background: linear-gradient(90deg, #506bfe 0%, #2721ec 100%) !important;
   animation: loading-shimmer 2s infinite !important;
 }
 </style>
