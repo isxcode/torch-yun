@@ -32,7 +32,7 @@ tasks.register('build_agent_plugins', Copy) {
 tasks.register('build_agent_model', Copy) {
 
     from rootDir.getAbsolutePath() + '/resources/tmp'
-    into 'zhishuyun-agent/ai'
+    into 'zhishuyun-agent/file'
 }
 
 // 构建至数云代理
