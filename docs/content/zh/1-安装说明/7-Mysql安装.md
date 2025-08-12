@@ -13,7 +13,7 @@ title: "Mysql安装"
 > 需要资源邮箱咨询
 
 ```bash
-scp -r /Users/ispong/OneDrive/Downloads/docker/mysql-8.0-amd64.tar zhihuiyun@39.100.75.11:/tmp
+scp -r /Users/ispong/OneDrive/Downloads/docker/mysql-8.0-amd64.tar zhishuyun@39.100.75.11:/tmp
 # 上传本地镜像
 cd /tmp
 docker load -i /tmp/mysql-8.0-amd64.tar
