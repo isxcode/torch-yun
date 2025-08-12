@@ -326,8 +326,7 @@ const {locale} = useI18n();
 // }
 
 function clickZhiqingyun() {
-  const router = useRouter();
-  router.push("/");
+  window.open("https://zhiqingyun.isxcode.com");
 }
 
 function clickZhiliuyun() {
@@ -343,7 +342,8 @@ function clickZhihuiyun() {
 }
 
 function clickZhishuyun() {
-  window.open("https://zhishuyun.isxcode.com");
+  const router = useRouter();
+  router.push("/");
 }
 
 function joinUs() {

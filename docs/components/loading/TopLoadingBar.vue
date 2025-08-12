@@ -177,10 +177,10 @@ onBeforeUnmount(() => {
 
   &__progress {
     height: 100%;
-    background: linear-gradient(90deg, #506bfe 0%, #d4461a 50%, #c73e1d 100%);
+    background: linear-gradient(90deg, #506bfe 0%, #506bfe 50%, #506bfe 100%);
     transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 0 3px 3px 0;
-    box-shadow: 0 0 12px rgba(226, 90, 27, 0.6);
+    box-shadow: 0 0 12px #506bfe;
     position: relative;
 
     // 添加光泽效果
@@ -204,10 +204,10 @@ onBeforeUnmount(() => {
     .top-loading-bar__progress {
       background: linear-gradient(90deg,
         #506bfe 0%,
-        #f76b1c 25%,
-        #d4461a 50%,
-        #f76b1c 75%,
-        #c73e1d 100%);
+        #506bfe 25%,
+        #7c3aed 50%,
+        #6366f1 75%,
+        #5b21b6 100%);
       background-size: 200% 100%;
       animation: loading-shimmer 2s infinite, loading-pulse 1.5s infinite;
 
@@ -227,7 +227,7 @@ onBeforeUnmount(() => {
 
   &--error {
     .top-loading-bar__progress {
-      background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+      background: linear-gradient(90deg, #506bfe 0%,#506bfe 100%);
       animation: error-shake 0.5s ease;
     }
   }
@@ -245,10 +245,10 @@ onBeforeUnmount(() => {
 
 @keyframes loading-pulse {
   0%, 100% {
-    box-shadow: 0 0 12px rgba(226, 90, 27, 0.6);
+    box-shadow: 0 0 12px #506bfe;
   }
   50% {
-    box-shadow: 0 0 20px rgba(226, 90, 27, 0.9), 0 0 30px rgba(226, 90, 27, 0.4);
+    box-shadow: 0 0 20px #506bfe, 0 0 30px #506bfe;
   }
 }
 
@@ -309,11 +309,11 @@ onBeforeUnmount(() => {
   &__progress {
     // 增强渐变效果
     background: linear-gradient(90deg,
-      rgba(226, 90, 27, 0.95) 0%,
-      rgba(247, 107, 28, 0.95) 25%,
-      rgba(212, 70, 26, 0.95) 50%,
-      rgba(247, 107, 28, 0.95) 75%,
-      rgba(199, 62, 29, 0.95) 100%);
+      #506bfe 0%,
+      rgba(99, 102, 241, 0.95) 25%,
+      rgba(124, 58, 237, 0.95) 50%,
+      rgba(99, 102, 241, 0.95) 75%,
+      #506bfe 100%);
 
     // 添加内部光效
     &::after {
@@ -333,11 +333,11 @@ onBeforeUnmount(() => {
   &--loading {
     .top-loading-bar__progress {
       background: linear-gradient(90deg,
-        rgba(226, 90, 27, 0.95) 0%,
-        rgba(247, 107, 28, 0.95) 25%,
-        rgba(212, 70, 26, 0.95) 50%,
-        rgba(247, 107, 28, 0.95) 75%,
-        rgba(226, 90, 27, 0.95) 100%);
+        #506bfe 0%,
+        rgba(99, 102, 241, 0.95) 25%,
+        rgba(124, 58, 237, 0.95) 50%,
+        rgba(99, 102, 241, 0.95) 75%,
+        #506bfe 100%);
       background-size: 200% 100%;
     }
   }
@@ -353,8 +353,8 @@ onBeforeUnmount(() => {
   &--error {
     .top-loading-bar__progress {
       background: linear-gradient(90deg,
-        rgba(239, 68, 68, 0.95) 0%,
-        rgba(220, 38, 38, 0.95) 100%);
+        #506bfe 0%,
+        #506bfe 100%);
     }
   }
 }
