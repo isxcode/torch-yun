@@ -50,22 +50,22 @@
           {{ $t("related_technologies") }}
         </div>
         <div class="tech-img-div">
-          <img class="tech-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/it-img/t-1.png" alt="">
-          <img class="tech-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/it-img/t-2.png" alt="">
-          <img class="tech-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/it-img/t-3.png" alt="">
-          <img class="tech-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/it-img/t-4.png" alt="">
-          <img class="tech-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/it-img/t-5.png" alt="">
-          <img class="tech-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/it-img/t-6.png" alt="">
+          <img class="tech-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/t-0.png" alt=""/>
+          <img class="tech-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/t-1.png" alt=""/>
+          <img class="tech-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/t-2.png" alt=""/>
+          <img class="tech-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/t-3.png" alt=""/>
+          <img class="tech-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/t-4.png" alt=""/>
+          <img class="tech-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/t-5.png" alt=""/>
         </div>
       </div>
     </div>
     <div class="module-feat-left">
       <div class="content">
         <div class="left">
-          <img id="zoom" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/product-img/p-1.jpg" alt="">
+          <img id="zoom" src="https://zhishuyun-demo.isxcode.com/tools/open/file/p-0.jpg" alt="">
         </div>
         <div class="left-phone">
-          <img src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/product-img/p-1.jpg" alt="">
+          <img src="https://zhishuyun-demo.isxcode.com/tools/open/file/p-0.jpg" alt="">
         </div>
         <div class="right">
           <div class="line-1">{{ $t("coding_capability") }}</div>
@@ -79,7 +79,7 @@
     <div class="module-feat-right">
       <div class="content">
         <div class="right-phone">
-          <img src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/product-img/p-2.jpg" alt="">
+          <img src="https://zhishuyun-demo.isxcode.com/tools/open/file/p-1.jpg" alt="">
         </div>
         <div class="left">
           <div class="line-1">{{ $t("job_orchestration") }}</div>
@@ -89,17 +89,17 @@
           </div>
         </div>
         <div class="right">
-          <img id="zoom" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/product-img/p-2.jpg" alt="">
+          <img id="zoom" src="https://zhishuyun-demo.isxcode.com/tools/open/file/p-1.jpg" alt="">
         </div>
       </div>
     </div>
     <div class="module-feat-left">
       <div class="content">
         <div class="left">
-          <img id="zoom" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/product-img/p-3.jpg" alt="">
+          <img id="zoom" src="https://zhishuyun-demo.isxcode.com/tools/open/file/p-2.jpg" alt="">
         </div>
         <div class="left-phone">
-          <img src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/product-img/p-3.jpg" alt="">
+          <img src="https://zhishuyun-demo.isxcode.com/tools/open/file/p-2.jpg" alt="">
         </div>
         <div class="right">
           <div class="line-1">{{ $t("real_work") }}</div>
@@ -115,23 +115,23 @@
         <div class="line-1" style="color:#506bfe;">{{ $t("data_drives_value") }}</div>
         <div class="line-2" style="color:#506bfe;">{{ $t("data_drives_value_description") }}</div>
         <div class="business-img">
-           <img src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/business-img/b-0.png" alt="">
-          <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/business-img/b-1.png" alt="">
-          <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/business-img/b-2.png" alt="">
-          <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/business-img/b-3.png" alt="">
-          <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/business-img/b-4.png" alt="">
-          <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/business-img/b-5.png" alt="">
-          <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/business-img/b-6.png" alt="">
-          <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/business-img/b-7.png" alt="">
-          <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/business-img/b-8.png" alt="">
-          <img class="bus-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/business-img/b-9.png" alt="">
+          <img src="https://zhishuyun-demo.isxcode.com/tools/open/file/b-0.png" alt=""/>
+          <img class="bus-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/b-1.png" alt=""/>
+          <img class="bus-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/b-2.png" alt=""/>
+          <img class="bus-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/b-3.png" alt=""/>
+          <img class="bus-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/b-4.png" alt=""/>
+          <img class="bus-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/b-5.png" alt=""/>
+          <img class="bus-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/b-6.png" alt=""/>
+          <img class="bus-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/b-7.png" alt=""/>
+          <img class="bus-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/b-8.png" alt=""/>
+          <img class="bus-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/b-9.png" alt=""/>
         </div>
       </div>
     </div>
     <div class="module-feat-right">
       <div class="content">
         <div class="right-phone">
-          <img class="feat-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/product-img/p-4.jpg" alt=""/>
+          <img class="feat-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/p-3.jpg" alt=""/>
         </div>
         <div class="left">
           <div class="line-1">{{ $t("multi_platform_deployment") }}</div>
@@ -141,17 +141,17 @@
           </div>
         </div>
         <div class="right">
-          <img id="zoom" class="feat-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/product-img/p-4.jpg" alt="">
+          <img id="zoom" class="feat-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/p-3.jpg" alt="">
         </div>
       </div>
     </div>
     <div class="module-feat-left">
       <div class="content">
         <div class="left">
-          <img id="zoom" class="feat-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/product-img/p-5.jpg" alt="">
+          <img id="zoom" class="feat-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/p-4.jpg" alt="">
         </div>
         <div class="left-phone">
-          <img class="feat-img" src="https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/product-img/p-5.jpg" alt="">
+          <img class="feat-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/p-4.jpg" alt="">
         </div>
         <div class="right">
           <div class="line-1">{{ $t("data_view") }}</div>
@@ -186,7 +186,7 @@ onMounted(async () => {
   mediumZoom(document.querySelectorAll('#zoom'), {
     margin: 100,
     scrollOffset: 1,
-    background: '#f4f9ff',
+    background: 'rgb(220 234 254)',
   })
 })
 
@@ -223,8 +223,8 @@ const toggleVideo = () => {
 onMounted(() => {
   const art = new Artplayer({
     container: '.artplayer-app',
-    url: 'https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/product-img/product.mp4',
-    poster: 'https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/product-img/product.jpg',
+    url: 'https://zhishuyun-demo.isxcode.com/tools/open/file/product.mp4',
+    poster: 'https://zhishuyun-demo.isxcode.com/tools/open/file/product.jpg',
     fullscreen: true,
     fullscreenWeb: true,
     pip: true,
@@ -310,7 +310,7 @@ $module-intro-img-width: 600px;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    background-image: url("https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/web-img/bg-0.png");
+    background-image: url("https://zhishuyun-demo.isxcode.com/tools/open/file/bg-0.jpg");
     padding-top: 200px;
     position: relative;
     overflow: hidden;
@@ -435,7 +435,7 @@ $module-intro-img-width: 600px;
       .why-content {
         margin: 25px auto auto;
         text-indent: 2em;
-        width: 850px;
+        width: 860px;
         line-height: 26px;
         font-size: 18px;
       }
@@ -464,7 +464,7 @@ $module-intro-img-width: 600px;
 
         img {
           width: 150px;
-          height: 48px;
+          height: 55px;
         }
       }
     }
@@ -476,7 +476,7 @@ $module-intro-img-width: 600px;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    background-image: url("https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/web-img/bg-2.png");
+    background-image: url("https://zhishuyun-demo.isxcode.com/tools/open/file/bg-2.jpg");
     display: flex;
     align-items: center;
     justify-content: center;
@@ -622,7 +622,7 @@ $module-intro-img-width: 600px;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-image: url("https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/web-img/bg-1.png");
+  background-image: url("https://zhishuyun-demo.isxcode.com/tools/open/file/bg-1.jpg");
   display: flex;
   align-items: center;
   justify-content: center;
@@ -739,6 +739,7 @@ $module-intro-img-width: 600px;
               display: block;
               border-radius: 3px;
             }
+
           }
         }
       }
@@ -769,6 +770,9 @@ $module-intro-img-width: 600px;
           line-height: 25px;
           font-size: 19px;
           text-indent: 2em;
+          text-align: justify;
+          text-justify: distribute-all-lines;
+          word-break: break-all;
         }
 
         .why-content {
@@ -791,7 +795,7 @@ $module-intro-img-width: 600px;
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      background-image: url("https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/web-img/bg-2.png");
+      background-image: url("https://zhishuyun-demo.isxcode.com/tools/open/file/bg-2.jpg");
       align-items: center;
 
       .content {
@@ -870,6 +874,9 @@ $module-intro-img-width: 600px;
           margin-top: 30px;
           line-height: 25px;
           font-size: 18px;
+          text-align: justify;
+          text-justify: distribute-all-lines;
+          word-break: break-all;
         }
 
         .line-3 {
@@ -921,6 +928,9 @@ $module-intro-img-width: 600px;
           margin-top: 30px;
           line-height: 25px;
           font-size: 18px;
+          text-align: justify;
+          text-justify: distribute-all-lines;
+          word-break: break-all;
         }
 
         .line-3 {
@@ -935,7 +945,7 @@ $module-intro-img-width: 600px;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    background-image: url("https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/website/web-img/bg-1.png");
+    background-image: url("https://zhishuyun-demo.isxcode.com/tools/open/file/bg-1.jpg");
     display: flex;
     align-items: center;
     justify-content: center;
