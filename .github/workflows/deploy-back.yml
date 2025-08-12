@@ -21,7 +21,7 @@ jobs:
           sudo timedatectl set-timezone Asia/Shanghai
           date
 
-      - name: Deploy zhiqingyun back
+      - name: Deploy zhishuyun back
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
@@ -30,18 +30,18 @@ jobs:
           script_stop: true
           timeout: 1800s
           script: |
-            bash /opt/zhiqingyun/bin/stop.sh
-            if [ -d "/opt/zhiqingyun/resources_back" ]; then
-              rm -rf /opt/zhiqingyun/resources/*
-              cp -r /opt/zhiqingyun/resources_back/* /opt/zhiqingyun/resources/
+            bash /opt/zhishuyun/bin/stop.sh
+            if [ -d "/opt/zhishuyun/resources_back" ]; then
+              rm -rf /opt/zhishuyun/resources/*
+              cp -r /opt/zhishuyun/resources_back/* /opt/zhishuyun/resources/
             fi
-            if [ ! -d "/opt/zhiqingyun/resources_back" ]; then
-              mkdir -p /opt/zhiqingyun/resources_back
-              cp -r /opt/zhiqingyun/resources/* /opt/zhiqingyun/resources_back/
+            if [ ! -d "/opt/zhishuyun/resources_back" ]; then
+              mkdir -p /opt/zhishuyun/resources_back
+              cp -r /opt/zhishuyun/resources/* /opt/zhishuyun/resources_back/
             fi
-            bash /opt/zhiqingyun/bin/start.sh --print-log=false
+            bash /opt/zhishuyun/bin/start.sh --print-log=false
             sleep 120
-            until curl -s https://zhiqingyun-demo.isxcode.com/tools/open/health | grep "UP"; do
+            until curl -s https://zhishuyun-demo.isxcode.com/tools/open/health | grep "UP"; do
               echo "Waiting for service to be available..."
               sleep 1
             done
