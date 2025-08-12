@@ -18,7 +18,6 @@ tasks.register('build_agent_lib', Copy) {
     from rootDir.getAbsolutePath() + '/torch-yun-backend/torch-yun-api/build/libs'
     from rootDir.getAbsolutePath() + '/torch-yun-agent/build/libs'
     from rootDir.getAbsolutePath() + '/resources/jdbc/system'
-    from rootDir.getAbsolutePath() + '/resources/cdc'
     into 'build/zhishuyun-agent/lib'
 }
 
@@ -29,6 +28,13 @@ tasks.register('build_agent_plugins', Copy) {
     into 'build/zhishuyun-agent/plugins'
 }
 
+// 构建ai文件夹
+tasks.register('build_agent_model', Copy) {
+
+    from rootDir.getAbsolutePath() + '/resources/tmp'
+    into 'zhishuyun-agent/ai'
+}
+
 // 构建至数云代理
 tasks.register('build_agent', Tar) {
 
@@ -36,13 +42,11 @@ tasks.register('build_agent', Tar) {
 
     dependsOn('build_agent_lib')
     dependsOn('build_agent_plugins')
+    dependsOn('build_agent_model')
 
     compression = Compression.GZIP
     archiveFileName = 'zhishuyun-agent.tar.gz'
 
-    from(rootDir.getAbsolutePath() + "/torch-yun-dist/flink-min") {
-        into 'zhishuyun-agent/flink-min'
-    }
     from('zhishuyun-agent/bin') {
         into 'zhishuyun-agent/bin'
     }
