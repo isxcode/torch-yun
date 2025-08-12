@@ -1,26 +1,35 @@
 package com.isxcode.torch.common.tools;
 
 import com.isxcode.torch.backend.api.base.exceptions.IsxAppException;
+import com.isxcode.torch.backend.api.base.properties.IsxAppProperties;
+import com.isxcode.torch.common.utils.path.PathUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.jasypt.util.text.AES256TextEncryptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.logging.LogLevel;
 import org.springframework.boot.logging.LoggingSystem;
 import org.springframework.cache.CacheManager;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
+import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Locale;
 import java.util.Objects;
+
+import static java.net.URLConnection.guessContentTypeFromName;
 
 @Tag(name = "工具模块")
 @RestController
@@ -37,6 +46,8 @@ public class ToolController {
 
     @Value("${jasypt.encryptor.password}")
     private String jasyptPassword;
+
+    private final IsxAppProperties isxAppProperties;
 
     @Operation(summary = "获取版本号接口")
     @GetMapping("/open/version")
@@ -93,6 +104,36 @@ public class ToolController {
     public String health() {
 
         return "UP";
+    }
+
+     @Operation(summary = "下载文件")
+    @GetMapping("/open/file/{fileName}")
+    public ResponseEntity<Resource> file(@PathVariable String fileName) {
+
+        if (Strings.isEmpty(isxAppProperties.getOpenFilePath()) || Strings.isEmpty(fileName)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        try {
+            InputStreamResource resource = new InputStreamResource(Files.newInputStream(
+                Paths.get(PathUtils.parseProjectPath(isxAppProperties.getOpenFilePath()) + File.separator + fileName)));
+            HttpHeaders headers = new HttpHeaders();
+            String contentTypeFromName = guessContentTypeFromName(fileName.toLowerCase());
+            if (contentTypeFromName == null) {
+                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            } else {
+                headers.setContentType(MediaType.parseMediaType(contentTypeFromName));
+            }
+
+            headers.setContentDispositionFormData("attachment", URLEncoder.encode(fileName, "UTF-8"));
+            headers.setCacheControl("public, max-age=" + 31536000);
+
+            // 返回文件
+            return ResponseEntity.ok().headers(headers).body(resource);
+        } catch (IOException e) {
+            log.debug(e.getMessage(), e);
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @Operation(summary = "jasypt加密工具")
