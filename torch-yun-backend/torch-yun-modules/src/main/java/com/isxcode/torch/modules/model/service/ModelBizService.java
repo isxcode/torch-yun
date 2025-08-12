@@ -77,6 +77,11 @@ public class ModelBizService {
 
     public void updateModel(UpdateModelReq updateModelReq) {
 
+        // 系统模型不可编辑
+        if ("Qwen2.5-0.5B".equals(updateModelReq.getId())) {
+            throw new IsxAppException("系统模型无法编辑");
+        }
+
         // 判断模型是否存在
         ModelEntity model = modelService.getModel(updateModelReq.getId());
 
