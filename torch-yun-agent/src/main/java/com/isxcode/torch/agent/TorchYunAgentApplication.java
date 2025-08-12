@@ -6,10 +6,10 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class, SecurityAutoConfiguration.class})
-public class PytorchYunAgentApplication {
+public class TorchYunAgentApplication {
 
     public static void main(String[] args) {
 
-        SpringApplication.run(PytorchYunAgentApplication.class, args);
+        SpringApplication.run(TorchYunAgentApplication.class, args);
     }
 }

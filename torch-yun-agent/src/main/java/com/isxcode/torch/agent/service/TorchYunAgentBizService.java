@@ -19,7 +19,7 @@ import java.net.ServerSocket;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class PytorchYunAgentBizService {
+public class TorchYunAgentBizService {
 
     public static int findUnusedPort() {
 

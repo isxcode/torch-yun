@@ -19,12 +19,12 @@ title: "Rancher安装"
 账号：root   
 密码：Isxcode123..
 
-#### 创建用户zhihuiyun
+#### 创建用户zhishuyun
 
 ```bash
 ssh root@39.100.75.11
-useradd zhihuiyun
-passwd zhihuiyun
+useradd zhishuyun
+passwd zhishuyun
 # 密码：Zhiqingyun123..
 ```
 
@@ -35,7 +35,7 @@ echo never > /sys/kernel/mm/transparent_hugepage/defrag
 echo never > /sys/kernel/mm/transparent_hugepage/enabled
 ```
 
-#### 给zhihuiyun用户赋权
+#### 给zhishuyun用户赋权
 
 ```bash
 vim /etc/sudoers
@@ -43,13 +43,13 @@ vim /etc/sudoers
 
 ```bash
 # Allow root to run any commands anywhere
-zhihuiyun        ALL=(ALL)       NOPASSWD: ALL
+zhishuyun        ALL=(ALL)       NOPASSWD: ALL
 ```
 
-#### 切换zhihuiyun用户
+#### 切换zhishuyun用户
 
 ```bash
-sudo su zhihuiyun
+sudo su zhishuyun
 ```
 
 #### 关闭防火墙
@@ -106,7 +106,7 @@ sudo mkdir -p /data
 > 需要资源邮箱咨询
 
 ```bash
-scp -r /Users/ispong/OneDrive/Downloads/linux/rancher/rancher.zip zhihuiyun@39.100.75.11:/tmp
+scp -r /Users/ispong/OneDrive/Downloads/linux/rancher/rancher.zip zhishuyun@39.100.75.11:/tmp
 # 解压安装包
 cd /tmp
 unzip rancher.zip
@@ -164,8 +164,8 @@ sudo systemctl start docker
 sudo systemctl status docker
 
 # 赋予权限
-sudo chown zhihuiyun:zhihuiyun /usr/bin/docker
-sudo chown zhihuiyun:zhihuiyun /var/run/docker.sock
+sudo chown zhishuyun:zhishuyun /usr/bin/docker
+sudo chown zhishuyun:zhishuyun /var/run/docker.sock
 docker images
 ```
 
@@ -199,7 +199,7 @@ sudo openssl req -sha512 -new \
     -out isxcode.csr
 
 sudo touch v3.ext
-sudo chown zhihuiyun:zhihuiyun v3.ext
+sudo chown zhishuyun:zhishuyun v3.ext
 cat > v3.ext <<-EOF
 authorityKeyIdentifier=keyid,issuer
 basicConstraints=CA:FALSE
@@ -242,7 +242,7 @@ sudo update-ca-trust
 sudo mkdir -p /data/harbor/data
 
 cd /tmp/rancher
-sudo chown zhihuiyun:zhihuiyun /var/run/docker.sock
+sudo chown zhishuyun:zhishuyun /var/run/docker.sock
 docker load -i prepare-1.9.3.tar
 sudo tar zxf harbor-offline-installer-v1.9.3.tgz -C /data/harbor/
 sudo vim /data/harbor/harbor/harbor.yml 
@@ -303,7 +303,7 @@ sudo cp /tmp/rancher/sha256sum-amd64.txt /data/rke2-artifacts/
 sudo su 
 cd /tmp/rancher
 INSTALL_RKE2_ARTIFACT_PATH=/data/rke2-artifacts sh install.sh
-sudo su zhihuiyun
+sudo su zhishuyun
 ```
 
 #### 启动rke2
@@ -329,7 +329,7 @@ EOF
 source /etc/profile
 
 # 赋权查看k8s
-sudo chown zhihuiyun:zhihuiyun /etc/rancher/rke2/rke2.yaml
+sudo chown zhishuyun:zhishuyun /etc/rancher/rke2/rke2.yaml
 kubectl get nodes
 kubectl get pods -n kube-system
 ```
@@ -355,7 +355,7 @@ sudo su
 chmod +x rancher-load-images.sh
 docker login isxcode:8443
 ./rancher-load-images.sh --image-list ./rancher-images.txt --registry isxcode:8443/library
-sudo su zhihuiyun
+sudo su zhishuyun
 ```
 
 #### 修改tls认证

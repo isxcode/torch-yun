@@ -45,7 +45,7 @@ jobs:
           timeout: 1800s
           script: |
             rm -rf /tmp/zhishuyun.tar.gz
-            curl -ssL https://isxcode.oss-cn-shanghai.aliyuncs.com/zhishuyun/zhishuyun.tar.gz -o /tmp/zhishuyun.tar.gz
+            cp /data/file/zhishuyun.tar.gz /tmp/zhishuyun.tar.gz
 
   deploy:
     needs: download
@@ -75,6 +75,10 @@ jobs:
             tar -vzxf /tmp/zhishuyun.tar.gz -C /opt/
             rm -rf /tmp/zhiliuyun.tar.gz
             bash /opt/zhishuyun/bin/stop.sh
+            if [ -d "/opt/zhishuyun/resources_back" ]; then
+              rm -rf /opt/zhishuyun/resources
+              mv /opt/zhishuyun/resources_back /opt/zhishuyun/resources
+            fi
             rm -rf /opt/zhishuyun/conf/application-local.yml
             cp /root/application-local.yml /opt/zhishuyun/conf/application-local.yml
             cp -r /opt/zhishuyun/resources /opt/zhishuyun/resources_bak/resources_$(date +'%Y-%m-%d-%H-%M-%S')_bak
