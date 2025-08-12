@@ -11,8 +11,8 @@ title: "Docker部署"
 > `latest-amd64`多用于常见服务器，x86架构服务器 
 
 ```bash
-registry.cn-shanghai.aliyuncs.com/isxcode/zhihuiyun:latest-amd64 
-registry.cn-shanghai.aliyuncs.com/isxcode/zhihuiyun:latest-arm64
+registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun:latest-amd64 
+registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun:latest-arm64
 ```
 
 #### 快速启动至数云
@@ -20,10 +20,10 @@ registry.cn-shanghai.aliyuncs.com/isxcode/zhihuiyun:latest-arm64
 ```bash
 docker run \
     --restart=always \
-    --name zhihuiyun\
+    --name zhishuyun\
     -e ADMIN_PASSWORD=admin123 \
     -p 8088:8080 \
-    -d registry.cn-shanghai.aliyuncs.com/isxcode/zhihuiyun:latest-amd64
+    -d registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun:latest-amd64
 ```
 
 - 访问地址: http://localhost:8088 
@@ -36,8 +36,8 @@ docker run \
 - `LOG_LEVEL`: 设置项目日志级别，例如info、debug。
 - `ACTIVE_ENV`: 设置项目启动环境配置文件，默认值docker。
 - `PARAMS`: spring项目相关配置。
-- `/var/lib/zhihuiyun`: /var/lib/zhihuiyun: 项目资源目录。
-- `/etc/zhihuiyun/conf`: /etc/zhihuiyun/conf: 配置文件目录。
+- `/var/lib/zhishuyun`: /var/lib/zhishuyun: 项目资源目录。
+- `/etc/zhishuyun/conf`: /etc/zhishuyun/conf: 配置文件目录。
 
 #### 修改配置
 
@@ -45,19 +45,19 @@ docker run \
 https://raw.githubusercontent.com/isxcode/torch-yun/refs/heads/main/torch-yun-backend/torch-yun-main/src/main/resources/application-docker.yml
 
 ```bash
-vim /Users/ispong/zhihuiyun/conf/application-docker.yml
+vim /Users/ispong/zhishuyun/conf/application-docker.yml
 ```
 
 ```bash
 docker run \
     --restart=always \
-    --name zhihuiyun\
+    --name zhishuyun\
     -e ADMIN_PASSWORD=admin123 \
     -e LOG_LEVEL=info \
     -e ACTIVE_ENV=docker \
     -e PARAMS=--spring.flyway.enabled=false \
-    -v /Users/ispong/zhihuiyun/zhihuiyun:/var/lib/zhihuiyun \
-    -v /Users/ispong/zhihuiyun/conf:/etc/zhihuiyun/conf \
+    -v /Users/ispong/zhishuyun/zhishuyun:/var/lib/zhishuyun \
+    -v /Users/ispong/zhishuyun/conf:/etc/zhishuyun/conf \
     -p 8080:8080 \
-    -d isxcode/zhihuiyun
+    -d isxcode/zhishuyun
 ```
