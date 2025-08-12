@@ -16,12 +16,12 @@
 | 安装包下载: | https://zhishuyun-demo.isxcode.com/tools/open/file/zhishuyun.tar.gz |
 | 许可证下载: | https://zhishuyun-demo.isxcode.com/tools/open/file/license.lic      |
 | 友情链接:  | [至轻云 - 超轻量级智能化大数据中心](https://zhiqingyun.isxcode.com)                |
-| 关键词:   | 大模型训练, 智能中心, 模型调用, 模型编排, 人工智能, torch, torch, Docker                 |
+| 关键词:   | 大模型训练, 智能中心, 模型调用, 模型编排, 人工智能, Pytorch, Docker                      |
 |        |                                                                     |
 
 ### 产品介绍
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;至数云是一款超轻量级、超轻量级人工智能应用平台，基于torch生态打造。一键部署，开箱即用。快速实现大模型离线部署、离线训练、模型调用、机器人代理、模型编排、自定义接口等多种功能，为企业提供高效便捷的大模型解决方案。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;至数云是一款超轻量级、超智慧级一体化应用平台。一键部署，开箱即用。可快速实现大模型对话、调优、推理、训练、开放、可视化流程等场景。兼容通义千问和DeepSeek，助力企业拥抱人工智能新时代。
 
 ### 功能特点
 
