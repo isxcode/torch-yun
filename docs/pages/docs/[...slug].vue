@@ -95,7 +95,7 @@ onMounted(async () => {
   const zoom = mediumZoom(document.querySelectorAll(".image-zoom"), {
     margin: 100,
     scrollOffset: 1,
-    background: "rgb(220 234 254)",
+    background: "#f4f9fe",
   });
 
   // 监听图片放大和关闭事件

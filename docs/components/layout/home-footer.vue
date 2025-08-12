@@ -191,7 +191,7 @@
     height: 50px;
     line-height: 50px;
     text-align: center;
-    background: #ffccb4;
+    background: #9bbdff;
 
     .content {
       width: 130px;
