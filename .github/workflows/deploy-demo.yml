@@ -1,4 +1,4 @@
-name: deploy zhiqingyun
+name: deploy zhishuyun
 
 on:
   workflow_dispatch:
@@ -28,14 +28,14 @@ jobs:
           sudo timedatectl set-timezone Asia/Shanghai
           date
 
-      - name: Checkout spark-yun
+      - name: Checkout torch-yun
         uses: actions/checkout@v4
         with:
           token: ${{ env.ADMIN_GITHUB_TOKEN }}
-          repository: "isxcode/spark-yun"
+          repository: "isxcode/torch-yun"
           ref: 'main'
 
-      - name: Download zhiqingyun
+      - name: Download zhishuyun
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
@@ -44,8 +44,8 @@ jobs:
           script_stop: true
           timeout: 1800s
           script: |
-            rm -rf /tmp/zhiqingyun.tar.gz
-            cp /data/file/zhiqingyun.tar.gz /tmp/zhiqingyun.tar.gz
+            rm -rf /tmp/zhishuyun.tar.gz
+            cp /data/file/zhishuyun.tar.gz /tmp/zhishuyun.tar.gz
 
   deploy:
     needs: download
@@ -63,7 +63,7 @@ jobs:
           sudo timedatectl set-timezone Asia/Shanghai
           date
 
-      - name: Deploy zhiqingyun
+      - name: Deploy zhishuyun
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
@@ -72,19 +72,19 @@ jobs:
           script_stop: true
           timeout: 1800s
           script: |
-            tar -vzxf /tmp/zhiqingyun.tar.gz -C /opt/
+            tar -vzxf /tmp/zhishuyun.tar.gz -C /opt/
             rm -rf /tmp/zhiliuyun.tar.gz
-            bash /opt/zhiqingyun/bin/stop.sh
-            if [ -d "/opt/zhiqingyun/resources_back" ]; then
-              rm -rf /opt/zhiqingyun/resources
-              mv /opt/zhiqingyun/resources_back /opt/zhiqingyun/resources
+            bash /opt/zhishuyun/bin/stop.sh
+            if [ -d "/opt/zhishuyun/resources_back" ]; then
+              rm -rf /opt/zhishuyun/resources
+              mv /opt/zhishuyun/resources_back /opt/zhishuyun/resources
             fi
-            rm -rf /opt/zhiqingyun/conf/application-local.yml
-            cp /root/application-local.yml /opt/zhiqingyun/conf/application-local.yml
-            cp -r /opt/zhiqingyun/resources /opt/zhiqingyun/resources_bak/resources_$(date +'%Y-%m-%d-%H-%M-%S')_bak
-            bash /opt/zhiqingyun/bin/start.sh --print-log=false
+            rm -rf /opt/zhishuyun/conf/application-local.yml
+            cp /root/application-local.yml /opt/zhishuyun/conf/application-local.yml
+            cp -r /opt/zhishuyun/resources /opt/zhishuyun/resources_bak/resources_$(date +'%Y-%m-%d-%H-%M-%S')_bak
+            bash /opt/zhishuyun/bin/start.sh --print-log=false
             sleep 120
-            until curl -s https://zhiqingyun-demo.isxcode.com/tools/open/health | grep "UP"; do
+            until curl -s https://zhishuyun-demo.isxcode.com/tools/open/health | grep "UP"; do
               echo "Waiting for service to be available..."
               sleep 1
             done
