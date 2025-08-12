@@ -106,7 +106,7 @@ public class ToolController {
         return "UP";
     }
 
-     @Operation(summary = "下载文件")
+    @Operation(summary = "下载文件")
     @GetMapping("/open/file/{fileName}")
     public ResponseEntity<Resource> file(@PathVariable String fileName) {
 
