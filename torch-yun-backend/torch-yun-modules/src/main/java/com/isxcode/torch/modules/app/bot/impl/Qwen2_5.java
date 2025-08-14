@@ -66,8 +66,11 @@ public class Qwen2_5 extends Bot {
         scpFileEngineNodeDto.setPasswd(aesUtils.decrypt(scpFileEngineNodeDto.getPasswd()));
 
         // 重新封装对应的请求
-        ChatAgentAiReq chatAgentAiReq =
-            ChatAgentAiReq.builder().messages(botChatContext.getChats()).aiPort(botChatContext.getAiPort()).build();
+        ChatAgentAiReq chatAgentAiReq = ChatAgentAiReq.builder().topK(botChatContext.getBaseConfig().getTopK())
+            .topP(botChatContext.getBaseConfig().getTopP()).maxTokens(botChatContext.getBaseConfig().getMaxTokens())
+            .temperature(botChatContext.getBaseConfig().getTemperature())
+            .repetitionPenalty(botChatContext.getBaseConfig().getRepetitionPenalty()).prompt(botChatContext.getPrompt())
+            .messages(botChatContext.getChats()).aiPort(botChatContext.getAiPort()).build();
 
         // 封装请求
         BaseResponse<?> baseResponse = HttpUtils.doPost(
@@ -77,15 +80,18 @@ public class Qwen2_5 extends Bot {
             throw new IsxAppException(baseResponse.getMsg());
         }
 
-        // 修改智能体状态
-        ChatAgentAiRes chatAgentAiRes =
-            JSON.parseObject(JSON.toJSONString(baseResponse.getData()), ChatAgentAiRes.class);
+        String content;
+        if (baseResponse.getMsg().contains("Connection refused")) {
+            content = "智能体已停用";
+        } else {
+            content = JSON.parseObject(JSON.toJSONString(baseResponse.getData()), ChatAgentAiRes.class).getResponse();
+        }
 
         // 提交当前会话
         ChatSessionEntity nowChatSession = chatSessionRepository
             .findBySessionIndexAndChatId(botChatContext.getNowChatIndex(), botChatContext.getChatId()).get();
         nowChatSession.setStatus(ChatSessionStatus.OVER);
-        ChatContent build = ChatContent.builder().content(chatAgentAiRes.getResponse()).build();
+        ChatContent build = ChatContent.builder().content(content).build();
         nowChatSession.setSessionContent(JSON.toJSONString(build));
         chatSessionRepository.save(nowChatSession);
     }

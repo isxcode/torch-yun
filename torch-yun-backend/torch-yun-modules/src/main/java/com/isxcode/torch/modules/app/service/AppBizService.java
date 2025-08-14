@@ -75,11 +75,6 @@ public class AppBizService {
 
         AppEntity app = appService.getApp(configAppReq.getId());
 
-        // 先下线才能配置
-        if (AppStatus.ENABLE.equals(app.getStatus())) {
-            throw new IsxAppException("先下线才能配置");
-        }
-
         app.setPrompt(configAppReq.getPrompt());
         app.setBaseConfig(JSON.toJSONString(configAppReq.getBaseConfig()));
         app.setResources(JSON.toJSONString(configAppReq.getResources()));

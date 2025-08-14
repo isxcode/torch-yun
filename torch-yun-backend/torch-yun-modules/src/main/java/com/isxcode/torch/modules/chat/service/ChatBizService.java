@@ -183,6 +183,8 @@ public class ChatBizService {
         if (ModelType.MANUAL.equals(model.getModelType())) {
             botChatContext.setAiPort(ai.getAiPort());
             botChatContext.setClusterConfig(JSON.parseObject(ai.getClusterConfig(), ClusterConfig.class));
+            botChatContext.setBaseConfig(JSON.parseObject(app.getBaseConfig(), BaseConfig.class));
+            botChatContext.setPrompt(app.getPrompt());
         }
 
         // 记录当前线程

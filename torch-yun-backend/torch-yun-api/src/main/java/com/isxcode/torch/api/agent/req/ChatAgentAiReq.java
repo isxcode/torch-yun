@@ -13,4 +13,16 @@ public class ChatAgentAiReq {
     private List<ChatContent> messages;
 
     private String aiPort;
+
+    private Integer maxTokens;
+
+    private Integer topK;
+
+    private Double topP;
+
+    private Float temperature;
+
+    private Float repetitionPenalty;
+
+    private String prompt;
 }
