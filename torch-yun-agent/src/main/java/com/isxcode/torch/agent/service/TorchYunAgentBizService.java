@@ -100,6 +100,12 @@ public class TorchYunAgentBizService {
 
         ChatAgentAiContent chatAgentAiContent = new ChatAgentAiContent();
         chatAgentAiContent.setMessages(chatAgentAiReq.getMessages());
+        chatAgentAiContent.setTopK(chatAgentAiReq.getTopK());
+        chatAgentAiContent.setTopP(chatAgentAiReq.getTopP());
+        chatAgentAiContent.setPrompt(chatAgentAiReq.getPrompt());
+        chatAgentAiContent.setTemperature(chatAgentAiReq.getTemperature());
+        chatAgentAiContent.setRepetitionPenalty(chatAgentAiReq.getRepetitionPenalty());
+        chatAgentAiContent.setMaxTokens(chatAgentAiReq.getMaxTokens());
 
         return HttpUtils.doPost("http://127.0.0.1:" + chatAgentAiReq.getAiPort() + "/chat", chatAgentAiContent,
             ChatAgentAiRes.class);
