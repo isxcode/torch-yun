@@ -35,3 +35,7 @@ logs
 
 # 大模型不提交
 torch-yun-dist/zhishuyun-agent/file/*
+
+# docker的gradle repo不提交
+gradle-repo
+.pnpm-store
