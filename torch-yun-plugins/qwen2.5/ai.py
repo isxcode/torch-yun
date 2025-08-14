@@ -39,20 +39,19 @@ class StopOnString(StoppingCriteria):
         return False
 
 # 输入结构
+class Message(BaseModel):
+    role: str  # "system" | "user" | "assistant"
+    content: str
+
 class ChatRequest(BaseModel):
-    prompt: str
+    messages: list[Message]  # 全部对话历史（包含 system / user / assistant）
 
 @app.post("/chat")
 async def chat_endpoint(request: ChatRequest):
     try:
-        messages = [
-            {"role": "system", "content": "You are Qwen, created by Alibaba Cloud. You are a helpful assistant."},
-            {"role": "user", "content": request.prompt}
-        ]
-
-        # 构造 prompt
+        # 直接用用户传入的 messages 生成 prompt
         text = tokenizer.apply_chat_template(
-            messages,
+            [m.dict() for m in request.messages],
             tokenize=False,
             add_generation_prompt=True
         )
