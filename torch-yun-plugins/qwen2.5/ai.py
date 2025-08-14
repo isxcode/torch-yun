@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from transformers import (
     AutoModelForCausalLM,
     AutoTokenizer,
@@ -44,12 +44,27 @@ class Message(BaseModel):
     content: str
 
 class ChatRequest(BaseModel):
-    messages: list[Message]  # 全部对话历史（包含 system / user / assistant）
+    prompt: str | None = Field(None, description="可选，全局 system 提示，会自动拼接到 messages 第一条")
+    messages: list[Message]
+
+    # 生成控制参数
+    maxTokens: int = Field(512, description="限制生成文本的最大长度")
+    seed: int | None = Field(None, description="随机数种子，控制生成可重复性")
+    topK: int = Field(50, description="限制候选词汇数量")
+    topP: float = Field(0.9, description="限制候选词累计概率范围")
+    temperature: float = Field(0.8, description="调整概率分布平滑程度")
+    repetitionPenalty: float = Field(1.2, description="惩罚重复内容")
+    enableSearch: bool = Field(False, description="启用搜索功能（占位参数）")
 
 @app.post("/chat")
 async def chat_endpoint(request: ChatRequest):
     try:
         # 直接用用户传入的 messages 生成 prompt
+#         messages = []
+#         if request.prompt:
+#             messages.append({"role": "system", "content": request.prompt})
+#         messages.extend([m.dict() for m in request.messages])
+
         text = tokenizer.apply_chat_template(
             [m.dict() for m in request.messages],
             tokenize=False,
@@ -58,11 +73,11 @@ async def chat_endpoint(request: ChatRequest):
         model_inputs = tokenizer([text], return_tensors="pt").to(model.device)
 
         generation_config = {
-            "max_new_tokens": 512,
-            "temperature": 0.8, # 控制生成文本的随机性。温度越高，生成的文本越随机和创造性；温度越低，文本越趋向于确定性和重复性。
-            "top_k": 50, # 只从模型认为最可能的`k`个词中选择下一个词。`k`值越大，选择范围越广，生成的文本越多样；`k`值越小，选择范围越窄，生成的文本越趋向于高概率的词。
-            "top_p": 0.9, # 从概率累计达到`p`的那一组词中随机选择下一个词。与Top-K不同，Top-P是动态的，依据每个上下文的不同而变化。
-            "repetition_penalty": 1.2
+            "max_new_tokens": request.maxTokens,
+            "temperature": request.temperature,
+            "top_k": request.topK,
+            "top_p": request.topP,
+            "repetition_penalty": request.repetitionPenalty
         }
 
         # 设置 stopping criteria
