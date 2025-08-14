@@ -99,7 +99,7 @@ public class TorchYunAgentBizService {
     public ChatAgentAiRes chatAi(ChatAgentAiReq chatAgentAiReq) {
 
         ChatAgentAiContent chatAgentAiContent = new ChatAgentAiContent();
-        chatAgentAiContent.setPrompt(chatAgentAiReq.getPrompt());
+        chatAgentAiContent.setMessages(chatAgentAiReq.getMessages());
 
         return HttpUtils.doPost("http://127.0.0.1:" + chatAgentAiReq.getAiPort() + "/chat", chatAgentAiContent,
             ChatAgentAiRes.class);

@@ -66,9 +66,8 @@ public class Qwen2_5 extends Bot {
         scpFileEngineNodeDto.setPasswd(aesUtils.decrypt(scpFileEngineNodeDto.getPasswd()));
 
         // 重新封装对应的请求
-        ChatAgentAiReq chatAgentAiReq = ChatAgentAiReq.builder()
-            .prompt(botChatContext.getChats().get(botChatContext.getChats().size() - 1).getContent())
-            .aiPort(botChatContext.getAiPort()).build();
+        ChatAgentAiReq chatAgentAiReq =
+            ChatAgentAiReq.builder().messages(botChatContext.getChats()).aiPort(botChatContext.getAiPort()).build();
 
         // 封装请求
         BaseResponse<?> baseResponse = HttpUtils.doPost(
