@@ -1,53 +1,56 @@
 <template>
     <Breadcrumb :bread-crumb-list="breadCrumbList" />
-    <div class="app-detail-options">
-        <el-button type="primary" @click="showAppConfigEvent">应用配置</el-button>
-    </div>
-    <div class="app-detail-preview">
-        <ZhyChat
-            :isTalking="isTalking"
-            :requestLoading="requestLoading"
-            :talkMsgList="talkMsgList"
-            @stopThink="stopThink"
-        ></ZhyChat>
-        <div class="ai-input-container" :class="{ 'ai-input-container__bottom': isTalking }">
-            <el-input
-                v-model="talkMessage"
-                type="textarea"
-                resize="none"
-                :readonly="!isTalking"
-                placeholder="请输入对话"
-                :autosize="{ minRows: 2, maxRows: 2 }"
-                @keydown.enter.prevent="onKeyupEvent"
-            ></el-input>
-            <div class="option-container">
-                <el-button
-                    :disabled="!talkMessage"
-                    :loading="requestLoading"
-                    @click="sendQuestionEvent"
-                >
-                    <el-icon><Promotion /></el-icon>
-                </el-button>
+    <div class="app-detail-container">
+        <!-- 左侧聊天区域 -->
+        <div class="chat-section">
+            <ZhyChat
+                :isTalking="isTalking"
+                :requestLoading="requestLoading"
+                :talkMsgList="talkMsgList"
+                @stopThink="stopThink"
+            ></ZhyChat>
+            <div class="ai-input-container" :class="{ 'ai-input-container__bottom': isTalking }">
+                <el-input
+                    v-model="talkMessage"
+                    type="textarea"
+                    resize="none"
+                    :readonly="!isTalking"
+                    placeholder="请输入对话"
+                    :autosize="{ minRows: 2, maxRows: 2 }"
+                    @keydown.enter.prevent="onKeyupEvent"
+                ></el-input>
+                <div class="option-container">
+                    <el-button
+                        :disabled="!talkMessage"
+                        :loading="requestLoading"
+                        @click="sendQuestionEvent"
+                    >
+                        <el-icon><Promotion /></el-icon>
+                    </el-button>
+                </div>
             </div>
         </div>
+
+        <!-- 右侧配置面板 -->
+        <div class="config-section">
+            <AppConfigPanel ref="appConfigPanelRef" />
+        </div>
     </div>
-    <AppConfigModal ref="appConfigModalRef"></AppConfigModal>
 </template>
 
 <script lang="ts" setup>
 import { reactive, ref, onMounted, onUnmounted, nextTick } from 'vue'
 import Breadcrumb from '@/layout/bread-crumb/index.vue'
 import { useRoute, useRouter } from 'vue-router'
-import AppConfigModal from '../app-config-modal/index.vue'
+import AppConfigPanel from '../app-config-panel/index.vue'
 import ZhyChat from '../../../home-overview/zhy-chat/index.vue'
 import { ElMessage } from 'element-plus'
-import { ConfigAppData } from '@/services/app-management.service'
 import { GetChatDetailData, GetChatDetailList, GetMaxChatData, SendMessageToAi, StopChatThink } from '@/services/ai-cheat.service'
 
 const route = useRoute()
 const router = useRouter()
 
-const appConfigModalRef = ref<any>()
+const appConfigPanelRef = ref<any>()
 // 消息部分
 const talkMessage = ref<string>('')
 const appId = ref<any>('')
@@ -160,22 +163,7 @@ function getMaxChatData() {
     })
 }
 
-// 应用配置弹窗
-function showAppConfigEvent() {
-    appConfigModalRef.value.showModal((formData: any) => {
-        return new Promise((resolve: any, reject) => {
-            ConfigAppData({
-                id: route.query.id,
-                ...formData
-            }).then((res: any) => {
-                ElMessage.success(res.msg)
-                resolve()
-            }).catch((err: any) => {
-                reject(err)
-            })
-        })
-    })
-}
+
 
 function stopThink() {
     StopChatThink({
@@ -200,55 +188,109 @@ onMounted(() => {
 </script>
 
 <style lang="scss">
-.app-detail-options {
-    position: absolute;
-    right: 20px;
-    top: 0;
-    height: 56px;
-    display: flex;
-    align-items: center;
-}
-.app-detail-preview {
-    position: relative;
+.app-detail-container {
     height: calc(100vh - 56px);
-    width: 100%;
     display: flex;
-    justify-content: center;
-    flex-direction: column;
-    .zhy-chat__show {
-        top: 20px;
-    }
-    .ai-input-container {
-        width: 80%;
-        margin: auto;
-        border: 1px solid #0000000f;
-        border-radius: 15px;
-        padding: 12px 20px 12px 20px;
-        box-sizing: border-box;
-        transition: bottom 0.15s cubic-bezier(0, 0, 0.48, 1.18);
-        position: absolute;
-        left: 10%;
-        bottom: 65%;
-        z-index: 10;
-        .el-textarea {
-            // height: 80px;
-            .el-textarea__inner {
-                box-shadow: unset;
-            }
-        }
-        .option-container {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 12px;
-            .el-button {
-                border-radius: 20px;
+
+    .chat-section {
+        flex: 1;
+        width: 70%;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+
+        // 重写ZhyChat在新布局中的样式
+        .zhy-chat {
+            position: absolute;
+            width: 100%;
+            top: 20px;
+            bottom: 158px;
+            padding: 0 5%;
+            box-sizing: border-box;
+            overflow: auto;
+            visibility: hidden;
+            transition: visibility 0.05s cubic-bezier(0, 0, 0.48, 1.18);
+
+            &.zhy-chat__show {
+                visibility: visible;
+                transition: visibility 0.3s 0.3s linear;
             }
         }
 
-        &.ai-input-container__bottom {
+        .ai-input-container {
+            width: 90%;
+            margin: auto;
+            border: 1px solid #0000000f;
+            border-radius: 15px;
+            padding: 12px 20px 12px 20px;
+            box-sizing: border-box;
+            transition: bottom 0.15s cubic-bezier(0, 0, 0.48, 1.18);
             position: absolute;
-            bottom: 20px;
-            transition: bottom 0.15s 0.3s cubic-bezier(0, 0, 0.48, 1.18);
+            left: 5%;
+            bottom: 65%;
+            z-index: 10;
+
+            .el-textarea {
+                .el-textarea__inner {
+                    box-shadow: unset;
+                }
+            }
+
+            .option-container {
+                display: flex;
+                justify-content: flex-end;
+                margin-top: 12px;
+
+                .el-button {
+                    border-radius: 20px;
+                }
+            }
+
+            &.ai-input-container__bottom {
+                position: absolute;
+                bottom: 20px;
+                transition: bottom 0.15s 0.3s cubic-bezier(0, 0, 0.48, 1.18);
+            }
+        }
+    }
+
+    .config-section {
+        width: 30%;
+        min-width: 350px;
+        max-width: 400px;
+        height: 100%;
+    }
+}
+
+// 响应式设计
+@media (max-width: 1200px) {
+    .app-detail-container {
+        .chat-section {
+            width: 65%;
+        }
+
+        .config-section {
+            width: 35%;
+            min-width: 300px;
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .app-detail-container {
+        flex-direction: column;
+
+        .chat-section {
+            width: 100%;
+            height: 60%;
+        }
+
+        .config-section {
+            width: 100%;
+            height: 40%;
+            min-width: unset;
+            max-width: unset;
         }
     }
 }

@@ -51,3 +51,30 @@ export function ConfigAppData(params: any): Promise<any> {
     })
 }
 
+// 启用应用
+export function EnableAppData(params: any): Promise<any> {
+    return http.request({
+        method: 'post',
+        url: '/app/enableApp',
+        params: params
+    })
+}
+
+// 禁用应用
+export function DisableAppData(params: any): Promise<any> {
+    return http.request({
+        method: 'post',
+        url: '/app/disableApp',
+        params: params
+    })
+}
+
+// 设置默认应用
+export function SetDefaultAppData(params: any): Promise<any> {
+    return http.request({
+        method: 'post',
+        url: '/app/setDefaultApp',
+        params: params
+    })
+}
+

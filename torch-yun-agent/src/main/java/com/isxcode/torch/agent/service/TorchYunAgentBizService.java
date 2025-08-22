@@ -5,6 +5,7 @@ import cn.hutool.core.util.RuntimeUtil;
 import com.isxcode.torch.api.agent.req.ChatAgentAiContent;
 import com.isxcode.torch.api.agent.req.*;
 import com.isxcode.torch.api.agent.res.ChatAgentAiRes;
+import com.isxcode.torch.api.agent.res.CheckAgentAiRes;
 import com.isxcode.torch.api.agent.res.DeployAiRes;
 import com.isxcode.torch.api.agent.res.GetAgentAiLogRes;
 import com.isxcode.torch.backend.api.base.exceptions.IsxAppException;
@@ -100,9 +101,30 @@ public class TorchYunAgentBizService {
 
         ChatAgentAiContent chatAgentAiContent = new ChatAgentAiContent();
         chatAgentAiContent.setMessages(chatAgentAiReq.getMessages());
+        chatAgentAiContent.setTopK(chatAgentAiReq.getTopK());
+        chatAgentAiContent.setTopP(chatAgentAiReq.getTopP());
+        chatAgentAiContent.setPrompt(chatAgentAiReq.getPrompt());
+        chatAgentAiContent.setTemperature(chatAgentAiReq.getTemperature());
+        chatAgentAiContent.setRepetitionPenalty(chatAgentAiReq.getRepetitionPenalty());
+        chatAgentAiContent.setMaxTokens(chatAgentAiReq.getMaxTokens());
 
         return HttpUtils.doPost("http://127.0.0.1:" + chatAgentAiReq.getAiPort() + "/chat", chatAgentAiContent,
             ChatAgentAiRes.class);
 
+    }
+
+    public CheckAgentAiRes checkAi(CheckAgentAiReq checkAgentAiReq) {
+
+        try {
+            // 调用智能体的健康检查接口
+            String healthUrl = "http://127.0.0.1:" + checkAgentAiReq.getAiPort() + "/health";
+
+            HttpUtils.doGet(healthUrl, java.util.Map.class);
+
+            return CheckAgentAiRes.builder().status("ONLINE").message("智能体运行正常").build();
+        } catch (Exception e) {
+            log.error("检测智能体失败: {}", e.getMessage(), e);
+            throw new IsxAppException("智能体检测失败: " + e.getMessage());
+        }
     }
 }

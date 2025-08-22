@@ -54,6 +54,12 @@ public class AppBizService {
         appEntity.setStatus(AppStatus.DISABLE);
         appEntity.setDefaultApp(DefaultAppStatus.DISABLE);
         appEntity.setCheckDateTime(LocalDateTime.now());
+
+        // 应用添加默认配置
+        BaseConfig baseConfig = BaseConfig.builder().topK(50).topP(0.9).maxTokens(512).repetitionPenalty(1.2f)
+            .enableSearch(false).temperature(0.8f).build();
+        appEntity.setBaseConfig(JSON.toJSONString(baseConfig));
+
         appEntity = appRepository.save(appEntity);
 
         return appMapper.appEntityToAddAppRes(appEntity);
@@ -74,11 +80,6 @@ public class AppBizService {
     public void configApp(ConfigAppReq configAppReq) {
 
         AppEntity app = appService.getApp(configAppReq.getId());
-
-        // 先下线才能配置
-        if (AppStatus.ENABLE.equals(app.getStatus())) {
-            throw new IsxAppException("先下线才能配置");
-        }
 
         app.setPrompt(configAppReq.getPrompt());
         app.setBaseConfig(JSON.toJSONString(configAppReq.getBaseConfig()));
@@ -111,6 +112,11 @@ public class AppBizService {
     public void setDefaultApp(SetDefaultAppReq setDefaultAppReq) {
 
         AppEntity app = appService.getApp(setDefaultAppReq.getId());
+
+        // 如果应用不可用，则不能设为默认应用
+        if (AppStatus.DISABLE.equals(app.getStatus())) {
+            throw new IsxAppException("禁用应用，无法设为默认应用");
+        }
 
         List<AppEntity> allApp = appRepository.findAll();
         allApp.forEach(e -> e.setDefaultApp(DefaultAppStatus.DISABLE));

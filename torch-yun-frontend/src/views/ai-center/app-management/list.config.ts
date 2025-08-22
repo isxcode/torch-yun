@@ -65,6 +65,12 @@ export const colConfigs: colConfig[] = [
         customSlot: 'statusTag'
     },
     {
+        prop: 'defaultApp',
+        title: '默认应用',
+        minWidth: 100,
+        customSlot: 'defaultAppTag'
+    },
+    {
         prop: 'createByUsername',
         title: '创建人',
         minWidth: 140
@@ -83,7 +89,7 @@ export const colConfigs: colConfig[] = [
         title: '操作',
         align: 'center',
         customSlot: 'options',
-        width: 80,
+        width: 90,
         fixed: 'right'
     }
 ]

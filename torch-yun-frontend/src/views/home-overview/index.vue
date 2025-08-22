@@ -29,9 +29,11 @@
                     v-model="talkMessage"
                     type="textarea"
                     resize="none"
-                    placeholder="请输入对话"
+                    placeholder="请输入对话（Enter 发送，Shift+Enter 换行）"
                     :autosize="{ minRows: 2, maxRows: 2 }"
-                    @keydown.enter.prevent="onKeyupEvent"
+                    @keydown="onKeydownEvent"
+                    @compositionstart="onCompositionStart"
+                    @compositionend="onCompositionEnd"
                 ></el-input>
                 <div class="option-container">
                     <el-button v-if="isTalking" link @click="stopChat">新对话</el-button>
@@ -79,6 +81,7 @@ const historyListRef = ref<any>()
 const requestLoading = ref<boolean>(false)  // 发送消息-加载状态
 const isTalking = ref<boolean>(false)       // 是否已经开启了对话
 const talkMsgList = ref<any[]>([])          // 当前对话的记录
+const isComposing = ref<boolean>(false)     // 输入法是否正在输入
 
 // 打开历史记录
 function showHistoryEvent() {
@@ -244,10 +247,31 @@ function historyClickEvent(data: any) {
     })
 }
 
-function onKeyupEvent(e: any) {
-    if (e.type === 'keydown' && e.key === 'Enter') {
-        sendQuestionEvent()
+function onKeydownEvent(e: any) {
+    if (e.key === 'Enter') {
+        if (e.shiftKey) {
+            // Shift+Enter 换行，不阻止默认行为
+            return
+        } else {
+            // 如果输入法正在输入，不发送消息
+            if (isComposing.value) {
+                return
+            }
+            // 单独按 Enter 发送消息
+            e.preventDefault()
+            sendQuestionEvent()
+        }
     }
+}
+
+// 输入法开始输入
+function onCompositionStart() {
+    isComposing.value = true
+}
+
+// 输入法结束输入
+function onCompositionEnd() {
+    isComposing.value = false
 }
 
 function stopThink() {

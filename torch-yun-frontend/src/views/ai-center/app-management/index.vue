@@ -20,6 +20,10 @@
                     <template #statusTag="scopeSlot">
                         <ZStatusTag :status="scopeSlot.row.status"></ZStatusTag>
                     </template>
+                    <template #defaultAppTag="scopeSlot">
+                        <el-tag v-if="scopeSlot.row.defaultApp === 'ENABLE'" type="success" size="small">是</el-tag>
+                        <el-tag v-else type="info" size="small">否</el-tag>
+                    </template>
                     <template #logo="scopeSlot">
                         <div class="logo-container">
                             <!-- <el-avatar :size="24" :src="scopeSlot.row.logoId" /> -->
@@ -27,17 +31,24 @@
                         </div>
                     </template>
                     <template #options="scopeSlot">
-                        <div class="btn-group btn-group-msg">
+                        <div class="btn-group">
                             <span @click="editEvent(scopeSlot.row)">编辑</span>
-                            <!-- <el-dropdown trigger="click">
+                            <el-dropdown trigger="click">
                                 <span class="click-show-more">更多</span>
                                 <template #dropdown>
                                     <el-dropdown-menu>
-                                        <el-dropdown-item>发布</el-dropdown-item>
-                                        <el-dropdown-item>删除</el-dropdown-item>
+                                        <el-dropdown-item v-if="scopeSlot.row.status === 'DISABLE'" @click="enableApp(scopeSlot.row)">
+                                            启用
+                                        </el-dropdown-item>
+                                        <el-dropdown-item v-if="scopeSlot.row.status === 'ENABLE'" @click="disableApp(scopeSlot.row)">
+                                            禁用
+                                        </el-dropdown-item>
+                                        <el-dropdown-item v-if="scopeSlot.row.defaultApp !== 'ENABLE'" @click="setDefaultApp(scopeSlot.row)">
+                                            默认
+                                        </el-dropdown-item>
                                     </el-dropdown-menu>
                                 </template>
-                            </el-dropdown> -->
+                            </el-dropdown>
                         </div>
                     </template>
                 </BlockTable>
@@ -52,7 +63,7 @@ import { reactive, ref, onMounted } from 'vue'
 import Breadcrumb from '@/layout/bread-crumb/index.vue'
 import LoadingPage from '@/components/loading/index.vue'
 import { BreadCrumbList, TableConfig } from './list.config'
-import { QueryAppList, AddAppData, UpdateAppData } from '@/services/app-management.service'
+import { QueryAppList, AddAppData, UpdateAppData, EnableAppData, DisableAppData, SetDefaultAppData } from '@/services/app-management.service'
 import AddModal from './add-modal/index.vue'
 import { ElMessage } from 'element-plus'
 import { UserFilled } from '@element-plus/icons-vue'
@@ -142,6 +153,31 @@ function handleCurrentChange(e: number) {
     initData()
 }
 
+function enableApp(data: any) {
+    EnableAppData({ id: data.id }).then((res: any) => {
+        ElMessage.success('启用成功')
+        initData()
+    }).catch((error: any) => {
+        ElMessage.error('启用失败')
+    })
+}
+
+function disableApp(data: any) {
+    DisableAppData({ id: data.id }).then((res: any) => {
+        ElMessage.success('禁用成功')
+        initData()
+    }).catch((error: any) => {
+        ElMessage.error('禁用失败')
+    })
+}
+
+function setDefaultApp(data: any) {
+    SetDefaultAppData({ id: data.id }).then((res: any) => {
+        initData()
+    }).catch((error: any) => {
+    })
+}
+
 onMounted(() => {
     tableConfig.pagination.currentPage = 1
     tableConfig.pagination.pageSize = 10
@@ -153,7 +189,7 @@ onMounted(() => {
 .model-management {
     &.zqy-seach-table {
         .zqy-table {
-            .btn-group-msg {
+            .btn-group {
                 justify-content: space-around;
             }
             .logo-container {

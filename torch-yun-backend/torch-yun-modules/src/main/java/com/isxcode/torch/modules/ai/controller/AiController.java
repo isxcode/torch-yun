@@ -1,6 +1,7 @@
 package com.isxcode.torch.modules.ai.controller;
 
 import com.isxcode.torch.api.ai.req.*;
+import com.isxcode.torch.api.ai.res.CheckAiRes;
 import com.isxcode.torch.api.ai.res.GetAiLogRes;
 import com.isxcode.torch.api.ai.res.PageAiRes;
 import com.isxcode.torch.api.main.constants.ModuleCode;
@@ -76,5 +77,14 @@ public class AiController {
     public GetAiLogRes getAiLog(@Valid @RequestBody GetAiLogReq getAiLogReq) {
 
         return aiBizService.getAiLog(getAiLogReq);
+    }
+
+    @Secured({RoleType.TENANT_MEMBER, RoleType.TENANT_ADMIN})
+    @Operation(summary = "检测智能体接口")
+    @PostMapping("/checkAi")
+    @SuccessResponse("检测完成")
+    public CheckAiRes checkAi(@Valid @RequestBody CheckAiReq checkAiReq) {
+
+        return aiBizService.checkAi(checkAiReq);
     }
 }

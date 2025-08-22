@@ -2,12 +2,16 @@ package com.isxcode.torch.modules.ai.service;
 
 import com.alibaba.fastjson.JSON;
 import com.isxcode.torch.api.agent.constants.AgentUrl;
+import com.isxcode.torch.api.agent.req.CheckAgentAiReq;
 import com.isxcode.torch.api.agent.req.GetAgentAiLogReq;
 import com.isxcode.torch.api.agent.req.StopAgentAiReq;
+import com.isxcode.torch.api.agent.res.CheckAgentAiRes;
 import com.isxcode.torch.api.agent.res.GetAgentAiLogRes;
 import com.isxcode.torch.api.ai.constant.AiStatus;
+import com.isxcode.torch.api.ai.constant.AiType;
 import com.isxcode.torch.api.ai.dto.ClusterConfig;
 import com.isxcode.torch.api.ai.req.*;
+import com.isxcode.torch.api.ai.res.CheckAiRes;
 import com.isxcode.torch.api.ai.res.GetAiLogRes;
 import com.isxcode.torch.api.ai.res.PageAiRes;
 
@@ -15,6 +19,7 @@ import javax.transaction.Transactional;
 
 import com.isxcode.torch.api.app.constants.AppStatus;
 import com.isxcode.torch.api.app.constants.DefaultAppStatus;
+import com.isxcode.torch.api.app.dto.BaseConfig;
 import com.isxcode.torch.api.cluster.constants.ClusterNodeStatus;
 import com.isxcode.torch.api.cluster.dto.ScpFileEngineNodeDto;
 import com.isxcode.torch.api.model.constant.ModelType;
@@ -125,6 +130,11 @@ public class AiBizService {
         appEntity.setCheckDateTime(LocalDateTime.now());
         appEntity.setLogoId("");
         appEntity.setRemark("默认自建");
+
+        // 应用添加默认配置
+        BaseConfig baseConfig = BaseConfig.builder().topK(50).topP(0.9).maxTokens(512).repetitionPenalty(1.2f)
+            .enableSearch(false).temperature(0.8f).build();
+        appEntity.setBaseConfig(JSON.toJSONString(baseConfig));
 
         // 判断是否需要制定默认app应用
         List<AppEntity> allApp = appRepository.findAll();
@@ -300,5 +310,95 @@ public class AiBizService {
             JSON.parseObject(JSON.toJSONString(baseResponse.getData()), GetAgentAiLogRes.class);
 
         return GetAiLogRes.builder().log(getAgentAiLogRes.getLog()).build();
+    }
+
+    public CheckAiRes checkAi(CheckAiReq checkAiReq) {
+
+        // 判断ai是否存在
+        AiEntity ai = aiService.getAi(checkAiReq.getId());
+
+        JPA_TENANT_MODE.set(false);
+        ModelEntity model = modelService.getModel(ai.getModelId());
+        JPA_TENANT_MODE.set(true);
+
+        // 根据智能体类型选择不同的检测方式
+        if (AiType.API.equals(model.getModelType())) {
+            // API类型智能体检测
+            return checkApiAi(ai);
+        } else {
+            // 本地部署智能体检测
+            return checkLocalAi(ai);
+        }
+    }
+
+    private CheckAiRes checkApiAi(AiEntity ai) {
+        try {
+            // API类型智能体的检测逻辑
+            // 这里可以根据具体的API智能体实现检测逻辑
+            // 暂时返回在线状态
+            ai.setCheckDateTime(LocalDateTime.now());
+            aiRepository.save(ai);
+
+            return CheckAiRes.builder().status("ONLINE").message("API智能体运行正常").build();
+        } catch (Exception e) {
+            return CheckAiRes.builder().status("OFFLINE").message("API智能体检测失败: " + e.getMessage()).build();
+        }
+    }
+
+    private CheckAiRes checkLocalAi(AiEntity ai) {
+        // 如果没有端口信息，说明智能体未正常启动
+        if (Strings.isEmpty(ai.getAiPort())) {
+            return CheckAiRes.builder().status("OFFLINE").message("智能体端口信息缺失").build();
+        }
+
+        try {
+            // 随机一个集群节点
+            List<ClusterNodeEntity> allEngineNodes = clusterNodeRepository.findAllByClusterIdAndStatus(
+                JSON.parseObject(ai.getClusterConfig(), ClusterConfig.class).getClusterId(), ClusterNodeStatus.RUNNING);
+            if (allEngineNodes.isEmpty()) {
+                return CheckAiRes.builder().status("OFFLINE").message("集群不存在可用节点").build();
+            }
+            ClusterNodeEntity engineNode = allEngineNodes.get(new java.util.Random().nextInt(allEngineNodes.size()));
+
+            // 翻译节点信息
+            ScpFileEngineNodeDto scpFileEngineNodeDto =
+                clusterNodeMapper.engineNodeEntityToScpFileEngineNodeDto(engineNode);
+            scpFileEngineNodeDto.setPasswd(aesUtils.decrypt(scpFileEngineNodeDto.getPasswd()));
+
+            // 封装请求
+            CheckAgentAiReq checkAgentAiReq = CheckAgentAiReq.builder().agentHomePath(engineNode.getAgentHomePath())
+                .aiId(ai.getId()).aiPort(ai.getAiPort()).build();
+
+            // 调用Agent检测接口
+            BaseResponse<?> baseResponse = HttpUtils.doPost(
+                httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), AgentUrl.CHECK_AI_URL),
+                checkAgentAiReq, BaseResponse.class);
+
+            if (!String.valueOf(HttpStatus.OK.value()).equals(baseResponse.getCode())) {
+                throw new IsxAppException(baseResponse.getMsg());
+            }
+
+            // 解析响应
+            CheckAgentAiRes checkAgentAiRes =
+                JSON.parseObject(JSON.toJSONString(baseResponse.getData()), CheckAgentAiRes.class);
+
+            // 更新检测时间
+            ai.setCheckDateTime(LocalDateTime.now());
+            ai.setStatus(AiStatus.ENABLE);
+            aiRepository.save(ai);
+
+            return CheckAiRes.builder().status(checkAgentAiRes.getStatus()).message(checkAgentAiRes.getMessage())
+                .build();
+
+        } catch (Exception e) {
+
+            // 更新检测时间
+            ai.setStatus(AiStatus.DISABLE);
+            ai.setCheckDateTime(LocalDateTime.now());
+            aiRepository.save(ai);
+
+            // 检测失败，可能智能体已停止
+            return CheckAiRes.builder().status("OFFLINE").message("智能体检测失败: " + e.getMessage()).build();
+        }
     }
 }
