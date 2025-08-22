@@ -12,7 +12,7 @@
                     clearable
                     :maxlength="200"
                     @input="inputEvent"
-                    @keyup.enter="initData(false)" 
+                    @keyup.enter="initData(false)"
                 />
             </div>
         </div>
@@ -182,14 +182,9 @@ function checkAiStatus(data: any) {
         id: data.id
     }).then((res: any) => {
         data.checkLoading = false
-        if (res.data.status === 'ONLINE') {
-            ElMessage.success(res.data.message)
-        } else {
-            ElMessage.warning(res.data.message)
-        }
+        ElMessage.success("检测成功")
     }).catch((error: any) => {
         data.checkLoading = false
-        ElMessage.error('检测失败: ' + (error.message || '未知错误'))
     })
 }
 

@@ -320,14 +320,6 @@ public class AiBizService {
         ModelEntity model = modelService.getModel(ai.getModelId());
         JPA_TENANT_MODE.set(true);
 
-        // 如果智能体状态不是启用状态，直接返回未运行
-        if (!AiStatus.ENABLE.equals(ai.getStatus())) {
-            return CheckAiRes.builder()
-                .status("OFFLINE")
-                .message("智能体未启动")
-                .build();
-        }
-
         // 根据智能体类型选择不同的检测方式
         if (AiType.API.equals(model.getModelType())) {
             // API类型智能体检测
@@ -406,6 +398,7 @@ public class AiBizService {
 
             // 更新检测时间
             ai.setCheckDateTime(LocalDateTime.now());
+            ai.setStatus(AiStatus.ENABLE);
             aiRepository.save(ai);
 
             return CheckAiRes.builder()
@@ -414,6 +407,12 @@ public class AiBizService {
                 .build();
 
         } catch (Exception e) {
+
+             // 更新检测时间
+            ai.setStatus(AiStatus.DISABLE);
+            ai.setCheckDateTime(LocalDateTime.now());
+            aiRepository.save(ai);
+
             // 检测失败，可能智能体已停止
             return CheckAiRes.builder()
                 .status("OFFLINE")

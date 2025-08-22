@@ -44,7 +44,7 @@
                                             禁用
                                         </el-dropdown-item>
                                         <el-dropdown-item v-if="scopeSlot.row.defaultApp !== 'ENABLE'" @click="setDefaultApp(scopeSlot.row)">
-                                            设为默认
+                                            默认
                                         </el-dropdown-item>
                                     </el-dropdown-menu>
                                 </template>
