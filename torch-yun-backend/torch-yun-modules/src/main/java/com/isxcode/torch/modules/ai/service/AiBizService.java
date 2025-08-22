@@ -132,7 +132,8 @@ public class AiBizService {
         appEntity.setRemark("默认自建");
 
         // 应用添加默认配置
-        BaseConfig baseConfig = BaseConfig.builder().topK(50).topP(0.9).maxTokens(512).repetitionPenalty(1.2f).enableSearch(false).temperature(0.8f).build();
+        BaseConfig baseConfig = BaseConfig.builder().topK(50).topP(0.9).maxTokens(512).repetitionPenalty(1.2f)
+            .enableSearch(false).temperature(0.8f).build();
         appEntity.setBaseConfig(JSON.toJSONString(baseConfig));
 
         // 判断是否需要制定默认app应用
@@ -338,25 +339,16 @@ public class AiBizService {
             ai.setCheckDateTime(LocalDateTime.now());
             aiRepository.save(ai);
 
-            return CheckAiRes.builder()
-                .status("ONLINE")
-                .message("API智能体运行正常")
-                .build();
+            return CheckAiRes.builder().status("ONLINE").message("API智能体运行正常").build();
         } catch (Exception e) {
-            return CheckAiRes.builder()
-                .status("OFFLINE")
-                .message("API智能体检测失败: " + e.getMessage())
-                .build();
+            return CheckAiRes.builder().status("OFFLINE").message("API智能体检测失败: " + e.getMessage()).build();
         }
     }
 
     private CheckAiRes checkLocalAi(AiEntity ai) {
         // 如果没有端口信息，说明智能体未正常启动
         if (Strings.isEmpty(ai.getAiPort())) {
-            return CheckAiRes.builder()
-                .status("OFFLINE")
-                .message("智能体端口信息缺失")
-                .build();
+            return CheckAiRes.builder().status("OFFLINE").message("智能体端口信息缺失").build();
         }
 
         try {
@@ -364,10 +356,7 @@ public class AiBizService {
             List<ClusterNodeEntity> allEngineNodes = clusterNodeRepository.findAllByClusterIdAndStatus(
                 JSON.parseObject(ai.getClusterConfig(), ClusterConfig.class).getClusterId(), ClusterNodeStatus.RUNNING);
             if (allEngineNodes.isEmpty()) {
-                return CheckAiRes.builder()
-                    .status("OFFLINE")
-                    .message("集群不存在可用节点")
-                    .build();
+                return CheckAiRes.builder().status("OFFLINE").message("集群不存在可用节点").build();
             }
             ClusterNodeEntity engineNode = allEngineNodes.get(new java.util.Random().nextInt(allEngineNodes.size()));
 
@@ -377,11 +366,8 @@ public class AiBizService {
             scpFileEngineNodeDto.setPasswd(aesUtils.decrypt(scpFileEngineNodeDto.getPasswd()));
 
             // 封装请求
-            CheckAgentAiReq checkAgentAiReq = CheckAgentAiReq.builder()
-                .agentHomePath(engineNode.getAgentHomePath())
-                .aiId(ai.getId())
-                .aiPort(ai.getAiPort())
-                .build();
+            CheckAgentAiReq checkAgentAiReq = CheckAgentAiReq.builder().agentHomePath(engineNode.getAgentHomePath())
+                .aiId(ai.getId()).aiPort(ai.getAiPort()).build();
 
             // 调用Agent检测接口
             BaseResponse<?> baseResponse = HttpUtils.doPost(
@@ -401,23 +387,18 @@ public class AiBizService {
             ai.setStatus(AiStatus.ENABLE);
             aiRepository.save(ai);
 
-            return CheckAiRes.builder()
-                .status(checkAgentAiRes.getStatus())
-                .message(checkAgentAiRes.getMessage())
+            return CheckAiRes.builder().status(checkAgentAiRes.getStatus()).message(checkAgentAiRes.getMessage())
                 .build();
 
         } catch (Exception e) {
 
-             // 更新检测时间
+            // 更新检测时间
             ai.setStatus(AiStatus.DISABLE);
             ai.setCheckDateTime(LocalDateTime.now());
             aiRepository.save(ai);
 
             // 检测失败，可能智能体已停止
-            return CheckAiRes.builder()
-                .status("OFFLINE")
-                .message("智能体检测失败: " + e.getMessage())
-                .build();
+            return CheckAiRes.builder().status("OFFLINE").message("智能体检测失败: " + e.getMessage()).build();
         }
     }
 }
