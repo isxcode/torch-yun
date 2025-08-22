@@ -69,3 +69,12 @@ export function DisableAppData(params: any): Promise<any> {
     })
 }
 
+// 设置默认应用
+export function SetDefaultAppData(params: any): Promise<any> {
+    return http.request({
+        method: 'post',
+        url: '/app/setDefaultApp',
+        params: params
+    })
+}
+

@@ -112,6 +112,11 @@ public class AppBizService {
 
         AppEntity app = appService.getApp(setDefaultAppReq.getId());
 
+        // 如果应用不可用，则不能设为默认应用
+        if (AppStatus.DISABLE.equals(app.getStatus())) {
+            throw new IsxAppException("禁用应用，无法设为默认应用");
+        }
+
         List<AppEntity> allApp = appRepository.findAll();
         allApp.forEach(e -> e.setDefaultApp(DefaultAppStatus.DISABLE));
         appRepository.saveAll(allApp);
