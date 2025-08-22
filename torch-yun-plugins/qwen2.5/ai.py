@@ -56,6 +56,26 @@ class ChatRequest(BaseModel):
     repetitionPenalty: float = Field(1.2, description="惩罚重复内容")
     enableSearch: bool = Field(False, description="启用搜索功能（占位参数）")
 
+@app.get("/health")
+async def health_check():
+    """健康检查接口"""
+    try:
+        # 检查模型是否正常加载
+        if model is None or tokenizer is None:
+            return {"status": "unhealthy", "message": "Model or tokenizer not loaded"}
+
+        # 检查GPU/CPU状态
+        device_status = "cuda" if torch.cuda.is_available() and model.device.type == "cuda" else "cpu"
+
+        return {
+            "status": "healthy",
+            "message": "AI service is running normally",
+            "device": device_status,
+            "model_path": model_path
+        }
+    except Exception as e:
+        return {"status": "unhealthy", "message": f"Health check failed: {str(e)}"}
+
 @app.post("/chat")
 async def chat_endpoint(request: ChatRequest):
     try:

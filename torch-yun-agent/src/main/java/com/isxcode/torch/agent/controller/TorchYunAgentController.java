@@ -2,11 +2,13 @@ package com.isxcode.torch.agent.controller;
 
 import com.isxcode.torch.agent.service.TorchYunAgentBizService;
 import com.isxcode.torch.api.agent.req.ChatAgentAiReq;
+import com.isxcode.torch.api.agent.req.CheckAgentAiReq;
 import com.isxcode.torch.api.agent.req.DeployAiReq;
 import com.isxcode.torch.api.agent.constants.AgentUrl;
 import com.isxcode.torch.api.agent.req.GetAgentAiLogReq;
 import com.isxcode.torch.api.agent.req.StopAgentAiReq;
 import com.isxcode.torch.api.agent.res.ChatAgentAiRes;
+import com.isxcode.torch.api.agent.res.CheckAgentAiRes;
 import com.isxcode.torch.api.agent.res.DeployAiRes;
 import com.isxcode.torch.api.agent.res.GetAgentAiLogRes;
 import com.isxcode.torch.common.annotations.successResponse.SuccessResponse;
@@ -63,4 +65,12 @@ public class TorchYunAgentController {
     @PostMapping(AgentUrl.HEART_CHECK_URL)
     @SuccessResponse("正常心跳")
     public void heartCheck() {}
+
+    @Operation(summary = "检测智能体接口")
+    @PostMapping(AgentUrl.CHECK_AI_URL)
+    @SuccessResponse("检测完成")
+    public CheckAgentAiRes checkAi(@Valid @RequestBody CheckAgentAiReq checkAgentAiReq) {
+
+        return torchYunAgentBizService.checkAi(checkAgentAiReq);
+    }
 }

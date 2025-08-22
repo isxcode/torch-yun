@@ -4,5 +4,7 @@ public interface AiType {
 
     String API = "API";
 
+    String LOCAL = "local";
+
     String DISABLE = "DISABLE";
 }

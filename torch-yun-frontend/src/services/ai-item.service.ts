@@ -59,3 +59,12 @@ export function StopAiItemLogData(params: any): Promise<any> {
         params: params
     })
 }
+
+// 检测智能体
+export function CheckAiItemData(params: any): Promise<any> {
+    return http.request({
+        method: 'post',
+        url: '/ai/checkAi',
+        params: params
+    })
+}
