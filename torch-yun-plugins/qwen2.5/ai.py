@@ -58,23 +58,7 @@ class ChatRequest(BaseModel):
 
 @app.get("/health")
 async def health_check():
-    """健康检查接口"""
-    try:
-        # 检查模型是否正常加载
-        if model is None or tokenizer is None:
-            return {"status": "unhealthy", "message": "Model or tokenizer not loaded"}
-
-        # 检查GPU/CPU状态
-        device_status = "cuda" if torch.cuda.is_available() and model.device.type == "cuda" else "cpu"
-
-        return {
-            "status": "healthy",
-            "message": "AI service is running normally",
-            "device": device_status,
-            "model_path": model_path
-        }
-    except Exception as e:
-        return {"status": "unhealthy", "message": f"Health check failed: {str(e)}"}
+    return {"status": "healthy"}
 
 @app.post("/chat")
 async def chat_endpoint(request: ChatRequest):
