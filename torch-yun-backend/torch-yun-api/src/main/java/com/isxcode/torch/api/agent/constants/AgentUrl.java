@@ -16,4 +16,6 @@ public interface AgentUrl {
     String GET_AI_LOG_URL = "/" + ModuleCode.torch_YUN_AGENT + "/getAiLog";
 
     String CHAT_AI_URL = "/" + ModuleCode.torch_YUN_AGENT + "/chatAi";
+
+    String CHECK_AI_URL = "/" + ModuleCode.torch_YUN_AGENT + "/checkAi";
 }

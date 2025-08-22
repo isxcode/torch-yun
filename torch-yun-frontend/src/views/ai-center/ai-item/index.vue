@@ -25,16 +25,24 @@
                     </template>
                     <template #options="scopeSlot">
                         <div class="btn-group btn-group-msg">
-                            <span @click="editEvent(scopeSlot.row)">编辑</span>
+                            <span
+                                v-if="!scopeSlot.row.checkLoading"
+                                @click="checkAiStatus(scopeSlot.row)"
+                            >检测</span>
+                            <el-icon
+                                v-else
+                                class="is-loading"
+                            >
+                                <Loading />
+                            </el-icon>
                             <el-dropdown trigger="click">
                                 <span class="click-show-more">更多</span>
                                 <template #dropdown>
                                     <el-dropdown-menu>
+                                        <el-dropdown-item @click="editEvent(scopeSlot.row)">编辑</el-dropdown-item>
                                         <el-dropdown-item v-if="['ENABLE'].includes(scopeSlot.row.status)" @click="stopData(scopeSlot.row)">下线</el-dropdown-item>
                                         <el-dropdown-item v-else @click="publishData(scopeSlot.row)">启动</el-dropdown-item>
                                         <el-dropdown-item v-if="scopeSlot.row.aiType !== 'API'" @click="showLog(scopeSlot.row)">日志</el-dropdown-item>
-                                        <!-- <el-dropdown-item>删除</el-dropdown-item>
-                                        <el-dropdown-item>检测</el-dropdown-item> -->
                                     </el-dropdown-menu>
                                 </template>
                             </el-dropdown>
@@ -53,8 +61,9 @@ import { reactive, ref, onMounted, onUnmounted } from 'vue'
 import Breadcrumb from '@/layout/bread-crumb/index.vue'
 import LoadingPage from '@/components/loading/index.vue'
 import { BreadCrumbList, TableConfig } from './list.config'
-import { QueryAiItemList, AddAiItemData, UpdateAiItemData, DeployAiItemLogData, StopAiItemLogData } from '@/services/ai-item.service'
+import { QueryAiItemList, AddAiItemData, UpdateAiItemData, DeployAiItemLogData, StopAiItemLogData, CheckAiItemData } from '@/services/ai-item.service'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { Loading } from '@element-plus/icons-vue'
 import AddModal from './add-modal/index.vue'
 import ShowLog from './show-log/index.vue'
 
@@ -161,6 +170,26 @@ function stopData(data: any) {
             ElMessage.success(res.msg)
             handleCurrentChange(1)
         }).catch(() => {})
+    })
+}
+
+// 检测智能体状态
+function checkAiStatus(data: any) {
+    // 设置加载状态
+    data.checkLoading = true
+
+    CheckAiItemData({
+        id: data.id
+    }).then((res: any) => {
+        data.checkLoading = false
+        if (res.data.status === 'ONLINE') {
+            ElMessage.success(res.data.message)
+        } else {
+            ElMessage.warning(res.data.message)
+        }
+    }).catch((error: any) => {
+        data.checkLoading = false
+        ElMessage.error('检测失败: ' + (error.message || '未知错误'))
     })
 }
 

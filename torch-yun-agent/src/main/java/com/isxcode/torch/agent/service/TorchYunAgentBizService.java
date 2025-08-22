@@ -5,6 +5,7 @@ import cn.hutool.core.util.RuntimeUtil;
 import com.isxcode.torch.api.agent.req.ChatAgentAiContent;
 import com.isxcode.torch.api.agent.req.*;
 import com.isxcode.torch.api.agent.res.ChatAgentAiRes;
+import com.isxcode.torch.api.agent.res.CheckAgentAiRes;
 import com.isxcode.torch.api.agent.res.DeployAiRes;
 import com.isxcode.torch.api.agent.res.GetAgentAiLogRes;
 import com.isxcode.torch.backend.api.base.exceptions.IsxAppException;
@@ -110,5 +111,45 @@ public class TorchYunAgentBizService {
         return HttpUtils.doPost("http://127.0.0.1:" + chatAgentAiReq.getAiPort() + "/chat", chatAgentAiContent,
             ChatAgentAiRes.class);
 
+    }
+
+    public CheckAgentAiRes checkAi(CheckAgentAiReq checkAgentAiReq) {
+
+        try {
+            // 调用智能体的健康检查接口
+            String healthUrl = "http://127.0.0.1:" + checkAgentAiReq.getAiPort() + "/health";
+
+            // 使用Map来接收健康检查响应
+            @SuppressWarnings("unchecked")
+            java.util.Map<String, Object> healthResponse = HttpUtils.doGet(healthUrl, java.util.Map.class);
+
+            String status = (String) healthResponse.get("status");
+            String message = (String) healthResponse.get("message");
+            String device = (String) healthResponse.get("device");
+            String modelPath = (String) healthResponse.get("model_path");
+
+            if ("healthy".equals(status)) {
+                return CheckAgentAiRes.builder()
+                    .status("ONLINE")
+                    .message(message != null ? message : "智能体运行正常")
+                    .device(device)
+                    .modelPath(modelPath)
+                    .build();
+            } else {
+                return CheckAgentAiRes.builder()
+                    .status("OFFLINE")
+                    .message(message != null ? message : "智能体状态异常")
+                    .device(device)
+                    .modelPath(modelPath)
+                    .build();
+            }
+
+        } catch (Exception e) {
+            log.error("检测智能体失败: {}", e.getMessage(), e);
+            return CheckAgentAiRes.builder()
+                .status("OFFLINE")
+                .message("智能体检测失败: " + e.getMessage())
+                .build();
+        }
     }
 }
