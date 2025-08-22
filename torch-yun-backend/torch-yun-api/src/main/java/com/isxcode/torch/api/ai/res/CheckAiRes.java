@@ -8,6 +8,6 @@ import lombok.Data;
 public class CheckAiRes {
 
     private String status;
-    
+
     private String message;
 }

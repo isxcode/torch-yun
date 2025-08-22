@@ -8,8 +8,8 @@ import lombok.Data;
 public class CheckAgentAiReq {
 
     private String agentHomePath;
-    
+
     private String aiId;
-    
+
     private String aiPort;
 }

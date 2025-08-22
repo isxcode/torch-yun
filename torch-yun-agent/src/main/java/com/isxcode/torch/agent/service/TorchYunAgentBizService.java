@@ -121,10 +121,7 @@ public class TorchYunAgentBizService {
 
             HttpUtils.doGet(healthUrl, java.util.Map.class);
 
-            return CheckAgentAiRes.builder()
-                .status("ONLINE")
-                .message("智能体运行正常")
-                .build();
+            return CheckAgentAiRes.builder().status("ONLINE").message("智能体运行正常").build();
         } catch (Exception e) {
             log.error("检测智能体失败: {}", e.getMessage(), e);
             throw new IsxAppException("智能体检测失败: " + e.getMessage());

@@ -8,10 +8,10 @@ import lombok.Data;
 public class CheckAgentAiRes {
 
     private String status;
-    
+
     private String message;
-    
+
     private String device;
-    
+
     private String modelPath;
 }
