@@ -29,9 +29,9 @@
                     v-model="talkMessage"
                     type="textarea"
                     resize="none"
-                    placeholder="请输入对话"
+                    placeholder="请输入对话（Enter 发送，Shift+Enter 换行）"
                     :autosize="{ minRows: 2, maxRows: 2 }"
-                    @keydown.enter.prevent="onKeyupEvent"
+                    @keydown="onKeydownEvent"
                 ></el-input>
                 <div class="option-container">
                     <el-button v-if="isTalking" link @click="stopChat">新对话</el-button>
@@ -244,9 +244,16 @@ function historyClickEvent(data: any) {
     })
 }
 
-function onKeyupEvent(e: any) {
-    if (e.type === 'keydown' && e.key === 'Enter') {
-        sendQuestionEvent()
+function onKeydownEvent(e: any) {
+    if (e.key === 'Enter') {
+        if (e.shiftKey) {
+            // Shift+Enter 换行，不阻止默认行为
+            return
+        } else {
+            // 单独按 Enter 发送消息
+            e.preventDefault()
+            sendQuestionEvent()
+        }
     }
 }
 
