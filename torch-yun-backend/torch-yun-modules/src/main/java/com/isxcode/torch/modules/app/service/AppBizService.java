@@ -54,6 +54,11 @@ public class AppBizService {
         appEntity.setStatus(AppStatus.DISABLE);
         appEntity.setDefaultApp(DefaultAppStatus.DISABLE);
         appEntity.setCheckDateTime(LocalDateTime.now());
+
+        // 应用添加默认配置
+        BaseConfig baseConfig = BaseConfig.builder().topK(50).topP(0.9).maxTokens(512).repetitionPenalty(1.2f).enableSearch(false).temperature(0.8f).build();
+        appEntity.setBaseConfig(JSON.toJSONString(baseConfig));
+
         appEntity = appRepository.save(appEntity);
 
         return appMapper.appEntityToAddAppRes(appEntity);
