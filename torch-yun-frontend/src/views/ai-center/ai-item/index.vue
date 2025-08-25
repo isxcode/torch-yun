@@ -43,6 +43,7 @@
                                         <el-dropdown-item v-if="['ENABLE'].includes(scopeSlot.row.status)" @click="stopData(scopeSlot.row)">下线</el-dropdown-item>
                                         <el-dropdown-item v-else @click="publishData(scopeSlot.row)">启动</el-dropdown-item>
                                         <el-dropdown-item v-if="scopeSlot.row.aiType !== 'API'" @click="showLog(scopeSlot.row)">日志</el-dropdown-item>
+                                        <el-dropdown-item @click="deleteData(scopeSlot.row)" style="color: #f56c6c;">删除</el-dropdown-item>
                                     </el-dropdown-menu>
                                 </template>
                             </el-dropdown>
@@ -61,7 +62,7 @@ import { reactive, ref, onMounted, onUnmounted } from 'vue'
 import Breadcrumb from '@/layout/bread-crumb/index.vue'
 import LoadingPage from '@/components/loading/index.vue'
 import { BreadCrumbList, TableConfig } from './list.config'
-import { QueryAiItemList, AddAiItemData, UpdateAiItemData, DeployAiItemLogData, StopAiItemLogData, CheckAiItemData } from '@/services/ai-item.service'
+import { QueryAiItemList, AddAiItemData, UpdateAiItemData, DeployAiItemLogData, StopAiItemLogData, CheckAiItemData, DeleteAiItemData } from '@/services/ai-item.service'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Loading } from '@element-plus/icons-vue'
 import AddModal from './add-modal/index.vue'
@@ -169,6 +170,22 @@ function stopData(data: any) {
         }).then((res: any) => {
             ElMessage.success(res.msg)
             handleCurrentChange(1)
+        }).catch(() => {})
+    })
+}
+
+// 删除智能体
+function deleteData(data: any) {
+    ElMessageBox.confirm('确定删除该智能体吗？删除后将无法恢复。', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+    }).then(() => {
+        DeleteAiItemData({
+            id: data.id
+        }).then((res: any) => {
+            ElMessage.success(res.msg)
+            initData()
         }).catch(() => {})
     })
 }
