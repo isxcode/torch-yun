@@ -26,6 +26,7 @@ public class AiController {
 
     private final AiBizService aiBizService;
 
+    @Secured({RoleType.TENANT_ADMIN})
     @Operation(summary = "添加AI接口")
     @PostMapping("/addAi")
     @SuccessResponse("添加成功")
