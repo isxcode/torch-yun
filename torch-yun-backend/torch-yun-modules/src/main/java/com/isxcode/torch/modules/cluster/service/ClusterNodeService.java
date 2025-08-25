@@ -73,7 +73,7 @@ public class ClusterNodeService {
     }
 
     public void checkScpPercent(ScpFileEngineNodeDto engineNode, String srcPath, String dstPath,
-        ClusterNodeEntity clusterNode) throws JSchException, IOException, InterruptedException {
+                                ClusterNodeEntity clusterNode) throws JSchException, IOException, InterruptedException {
 
         // 初始化jsch
         JSch jsch = new JSch();
@@ -119,8 +119,10 @@ public class ClusterNodeService {
             }
 
             clusterNode = clusterNodeRepository.findById(clusterNode.getId()).get();
-            clusterNode.setAgentLog(clusterNode.getAgentLog() + "\n进度:" + scpPercent + "%");
-            clusterNodeRepository.saveAndFlush(clusterNode);
+            if (!clusterNode.getAgentLog().contains("进度:" + scpPercent + "%")) {
+                clusterNode.setAgentLog(clusterNode.getAgentLog() + "\n进度:" + scpPercent + "%");
+                clusterNodeRepository.saveAndFlush(clusterNode);
+            }
 
             Thread.sleep(10000);
         }
