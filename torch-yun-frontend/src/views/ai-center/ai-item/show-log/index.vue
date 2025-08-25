@@ -40,7 +40,7 @@ function showModal(data: string, logType: string = 'run'): void {
     loading.value = true
     timer.value = null
     getLogData(data, logType)
-    if (!timer.value && logType === 'run') {
+    if (!timer.value) {
         timer.value = setInterval(() => {
             !isRequest.value && getLogData(data, logType)
         }, 3000)

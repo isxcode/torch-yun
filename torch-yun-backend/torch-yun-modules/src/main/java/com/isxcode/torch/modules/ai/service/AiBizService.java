@@ -276,7 +276,7 @@ public class AiBizService {
 
         // 修改智能体状态
         ai.setStatus(AiStatus.DISABLE);
-        ai.setAiLog(ai.getAiLog() + LocalDateTime.now() + WorkLog.SUCCESS_INFO + "\n已经停止");
+        ai.setAiLog(ai.getAiLog() + "\n" + LocalDateTime.now() + WorkLog.SUCCESS_INFO + " 已停止");
         aiRepository.save(ai);
     }
 
