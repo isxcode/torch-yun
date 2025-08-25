@@ -105,6 +105,11 @@ public class DeployAiService {
                     ai.setAiLog(LocalDateTime.now() + WorkLog.SUCCESS_INFO + "模型已经上传，开始部署模型");
                     ai = aiRepository.saveAndFlush(ai);
                 }
+            } else {
+                // 添加日志
+                ai = aiService.getAi(deployAiContext.getAiId());
+                ai.setAiLog(LocalDateTime.now() + WorkLog.SUCCESS_INFO + "模型已经上传，开始部署模型");
+                ai = aiRepository.saveAndFlush(ai);
             }
 
             // 调用模型部署接口

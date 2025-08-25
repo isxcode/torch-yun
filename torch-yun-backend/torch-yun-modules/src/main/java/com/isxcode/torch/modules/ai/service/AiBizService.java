@@ -24,6 +24,7 @@ import com.isxcode.torch.api.app.dto.BaseConfig;
 import com.isxcode.torch.api.cluster.constants.ClusterNodeStatus;
 import com.isxcode.torch.api.cluster.dto.ScpFileEngineNodeDto;
 import com.isxcode.torch.api.model.constant.ModelType;
+import com.isxcode.torch.api.work.constants.WorkLog;
 import com.isxcode.torch.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.torch.backend.api.base.pojos.BaseResponse;
 import com.isxcode.torch.common.utils.aes.AesUtils;
@@ -275,7 +276,7 @@ public class AiBizService {
 
         // 修改智能体状态
         ai.setStatus(AiStatus.DISABLE);
-        ai.setAiLog(ai.getAiLog() + "\n已经停止");
+        ai.setAiLog(ai.getAiLog() + LocalDateTime.now() + WorkLog.SUCCESS_INFO + "\n已经停止");
         aiRepository.save(ai);
     }
 
@@ -306,7 +307,7 @@ public class AiBizService {
             httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), AgentUrl.GET_AI_LOG_URL),
             getAgentAiLogReq, BaseResponse.class);
         if (!String.valueOf(HttpStatus.OK.value()).equals(baseResponse.getCode())) {
-            throw new IsxAppException(baseResponse.getMsg());
+            return GetAiLogRes.builder().log(baseResponse.getMsg()).build();
         }
 
         // 修改智能体状态
