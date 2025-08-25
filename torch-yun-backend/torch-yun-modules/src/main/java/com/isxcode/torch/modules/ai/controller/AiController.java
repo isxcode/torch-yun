@@ -87,4 +87,13 @@ public class AiController {
 
         return aiBizService.checkAi(checkAiReq);
     }
+
+    @Secured({RoleType.TENANT_ADMIN})
+    @Operation(summary = "删除智能体接口")
+    @PostMapping("/deleteAi")
+    @SuccessResponse("删除成功")
+    public void deleteAi(@Valid @RequestBody DeleteAiReq deleteAiReq) {
+
+        aiBizService.deleteAi(deleteAiReq);
+    }
 }
