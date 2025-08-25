@@ -1,6 +1,5 @@
 package com.isxcode.torch.api.app.req;
 
-import com.isxcode.torch.api.ai.dto.AuthConfig;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
