@@ -93,6 +93,10 @@ async function sendQuestionEvent() {
     if (!talkMessage.value) {
         return
     }
+    // 防止重复调用：如果正在请求中，直接返回
+    if (requestLoading.value) {
+        return
+    }
     isTalking.value = true
     talkMsgList.value.push({
         type: 'user',
