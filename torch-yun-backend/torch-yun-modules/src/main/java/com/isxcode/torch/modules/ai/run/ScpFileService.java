@@ -1,6 +1,7 @@
 package com.isxcode.torch.modules.ai.run;
 
 import com.isxcode.torch.api.cluster.dto.ScpFileEngineNodeDto;
+import com.isxcode.torch.api.work.constants.WorkLog;
 import com.isxcode.torch.modules.ai.entity.AiEntity;
 import com.isxcode.torch.modules.ai.repository.AiRepository;
 import com.jcraft.jsch.*;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 
 @Slf4j
 @Service
@@ -152,7 +154,8 @@ public class ScpFileService {
                 }
 
                 if (!ai.getAiLog().contains("进度:" + scpPercent + "%")) {
-                    ai.setAiLog(ai.getAiLog() + "\n进度:" + scpPercent + "%");
+                    ai.setAiLog(
+                        ai.getAiLog() + "\n " + LocalDateTime.now() + WorkLog.SUCCESS_INFO + "进度:" + scpPercent + "%");
                     ai = aiRepository.saveAndFlush(ai);
                 }
             }

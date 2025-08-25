@@ -316,6 +316,13 @@ public class AiBizService {
         return GetAiLogRes.builder().log(getAgentAiLogRes.getLog()).build();
     }
 
+    public GetAiLogRes getAiDeployLog(GetAiLogReq getAiLogReq) {
+
+        // 判断ai是否存在
+        AiEntity ai = aiService.getAi(getAiLogReq.getId());
+        return GetAiLogRes.builder().log(ai.getAiLog()).build();
+    }
+
     public CheckAiRes checkAi(CheckAiReq checkAiReq) {
 
         // 判断ai是否存在
