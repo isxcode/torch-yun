@@ -3,6 +3,7 @@ package com.isxcode.torch.modules.ai.service;
 import com.alibaba.fastjson.JSON;
 import com.isxcode.torch.api.agent.constants.AgentUrl;
 import com.isxcode.torch.api.agent.req.CheckAgentAiReq;
+import com.isxcode.torch.api.agent.req.DeleteAgentAiReq;
 import com.isxcode.torch.api.agent.req.GetAgentAiLogReq;
 import com.isxcode.torch.api.agent.req.StopAgentAiReq;
 import com.isxcode.torch.api.agent.res.CheckAgentAiRes;
@@ -48,6 +49,9 @@ import org.mapstruct.ap.internal.util.Strings;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -400,5 +404,46 @@ public class AiBizService {
             // 检测失败，可能智能体已停止
             return CheckAiRes.builder().status("OFFLINE").message("智能体检测失败: " + e.getMessage()).build();
         }
+    }
+
+    public void deleteAi(DeleteAiReq deleteAiReq) {
+
+        // 判断智能体是否存在
+        AiEntity ai = aiService.getAi(deleteAiReq.getId());
+
+        // 检查智能体状态，如果正在运行或部署中，不允许删除
+        if (AiStatus.ENABLE.equals(ai.getStatus())) {
+            throw new IsxAppException("智能体正在运行中，请先停止后再删除");
+        }
+        if (AiStatus.DEPLOYING.equals(ai.getStatus())) {
+            throw new IsxAppException("智能体正在部署中，请等待部署完成后再删除");
+        }
+
+        // 随机一个集群节点
+        List<ClusterNodeEntity> allEngineNodes = clusterNodeRepository.findAllByClusterIdAndStatus(
+            JSON.parseObject(ai.getClusterConfig(), ClusterConfig.class).getClusterId(), ClusterNodeStatus.RUNNING);
+        allEngineNodes.forEach(clusterNode -> {
+            // 翻译节点信息
+            ScpFileEngineNodeDto scpFileEngineNodeDto =
+                clusterNodeMapper.engineNodeEntityToScpFileEngineNodeDto(clusterNode);
+            scpFileEngineNodeDto.setPasswd(aesUtils.decrypt(scpFileEngineNodeDto.getPasswd()));
+
+            // 封装请求
+            DeleteAgentAiReq deleteAgentAiReq =
+                DeleteAgentAiReq.builder().agentHomePath(clusterNode.getAgentHomePath()).aiId(ai.getId()).build();
+
+            // 调用Agent检测接口
+            BaseResponse<?> baseResponse = HttpUtils.doPost(
+                httpUrlUtils.genHttpUrl(clusterNode.getHost(), clusterNode.getAgentPort(), AgentUrl.DELETE_AI_URL),
+                deleteAgentAiReq, BaseResponse.class);
+
+            if (!String.valueOf(HttpStatus.OK.value()).equals(baseResponse.getCode())) {
+                throw new IsxAppException(baseResponse.getMsg());
+            }
+        });
+
+
+        // 删除智能体
+        aiRepository.deleteById(ai.getId());
     }
 }

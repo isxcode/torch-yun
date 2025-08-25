@@ -68,3 +68,12 @@ export function CheckAiItemData(params: any): Promise<any> {
         params: params
     })
 }
+
+// 删除智能体
+export function DeleteAiItemData(params: any): Promise<any> {
+    return http.request({
+        method: 'post',
+        url: '/ai/deleteAi',
+        params: params
+    })
+}

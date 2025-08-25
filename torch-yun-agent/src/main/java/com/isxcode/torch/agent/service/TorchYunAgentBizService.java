@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.nio.file.Paths;
 
 @Slf4j
 @Service
@@ -81,6 +82,12 @@ public class TorchYunAgentBizService {
         } catch (InterruptedException e) {
             throw new IsxAppException(e.getMessage());
         }
+    }
+
+    public void deleteAi(DeleteAgentAiReq deleteAgentAiReq) {
+
+        FileUtil
+            .del(Paths.get(deleteAgentAiReq.getAgentHomePath() + "/zhishuyun-agent/ai/" + deleteAgentAiReq.getAiId()));
     }
 
     public GetAgentAiLogRes getAiLog(GetAgentAiLogReq getAgentAiLogReq) {
