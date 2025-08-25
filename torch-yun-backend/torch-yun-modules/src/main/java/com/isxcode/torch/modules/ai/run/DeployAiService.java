@@ -93,7 +93,7 @@ public class DeployAiService {
                     // 添加日志
                     ai = aiService.getAi(deployAiContext.getAiId());
                     ai.setAiLog("开始上传模型");
-                    ai = aiRepository.save(ai);
+                    ai = aiRepository.saveAndFlush(ai);
 
                     // 同步监听进度
                     scpFileService.listenScpPercent(scpFileEngineNodeDto, srcPath, distPath, ai);
@@ -101,7 +101,7 @@ public class DeployAiService {
                     // 添加日志
                     ai = aiService.getAi(deployAiContext.getAiId());
                     ai.setAiLog("模型已经上传");
-                    aiRepository.save(ai);
+                    aiRepository.saveAndFlush(ai);
                 }
             }
 

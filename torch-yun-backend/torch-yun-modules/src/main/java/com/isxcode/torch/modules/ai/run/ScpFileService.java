@@ -151,11 +151,13 @@ public class ScpFileService {
                     scpPercent = (int) (remoteFileSize * 100 / localFileSize);
                 }
 
-                ai.setAiLog(ai.getAiLog() + "\n进度:" + scpPercent + "%");
-                ai = aiRepository.saveAndFlush(ai);
+                if (!ai.getAiLog().contains("进度:" + scpPercent + "%")) {
+                    ai.setAiLog(ai.getAiLog() + "\n进度:" + scpPercent + "%");
+                    ai = aiRepository.saveAndFlush(ai);
+                }
             }
 
-            Thread.sleep(10000);
+            Thread.sleep(3000);
         }
 
         channel.disconnect();
