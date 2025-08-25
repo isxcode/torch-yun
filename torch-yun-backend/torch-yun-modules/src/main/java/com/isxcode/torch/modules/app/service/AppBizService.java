@@ -73,7 +73,7 @@ public class AppBizService {
             throw new IsxAppException("应用名称重复");
         }
 
-        AppEntity appEntity = appMapper.updateAppReqToAppEntity(updateAppReq);
+        AppEntity appEntity = appMapper.updateAppReqToAppEntity(appEntityByName.get(), updateAppReq);
         appRepository.save(appEntity);
     }
 
