@@ -1,12 +1,8 @@
 package com.isxcode.torch.agent.controller;
 
 import com.isxcode.torch.agent.service.TorchYunAgentBizService;
-import com.isxcode.torch.api.agent.req.ChatAgentAiReq;
-import com.isxcode.torch.api.agent.req.CheckAgentAiReq;
-import com.isxcode.torch.api.agent.req.DeployAiReq;
+import com.isxcode.torch.api.agent.req.*;
 import com.isxcode.torch.api.agent.constants.AgentUrl;
-import com.isxcode.torch.api.agent.req.GetAgentAiLogReq;
-import com.isxcode.torch.api.agent.req.StopAgentAiReq;
 import com.isxcode.torch.api.agent.res.ChatAgentAiRes;
 import com.isxcode.torch.api.agent.res.CheckAgentAiRes;
 import com.isxcode.torch.api.agent.res.DeployAiRes;
@@ -43,6 +39,14 @@ public class TorchYunAgentController {
     public void stopAi(@Valid @RequestBody StopAgentAiReq stopAgentAiReq) {
 
         torchYunAgentBizService.stopAi(stopAgentAiReq);
+    }
+
+    @Operation(summary = "删除ai接口")
+    @PostMapping(AgentUrl.DELETE_AI_URL)
+    @SuccessResponse("删除成功")
+    public void deleteAi(@Valid @RequestBody DeleteAgentAiReq deleteAgentAiReq) {
+
+        torchYunAgentBizService.deleteAi(deleteAgentAiReq);
     }
 
     @Operation(summary = "获取ai日志接口")

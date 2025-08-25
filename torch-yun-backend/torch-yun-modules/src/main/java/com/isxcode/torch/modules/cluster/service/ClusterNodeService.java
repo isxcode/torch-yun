@@ -73,7 +73,7 @@ public class ClusterNodeService {
     }
 
     public void checkScpPercent(ScpFileEngineNodeDto engineNode, String srcPath, String dstPath,
-                                ClusterNodeEntity clusterNode) throws JSchException, IOException, InterruptedException {
+        ClusterNodeEntity clusterNode) throws JSchException, IOException, InterruptedException {
 
         // 初始化jsch
         JSch jsch = new JSch();

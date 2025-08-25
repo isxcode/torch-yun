@@ -14,8 +14,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
+import java.nio.charset.StandardCharsets;
 
 @Slf4j
 @Service
@@ -80,6 +84,32 @@ public class TorchYunAgentBizService {
             }
         } catch (InterruptedException e) {
             throw new IsxAppException(e.getMessage());
+        }
+    }
+
+    public void deleteAi(DeleteAgentAiReq deleteAgentAiReq) {
+
+        String deleteAiCommand =
+            "rm  -rf " + deleteAgentAiReq.getAgentHomePath() + "/zhishuyun-agent/ai/" + deleteAgentAiReq.getAiId();
+
+        StringBuilder errLog = new StringBuilder();
+
+        try {
+            // 执行命令
+            Process stopAiProcess = RuntimeUtil.exec(deleteAiCommand);
+            InputStream errorStream = stopAiProcess.getInputStream();
+            BufferedReader errorReader = new BufferedReader(new InputStreamReader(errorStream, StandardCharsets.UTF_8));
+
+            String line;
+            while ((line = errorReader.readLine()) != null) {
+                errLog.append(line).append("\n");
+            }
+
+            if (stopAiProcess.waitFor() != 0) {
+                throw new IsxAppException(errLog.toString());
+            }
+        } catch (IOException | InterruptedException e) {
+            throw new IsxAppException(errLog.toString());
         }
     }
 
