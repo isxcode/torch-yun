@@ -96,7 +96,7 @@ public class TorchYunAgentBizService {
 
         // 如果ai.log文件不存在则报错，再部署中
         if (!FileUtil.exist(aiPath + "/ai.log")) {
-            throw new IsxAppException("模型在部署中，请稍后");
+            throw new IsxAppException("模型尚未运行，请稍后");
         }
 
         String[] getAiLog = {"bash", "-c", "cat " + aiPath + "/ai.log"};
