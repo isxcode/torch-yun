@@ -72,12 +72,21 @@ public class AiController {
     }
 
     @Secured({RoleType.TENANT_MEMBER, RoleType.TENANT_ADMIN})
-    @Operation(summary = "获取智能体日志接口")
+    @Operation(summary = "获取智能体运行日志接口")
     @PostMapping("/getAiLog")
     @SuccessResponse("获取成功")
     public GetAiLogRes getAiLog(@Valid @RequestBody GetAiLogReq getAiLogReq) {
 
         return aiBizService.getAiLog(getAiLogReq);
+    }
+
+    @Secured({RoleType.TENANT_MEMBER, RoleType.TENANT_ADMIN})
+    @Operation(summary = "获取智能体部署日志接口")
+    @PostMapping("/getAiDeployLog")
+    @SuccessResponse("获取成功")
+    public GetAiLogRes getAiDeployLog(@Valid @RequestBody GetAiLogReq getAiLogReq) {
+
+        return aiBizService.getAiDeployLog(getAiLogReq);
     }
 
     @Secured({RoleType.TENANT_MEMBER, RoleType.TENANT_ADMIN})

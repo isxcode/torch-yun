@@ -33,11 +33,20 @@ export function UpdateAiItemData(params: any): Promise<any> {
     })
 }
 
-// 获取智能体日志
+// 获取智能体运行日志
 export function GetAiItemLogData(params: any): Promise<any> {
     return http.request({
         method: 'post',
         url: '/ai/getAiLog',
+        params: params
+    })
+}
+
+// 获取智能体部署日志
+export function GetAiDeployLogData(params: any): Promise<any> {
+    return http.request({
+        method: 'post',
+        url: '/ai/getAiDeployLog',
         params: params
     })
 }

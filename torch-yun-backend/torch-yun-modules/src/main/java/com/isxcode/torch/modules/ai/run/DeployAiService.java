@@ -8,6 +8,7 @@ import com.isxcode.torch.api.ai.constant.AiStatus;
 import com.isxcode.torch.api.app.constants.AppStatus;
 import com.isxcode.torch.api.cluster.constants.ClusterNodeStatus;
 import com.isxcode.torch.api.cluster.dto.ScpFileEngineNodeDto;
+import com.isxcode.torch.api.work.constants.WorkLog;
 import com.isxcode.torch.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.torch.backend.api.base.pojos.BaseResponse;
 import com.isxcode.torch.backend.api.base.properties.IsxAppProperties;
@@ -30,6 +31,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
 
@@ -92,17 +94,22 @@ public class DeployAiService {
 
                     // 添加日志
                     ai = aiService.getAi(deployAiContext.getAiId());
-                    ai.setAiLog("开始上传模型");
-                    ai = aiRepository.save(ai);
+                    ai.setAiLog(LocalDateTime.now() + WorkLog.SUCCESS_INFO + "开始上传模型");
+                    ai = aiRepository.saveAndFlush(ai);
 
                     // 同步监听进度
                     scpFileService.listenScpPercent(scpFileEngineNodeDto, srcPath, distPath, ai);
                 } else {
                     // 添加日志
                     ai = aiService.getAi(deployAiContext.getAiId());
-                    ai.setAiLog("模型已经上传");
-                    aiRepository.save(ai);
+                    ai.setAiLog(LocalDateTime.now() + WorkLog.SUCCESS_INFO + "模型已经上传，开始部署模型");
+                    ai = aiRepository.saveAndFlush(ai);
                 }
+            } else {
+                // 添加日志
+                ai = aiService.getAi(deployAiContext.getAiId());
+                ai.setAiLog(LocalDateTime.now() + WorkLog.SUCCESS_INFO + "模型已经上传，开始部署模型");
+                ai = aiRepository.saveAndFlush(ai);
             }
 
             // 调用模型部署接口
@@ -120,7 +127,7 @@ public class DeployAiService {
 
             // 运行返回端口号
             ai = aiService.getAi(deployAiContext.getAiId());
-            ai.setAiLog(ai.getAiLog() + "\n运行中");
+            ai.setAiLog(ai.getAiLog() + "\n" + LocalDateTime.now() + WorkLog.SUCCESS_INFO + "运行中");
             ai.setStatus(AiStatus.ENABLE);
             ai.setAiPid(deployAiRes.getAiPid());
             ai.setAiPort(deployAiRes.getAiPort());
