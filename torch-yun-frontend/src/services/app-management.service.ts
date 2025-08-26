@@ -78,3 +78,12 @@ export function SetDefaultAppData(params: any): Promise<any> {
     })
 }
 
+// 删除应用
+export function DeleteAppData(params: any): Promise<any> {
+    return http.request({
+        method: 'post',
+        url: '/app/deleteApp',
+        params: params
+    })
+}
+
