@@ -2,6 +2,38 @@
     <div class="app-config-panel">
         <el-scrollbar class="panel-content">
             <div class="app-config-container">
+                <!-- 应用基础信息 -->
+                <div class="config-item app-info-section">
+                    <div class="item-title">应用信息</div>
+                    <div class="app-info-content">
+                        <div class="info-item">
+                            <span class="info-label">应用名称：</span>
+                            <span class="info-value">{{ appInfo.name || '-' }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">智能体：</span>
+                            <span class="info-value">{{ appInfo.aiName || '-' }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">状态：</span>
+                            <el-tag
+                                :type="appInfo.status === 'ENABLE' ? 'success' : 'danger'"
+                                size="small"
+                            >
+                                {{ appInfo.status === 'ENABLE' ? '启用' : '禁用' }}
+                            </el-tag>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">创建时间：</span>
+                            <span class="info-value">{{ appInfo.createDateTime || '-' }}</span>
+                        </div>
+                        <div class="info-item" v-if="appInfo.remark">
+                            <span class="info-label">备注：</span>
+                            <span class="info-value">{{ appInfo.remark }}</span>
+                        </div>
+                    </div>
+                </div>
+
                 <el-form
                     ref="formRef"
                     label-position="left"
@@ -160,7 +192,7 @@
 import { reactive, ref, onMounted, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useRoute } from 'vue-router'
-import { GetConfigAppData, ConfigAppData } from '@/services/app-management.service'
+import { GetConfigAppData, ConfigAppData, QueryAppList } from '@/services/app-management.service'
 import { GetFileCenterList } from '@/services/file-center.service'
 
 const route = useRoute()
@@ -169,6 +201,7 @@ const basicFormRules = ref([])
 const formRef = ref<any>()
 const resourcesList = ref<any[]>([])
 const saveLoading = ref(false)
+const appInfo = ref<any>({})
 
 const formData = reactive<{
     baseConfig: any
@@ -187,6 +220,23 @@ const formData = reactive<{
     prompt: '',
     resources: []
 })
+
+// 获取应用信息
+function getAppInfo() {
+    QueryAppList({
+        page: 0,
+        pageSize: 999,
+        searchKeyWord: ''
+    }).then((res: any) => {
+        const appList = res.data.content || []
+        const currentApp = appList.find((app: any) => app.id === route.query.id)
+        if (currentApp) {
+            appInfo.value = currentApp
+        }
+    }).catch((error: any) => {
+        console.error('获取应用信息报错', error)
+    })
+}
 
 // 获取配置数据
 function getConfigData() {
@@ -241,11 +291,13 @@ function saveConfig() {
 // 监听路由变化，重新加载数据
 watch(() => route.query.id, (newId) => {
     if (newId) {
+        getAppInfo()
         getConfigData()
     }
 })
 
 onMounted(() => {
+    getAppInfo()
     getConfigData()
     getFileListOptions()
 })
@@ -282,6 +334,42 @@ defineExpose({
 .app-config-panel {
     .app-config-container {
         padding: 40px;
+
+        .config-item {
+            margin-bottom: 20px;
+
+            .item-title {
+                font-size: 14px;
+                font-weight: 500;
+                padding-bottom: 10px;
+                border-bottom: 1px solid #ebeef5;
+                margin-bottom: 14px;
+                color: #303133;
+            }
+
+            &.app-info-section {
+                .app-info-content {
+                    .info-item {
+                        display: flex;
+                        align-items: center;
+                        margin-bottom: 14px;
+                        font-size: 12px;
+
+                        .info-label {
+                            color: #606266;
+                            min-width: 80px;
+                            flex-shrink: 0;
+                            padding-right: 8px;
+                        }
+
+                        .info-value {
+                            color: #303133;
+                            flex: 1;
+                        }
+                    }
+                }
+            }
+        }
 
         .el-form {
             .config-item {
