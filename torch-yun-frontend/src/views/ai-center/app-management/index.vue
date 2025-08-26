@@ -46,6 +46,9 @@
                                         <el-dropdown-item v-if="scopeSlot.row.defaultApp !== 'ENABLE'" @click="setDefaultApp(scopeSlot.row)">
                                             默认
                                         </el-dropdown-item>
+                                        <el-dropdown-item @click="deleteApp(scopeSlot.row)" style="color: #f56c6c;">
+                                            删除
+                                        </el-dropdown-item>
                                     </el-dropdown-menu>
                                 </template>
                             </el-dropdown>
@@ -63,9 +66,9 @@ import { reactive, ref, onMounted } from 'vue'
 import Breadcrumb from '@/layout/bread-crumb/index.vue'
 import LoadingPage from '@/components/loading/index.vue'
 import { BreadCrumbList, TableConfig } from './list.config'
-import { QueryAppList, AddAppData, UpdateAppData, EnableAppData, DisableAppData, SetDefaultAppData } from '@/services/app-management.service'
+import { QueryAppList, AddAppData, UpdateAppData, EnableAppData, DisableAppData, SetDefaultAppData, DeleteAppData } from '@/services/app-management.service'
 import AddModal from './add-modal/index.vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { UserFilled } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router'
 
@@ -175,6 +178,27 @@ function setDefaultApp(data: any) {
     SetDefaultAppData({ id: data.id }).then((res: any) => {
         initData()
     }).catch((error: any) => {
+    })
+}
+
+function deleteApp(data: any) {
+    ElMessageBox.confirm(
+        `确定要删除应用 "${data.name}" 吗？删除后无法恢复。`,
+        '删除确认',
+        {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+        }
+    ).then(() => {
+        DeleteAppData({ id: data.id }).then((res: any) => {
+            ElMessage.success('删除成功')
+            initData()
+        }).catch((error: any) => {
+            ElMessage.error('删除失败')
+        })
+    }).catch(() => {
+        // 用户取消删除
     })
 }
 
