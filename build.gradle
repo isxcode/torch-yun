@@ -156,10 +156,11 @@ tasks.register('docker', Exec) {
      '''
 }
 
+// ssh-copy-id root@zhishuyun.isxcode.com
 tasks.register('upload-ali-oss', Exec) {
 
     commandLine 'sh', '-c', '''
-      ossutil cp torch-yun-dist/build/distributions/zhishuyun.tar.gz oss://isxcode/zhishuyun/ -f
+      scp torch-yun-dist/build/distributions/zhishuyun.tar.gz root@zhishuyun.isxcode.com:/data/file/
      '''
 }
 

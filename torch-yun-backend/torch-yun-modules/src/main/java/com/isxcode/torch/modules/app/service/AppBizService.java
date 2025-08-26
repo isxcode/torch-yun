@@ -51,7 +51,7 @@ public class AppBizService {
         }
 
         AppEntity appEntity = appMapper.addAppReqToAppEntity(addAppReq);
-        appEntity.setStatus(AppStatus.DISABLE);
+        appEntity.setStatus(AppStatus.ENABLE);
         appEntity.setDefaultApp(DefaultAppStatus.DISABLE);
         appEntity.setCheckDateTime(LocalDateTime.now());
 
