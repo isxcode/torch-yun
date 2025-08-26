@@ -88,7 +88,7 @@ const typeList = ref<Option[]>([
         value: 'local'
     },
     {
-        label: 'API',
+        label: '远程接入',
         value: 'API'
     }
 ])
