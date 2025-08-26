@@ -157,7 +157,7 @@ defineExpose({
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0 20px;
+        padding: 0 5px;
         box-sizing: border-box;
         .app-label {
             font-size: 14px;
