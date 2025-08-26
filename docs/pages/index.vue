@@ -62,10 +62,10 @@
     <div class="module-feat-left">
       <div class="content">
         <div class="left">
-          <img id="zoom" src="https://zhishuyun-demo.isxcode.com/tools/open/file/p-0.jpg" alt="">
+          <img id="zoom" src="https://zhishuyun-demo.isxcode.com/tools/open/file/p-0.png" alt="">
         </div>
         <div class="left-phone">
-          <img src="https://zhishuyun-demo.isxcode.com/tools/open/file/p-0.jpg" alt="">
+          <img src="https://zhishuyun-demo.isxcode.com/tools/open/file/p-0.png" alt="">
         </div>
         <div class="right">
           <div class="line-1">{{ $t("coding_capability") }}</div>
@@ -79,7 +79,7 @@
     <div class="module-feat-right">
       <div class="content">
         <div class="right-phone">
-          <img src="https://zhishuyun-demo.isxcode.com/tools/open/file/p-1.jpg" alt="">
+          <img src="https://zhishuyun-demo.isxcode.com/tools/open/file/p-1.png" alt="">
         </div>
         <div class="left">
           <div class="line-1">{{ $t("job_orchestration") }}</div>
@@ -89,17 +89,17 @@
           </div>
         </div>
         <div class="right">
-          <img id="zoom" src="https://zhishuyun-demo.isxcode.com/tools/open/file/p-1.jpg" alt="">
+          <img id="zoom" src="https://zhishuyun-demo.isxcode.com/tools/open/file/p-1.png" alt="">
         </div>
       </div>
     </div>
     <div class="module-feat-left">
       <div class="content">
         <div class="left">
-          <img id="zoom" src="https://zhishuyun-demo.isxcode.com/tools/open/file/p-2.jpg" alt="">
+          <img id="zoom" src="https://zhishuyun-demo.isxcode.com/tools/open/file/p-2.png" alt="">
         </div>
         <div class="left-phone">
-          <img src="https://zhishuyun-demo.isxcode.com/tools/open/file/p-2.jpg" alt="">
+          <img src="https://zhishuyun-demo.isxcode.com/tools/open/file/p-2.png" alt="">
         </div>
         <div class="right">
           <div class="line-1">{{ $t("real_work") }}</div>
@@ -131,7 +131,7 @@
     <div class="module-feat-right">
       <div class="content">
         <div class="right-phone">
-          <img class="feat-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/p-3.jpg" alt=""/>
+          <img class="feat-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/p-3.png" alt=""/>
         </div>
         <div class="left">
           <div class="line-1">{{ $t("multi_platform_deployment") }}</div>
@@ -141,17 +141,17 @@
           </div>
         </div>
         <div class="right">
-          <img id="zoom" class="feat-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/p-3.jpg" alt="">
+          <img id="zoom" class="feat-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/p-3.png" alt="">
         </div>
       </div>
     </div>
     <div class="module-feat-left">
       <div class="content">
         <div class="left">
-          <img id="zoom" class="feat-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/p-4.jpg" alt="">
+          <img id="zoom" class="feat-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/p-4.png" alt="">
         </div>
         <div class="left-phone">
-          <img class="feat-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/p-4.jpg" alt="">
+          <img class="feat-img" src="https://zhishuyun-demo.isxcode.com/tools/open/file/p-4.png" alt="">
         </div>
         <div class="right">
           <div class="line-1">{{ $t("data_view") }}</div>
