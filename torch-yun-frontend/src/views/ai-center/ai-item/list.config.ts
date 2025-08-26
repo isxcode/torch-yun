@@ -59,7 +59,20 @@ export const colConfigs: colConfig[] = [
     {
         prop: 'aiType',
         title: '类型',
-        minWidth: 100
+        minWidth: 100,
+        formatter: (data: any): string => {
+            const aiType = data.row.aiType;
+            switch (aiType) {
+                case 'MANUAL':
+                    return '本地部署';
+                case 'API':
+                    return '远程接入';
+                case 'local':
+                    return '本地部署';
+                default:
+                    return aiType || '';
+            }
+        }
     },
     {
         prop: 'status',
