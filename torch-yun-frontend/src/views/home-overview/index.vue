@@ -100,6 +100,10 @@ function clickAppEvent(e: any) {
 
     getMaxChatData().then(() => {
         getChatDetailListData()
+    }).catch(() => {
+        // getMaxChatData 调用失败时，退出对话模式
+        isTalking.value = false
+        appInfo.value = null
     })
 }
 
@@ -138,7 +142,9 @@ function getChatResult() {
                 })
             })
             // 会话结束获取最新的索引
-            getMaxChatData()
+            getMaxChatData().catch(() => {
+                // 获取最新索引失败，不影响对话显示
+            })
         }
     }).catch(() => {
         requestLoading.value = false
@@ -154,32 +160,58 @@ async function sendQuestionEvent() {
     if (requestLoading.value) {
         return
     }
+
+    // 记录是否是第一次对话（用于错误处理时判断是否需要退出全屏模式）
+    const wasAlreadyTalking = isTalking.value
+
     isTalking.value = true
     talkMsgList.value.push({
         type: 'user',
         content: talkMessage.value
     })
     requestLoading.value = true
-    if (!appInfo.value) {
-        await getMaxChatData()
-    }
-    SendMessageToAi({
-        chatId: chatId.value || null,
-        appId: appInfo.value ? appInfo.value.id : null,
-        maxChatIndexId: maxChatIndexId.value,
-        chatContent: {
-            content: talkMessage.value,
-            // index: talkMsgList.length - 1,
-            // role: ''
+
+    try {
+        if (!appInfo.value) {
+            await getMaxChatData()
         }
-    }).then((res: any) => {
-        talkMessage.value = ''
-        maxChatIndexId.value = res.data.responseIndexId
-        getChatResult()
-    }).catch(() => {
+
+        SendMessageToAi({
+            chatId: chatId.value || null,
+            appId: appInfo.value ? appInfo.value.id : null,
+            maxChatIndexId: maxChatIndexId.value,
+            chatContent: {
+                content: talkMessage.value,
+                // index: talkMsgList.length - 1,
+                // role: ''
+            }
+        }).then((res: any) => {
+            talkMessage.value = ''
+            maxChatIndexId.value = res.data.responseIndexId
+            getChatResult()
+        }).catch(() => {
+            talkMessage.value = ''
+            requestLoading.value = false
+
+            // 如果之前没有在对话状态（即这是第一次输入），则退出全屏对话模式
+            if (!wasAlreadyTalking) {
+                isTalking.value = false
+                // 移除刚添加的用户消息
+                talkMsgList.value.pop()
+            }
+        })
+    } catch (error) {
+        // getMaxChatData 调用失败的处理
         talkMessage.value = ''
         requestLoading.value = false
-    })
+
+        // 如果之前没有在对话状态（即这是第一次输入），则退出全屏对话模式
+        if (!wasAlreadyTalking) {
+            isTalking.value = false
+            // 移除刚添加的用户消息
+            talkMsgList.value.pop()
+        }
+    }
 }
 
 // 获取最大对话
@@ -248,6 +280,10 @@ function historyClickEvent(data: any) {
     })
     getMaxChatData().then(() => {
         getChatDetailListData()
+    }).catch(() => {
+        // getMaxChatData 调用失败时，退出对话模式
+        isTalking.value = false
+        appInfo.value = null
     })
 }
 
@@ -295,7 +331,9 @@ onMounted(() => {
 
     if (chatId.value) {
         getChatDetailListData().then(() => {
-            getMaxChatData()
+            getMaxChatData().catch(() => {
+                // 页面初始化时获取最新索引失败，不影响页面显示
+            })
         })
     }
 })
