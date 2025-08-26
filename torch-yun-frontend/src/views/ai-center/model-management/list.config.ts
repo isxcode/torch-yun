@@ -59,7 +59,22 @@ export const colConfigs: colConfig[] = [
     {
         prop: 'modelType',
         title: '类型',
-        minWidth: 100
+        minWidth: 100,
+        formatter: (data: any): string => {
+            const modelType = data.row.modelType;
+            switch (modelType) {
+                case 'API':
+                    return '远程模型';
+                case 'MANUAL':
+                    return '本地模型';
+                case 'LOCAL':
+                    return '本地模型';
+                case 'BUILD':
+                    return '构建模型';
+                default:
+                    return modelType || '';
+            }
+        }
     },
     {
         prop: 'modelFileName',
