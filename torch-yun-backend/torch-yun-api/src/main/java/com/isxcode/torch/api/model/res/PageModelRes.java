@@ -33,4 +33,6 @@ public class PageModelRes {
     private LocalDateTime createDateTime;
 
     private String createBy;
+
+    private String tenantId;
 }
