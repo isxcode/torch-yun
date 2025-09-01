@@ -9,10 +9,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.validation.Valid;
 
@@ -40,12 +42,26 @@ public class ChatController {
         return chatBizService.sendChat(sendChatReq);
     }
 
+    @Operation(summary = "发送对话(SSE流式)")
+    @PostMapping(value = "/sendChatStream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter sendChatStream(@Valid @RequestBody SendChatReq sendChatReq) {
+
+        return chatBizService.sendChatStream(sendChatReq);
+    }
+
     @Operation(summary = "接受对话")
     @PostMapping("/getChat")
     @SuccessResponse("获取成功")
     public GetChatRes getChat(@Valid @RequestBody GetChatReq getChatReq) {
 
         return chatBizService.getChat(getChatReq);
+    }
+
+    @Operation(summary = "接受对话(SSE流式)")
+    @PostMapping(value = "/getChatStream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter getChatStream(@Valid @RequestBody GetChatReq getChatReq) {
+
+        return chatBizService.getChatStream(getChatReq);
     }
 
     @Operation(summary = "搜索聊天历史")

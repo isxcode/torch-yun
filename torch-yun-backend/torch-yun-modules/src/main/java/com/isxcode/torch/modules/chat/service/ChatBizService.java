@@ -18,6 +18,7 @@ import com.isxcode.torch.modules.ai.service.AiService;
 import com.isxcode.torch.modules.app.bot.Bot;
 import com.isxcode.torch.modules.app.bot.BotChatContext;
 import com.isxcode.torch.modules.app.bot.BotFactory;
+import com.isxcode.torch.modules.app.bot.StreamBot;
 import com.isxcode.torch.modules.app.entity.AppEntity;
 import com.isxcode.torch.modules.app.repository.AppRepository;
 import com.isxcode.torch.modules.app.service.AppService;
@@ -34,6 +35,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.transaction.Transactional;
 
@@ -279,5 +281,227 @@ public class ChatBizService {
             chatSessionEntity.setStatus(ChatSessionStatus.OVER);
             chatSessionRepository.save(chatSessionEntity);
         }
+    }
+
+    public SseEmitter getChatStream(GetChatReq getChatReq) {
+
+        // 创建 SSE 连接，设置超时时间为 30 分钟
+        SseEmitter sseEmitter = new SseEmitter(30 * 60 * 1000L);
+
+        try {
+            ChatSessionEntity chatSessionEntity =
+                chatSessionRepository.findBySessionIndexAndChatId(getChatReq.getChatIndex(), getChatReq.getChatId())
+                    .orElseThrow(() -> new IsxAppException("当前会话不存在"));
+
+            // 如果会话已经结束，直接返回完整内容
+            if (ChatSessionStatus.OVER.equals(chatSessionEntity.getStatus())) {
+                ChatContent chatContent = JSON.parseObject(chatSessionEntity.getSessionContent(), ChatContent.class);
+                GetChatRes response =
+                    GetChatRes.builder().status(chatSessionEntity.getStatus()).chatContent(chatContent).build();
+
+                sseEmitter.send(SseEmitter.event().name("message").data(JSON.toJSONString(response)));
+
+                sseEmitter.send(SseEmitter.event().name("complete").data(""));
+
+                sseEmitter.complete();
+                return sseEmitter;
+            }
+
+            // 如果会话正在进行中，开始轮询状态变化
+            new Thread(() -> {
+                try {
+                    String lastContent = "";
+                    ChatSessionEntity currentSession = chatSessionEntity;
+
+                    while (ChatSessionStatus.CHATTING.equals(currentSession.getStatus())) {
+                        // 重新查询最新状态
+                        currentSession = chatSessionRepository
+                            .findBySessionIndexAndChatId(getChatReq.getChatIndex(), getChatReq.getChatId())
+                            .orElse(currentSession);
+
+                        ChatContent chatContent =
+                            JSON.parseObject(currentSession.getSessionContent(), ChatContent.class);
+                        String currentContent = chatContent != null ? chatContent.getContent() : "";
+
+                        // 如果内容有更新，发送增量内容
+                        if (currentContent != null && !currentContent.equals(lastContent)) {
+                            GetChatRes response = GetChatRes.builder().status(currentSession.getStatus())
+                                .chatContent(chatContent).build();
+
+                            sseEmitter.send(SseEmitter.event().name("message").data(JSON.toJSONString(response)));
+
+                            lastContent = currentContent;
+                        }
+
+                        // 短暂休眠避免过度轮询
+                        Thread.sleep(500);
+                    }
+
+                    // 会话结束，发送最终结果
+                    ChatContent finalChatContent =
+                        JSON.parseObject(currentSession.getSessionContent(), ChatContent.class);
+                    GetChatRes finalResponse =
+                        GetChatRes.builder().status(currentSession.getStatus()).chatContent(finalChatContent).build();
+
+                    sseEmitter.send(SseEmitter.event().name("message").data(JSON.toJSONString(finalResponse)));
+
+                    sseEmitter.send(SseEmitter.event().name("complete").data(""));
+
+                    sseEmitter.complete();
+
+                } catch (Exception e) {
+                    log.error("SSE 流处理异常", e);
+                    try {
+                        sseEmitter.send(SseEmitter.event().name("error").data(e.getMessage()));
+                    } catch (Exception ignored) {
+                    }
+                    sseEmitter.completeWithError(e);
+                }
+            }).start();
+
+        } catch (Exception e) {
+            log.error("获取聊天流异常", e);
+            try {
+                sseEmitter.send(SseEmitter.event().name("error").data(e.getMessage()));
+                sseEmitter.completeWithError(e);
+            } catch (Exception ignored) {
+            }
+        }
+
+        // 设置连接关闭和超时的回调
+        sseEmitter.onCompletion(() -> log.info("SSE 连接完成"));
+        sseEmitter.onTimeout(() -> log.warn("SSE 连接超时"));
+        sseEmitter.onError((ex) -> log.error("SSE 连接错误", ex));
+
+        return sseEmitter;
+    }
+
+    public SseEmitter sendChatStream(SendChatReq sendChatReq) {
+
+        // 创建 SSE 连接，设置超时时间为 30 分钟
+        SseEmitter sseEmitter = new SseEmitter(30 * 60 * 1000L);
+
+        try {
+            // 判断应用是否存在
+            AppEntity app = appService.getApp(sendChatReq.getAppId());
+
+            // 判断会话是否存在
+            ChatEntity chat = chatService.getChat(sendChatReq.getChatId());
+
+            // 判断会话index是否存在
+            if (chatSessionRepository.existsBySessionIndexAndChatId(sendChatReq.getMaxChatIndexId(),
+                sendChatReq.getChatId())) {
+                throw new IsxAppException("当前index已存在");
+            }
+
+            // 判断上一个会话是否结束
+            if (sendChatReq.getMaxChatIndexId() != 0) {
+                ChatSessionEntity chatSession = chatSessionRepository
+                    .findBySessionIndexAndChatId(sendChatReq.getMaxChatIndexId() - 1, sendChatReq.getChatId())
+                    .orElseThrow(() -> new IsxAppException("请等待上一个会话结束"));
+                if (ChatSessionStatus.CHATTING.equals(chatSession.getStatus())) {
+                    throw new IsxAppException("等待会话结束");
+                }
+            }
+
+            // 初始化当前会话
+            ChatSessionEntity chatSession = new ChatSessionEntity();
+            chatSession.setSessionType(ChatSessionType.USER);
+            chatSession.setStatus(ChatSessionStatus.OVER);
+            chatSession.setAppId(sendChatReq.getAppId());
+            chatSession.setChatId(sendChatReq.getChatId());
+            chatSession.setSessionIndex(sendChatReq.getMaxChatIndexId());
+            chatSession.setSessionContent(JSON.toJSONString(sendChatReq.getChatContent()));
+
+            // 获取上下文
+            List<ChatSessionEntity> chatSessionList = chatSessionRepository.findAllByChatId(chat.getId());
+            chatSessionList.add(chatSession);
+
+            // 获取机器人id
+            AiEntity ai = aiService.getAi(app.getAiId());
+            String modelId = ai.getModelId();
+            JPA_TENANT_MODE.set(false);
+            ModelEntity model = modelService.getModel(modelId);
+            JPA_TENANT_MODE.set(true);
+
+            // 封装会话请求体
+            BotChatContext botChatContext = chatService.transSessionListToBotChatContext(chatSessionList, app, ai,
+                sendChatReq.getMaxChatIndexId(), sendChatReq.getChatId());
+            if (!Strings.isEmpty(app.getBaseConfig())) {
+                botChatContext.setBaseConfig(JSON.parseObject(app.getBaseConfig(), BaseConfig.class));
+            }
+            if (ModelType.MANUAL.equals(model.getModelType())) {
+                botChatContext.setAiPort(ai.getAiPort());
+                botChatContext.setClusterConfig(JSON.parseObject(ai.getClusterConfig(), ClusterConfig.class));
+                botChatContext.setBaseConfig(JSON.parseObject(app.getBaseConfig(), BaseConfig.class));
+                botChatContext.setPrompt(app.getPrompt());
+            }
+
+            // 保存请求会话
+            chatSessionRepository.save(chatSession);
+
+            // 初始化当前会话
+            ChatSessionEntity nowChatSession = new ChatSessionEntity();
+            nowChatSession.setSessionType(ChatSessionType.ASSISTANT);
+            nowChatSession.setStatus(ChatSessionStatus.CHATTING);
+            nowChatSession.setAppId(sendChatReq.getAppId());
+            nowChatSession.setChatId(sendChatReq.getChatId());
+            nowChatSession.setSessionIndex(sendChatReq.getMaxChatIndexId() + 1);
+            nowChatSession.setSessionContent("{}");
+            chatSessionRepository.save(nowChatSession);
+
+            // 发送开始事件
+            SendChatRes response = SendChatRes.builder().chatId(sendChatReq.getChatId())
+                .responseIndexId(sendChatReq.getMaxChatIndexId() + 1).chatSessionId(chatSession.getId())
+                .appId(sendChatReq.getAppId()).build();
+
+            sseEmitter.send(SseEmitter.event().name("start").data(JSON.toJSONString(response)));
+
+            // 异步发送流式请求
+            new Thread(() -> {
+                try {
+                    // 记录当前线程
+                    CHAT_THREAD_MAP.put(chatSession.getId(), Thread.currentThread());
+
+                    // 发送流式请求
+                    Bot bot = botFactory.getBot(model.getCode());
+                    if (bot instanceof StreamBot) {
+                        ((StreamBot) bot).sendChatStream(botChatContext, sseEmitter);
+                    } else {
+                        // 如果不支持流式，回退到普通模式
+                        bot.sendChat(botChatContext);
+                        sseEmitter.send(SseEmitter.event().name("complete").data(""));
+                        sseEmitter.complete();
+                    }
+
+                    // 删除当前线程
+                    CHAT_THREAD_MAP.remove(chatSession.getId());
+
+                } catch (Exception e) {
+                    log.error("流式聊天异常", e);
+                    try {
+                        sseEmitter.send(SseEmitter.event().name("error").data(e.getMessage()));
+                        sseEmitter.completeWithError(e);
+                    } catch (Exception ignored) {
+                    }
+                    CHAT_THREAD_MAP.remove(chatSession.getId());
+                }
+            }).start();
+
+        } catch (Exception e) {
+            log.error("发送流式聊天异常", e);
+            try {
+                sseEmitter.send(SseEmitter.event().name("error").data(e.getMessage()));
+                sseEmitter.completeWithError(e);
+            } catch (Exception ignored) {
+            }
+        }
+
+        // 设置连接关闭和超时的回调
+        sseEmitter.onCompletion(() -> log.info("流式聊天 SSE 连接完成"));
+        sseEmitter.onTimeout(() -> log.warn("流式聊天 SSE 连接超时"));
+        sseEmitter.onError((ex) -> log.error("流式聊天 SSE 连接错误", ex));
+
+        return sseEmitter;
     }
 }
