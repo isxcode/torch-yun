@@ -1,22 +1,25 @@
 package com.isxcode.torch.modules.app.bot;
 
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 public abstract class Bot {
-
-    /**
-     * 流对话.
-     */
-    public abstract void chat(BotChatContext botChatContext);
 
     /**
      * 智能体名称.
      */
     public abstract String name();
 
-    @Async
-    public void sendChat(BotChatContext botChatContext) {
+    /**
+     * 流式对话接口.
+     */
+    public abstract void chatStream(BotChatContext botChatContext, SseEmitter sseEmitter);
 
-        chat(botChatContext);
+    /**
+     * 异步发送流式聊天.
+     */
+    @Async
+    public void sendChatStream(BotChatContext botChatContext, SseEmitter sseEmitter) {
+        chatStream(botChatContext, sseEmitter);
     }
 }

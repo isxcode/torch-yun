@@ -18,7 +18,6 @@ import com.isxcode.torch.modules.ai.service.AiService;
 import com.isxcode.torch.modules.app.bot.Bot;
 import com.isxcode.torch.modules.app.bot.BotChatContext;
 import com.isxcode.torch.modules.app.bot.BotFactory;
-import com.isxcode.torch.modules.app.bot.StreamBot;
 import com.isxcode.torch.modules.app.entity.AppEntity;
 import com.isxcode.torch.modules.app.repository.AppRepository;
 import com.isxcode.torch.modules.app.service.AppService;
@@ -130,92 +129,6 @@ public class ChatBizService {
         getMaxChatIdRes.setAppName(appService.getAppName(getMaxChatIdRes.getAppId()));
 
         return getMaxChatIdRes;
-    }
-
-    public SendChatRes sendChat(SendChatReq sendChatReq) {
-
-        // 判断应用是否存在
-        AppEntity app = appService.getApp(sendChatReq.getAppId());
-
-        // 判断会话是否存在
-        ChatEntity chat = chatService.getChat(sendChatReq.getChatId());
-
-        // 判断会话index是否存在
-        if (chatSessionRepository.existsBySessionIndexAndChatId(sendChatReq.getMaxChatIndexId(),
-            sendChatReq.getChatId())) {
-            throw new IsxAppException("当前index已存在");
-        }
-
-        // 判断上一个会话是否结束
-        if (sendChatReq.getMaxChatIndexId() != 0) {
-            ChatSessionEntity chatSession = chatSessionRepository
-                .findBySessionIndexAndChatId(sendChatReq.getMaxChatIndexId() - 1, sendChatReq.getChatId())
-                .orElseThrow(() -> new IsxAppException("请等待上一个会话结束"));
-            if (ChatSessionStatus.CHATTING.equals(chatSession.getStatus())) {
-                throw new IsxAppException("等待会话结束");
-            }
-        }
-
-        // 初始化当前会话
-        ChatSessionEntity chatSession = new ChatSessionEntity();
-        chatSession.setSessionType(ChatSessionType.USER);
-        chatSession.setStatus(ChatSessionStatus.OVER);
-        chatSession.setAppId(sendChatReq.getAppId());
-        chatSession.setChatId(sendChatReq.getChatId());
-        chatSession.setSessionIndex(sendChatReq.getMaxChatIndexId());
-        chatSession.setSessionContent(JSON.toJSONString(sendChatReq.getChatContent()));
-
-        // 获取上下文
-        List<ChatSessionEntity> chatSessionList = chatSessionRepository.findAllByChatId(chat.getId());
-        chatSessionList.add(chatSession);
-
-        // 获取机器人id
-        AiEntity ai = aiService.getAi(app.getAiId());
-        String modelId = ai.getModelId();
-        JPA_TENANT_MODE.set(false);
-        ModelEntity model = modelService.getModel(modelId);
-        JPA_TENANT_MODE.set(true);
-
-        // 封装会话请求体
-        BotChatContext botChatContext = chatService.transSessionListToBotChatContext(chatSessionList, app, ai,
-            sendChatReq.getMaxChatIndexId(), sendChatReq.getChatId());
-        if (!Strings.isEmpty(app.getBaseConfig())) {
-            botChatContext.setBaseConfig(JSON.parseObject(app.getBaseConfig(), BaseConfig.class));
-        }
-        if (ModelType.MANUAL.equals(model.getModelType())) {
-            botChatContext.setAiPort(ai.getAiPort());
-            botChatContext.setClusterConfig(JSON.parseObject(ai.getClusterConfig(), ClusterConfig.class));
-            botChatContext.setBaseConfig(JSON.parseObject(app.getBaseConfig(), BaseConfig.class));
-            botChatContext.setPrompt(app.getPrompt());
-        }
-
-        // 记录当前线程
-        CHAT_THREAD_MAP.put(chatSession.getId(), Thread.currentThread());
-
-        // 发送请求
-        Bot bot = botFactory.getBot(model.getCode());
-        bot.sendChat(botChatContext);
-
-        // 删除当前线程
-        CHAT_THREAD_MAP.remove(chatSession.getId());
-
-        // 保存请求会话
-        chatSessionRepository.save(chatSession);
-
-        // 初始化当前会话
-        ChatSessionEntity nowChatSession = new ChatSessionEntity();
-        nowChatSession.setSessionType(ChatSessionType.ASSISTANT);
-        nowChatSession.setStatus(ChatSessionStatus.CHATTING);
-        nowChatSession.setAppId(sendChatReq.getAppId());
-        nowChatSession.setChatId(sendChatReq.getChatId());
-        nowChatSession.setSessionIndex(sendChatReq.getMaxChatIndexId() + 1);
-        nowChatSession.setSessionContent("{}");
-        chatSessionRepository.save(nowChatSession);
-
-        // 返回成功和响应的index
-        return SendChatRes.builder().chatId(sendChatReq.getChatId())
-            .responseIndexId(sendChatReq.getMaxChatIndexId() + 1).chatSessionId(chatSession.getId())
-            .appId(sendChatReq.getAppId()).build();
     }
 
     public GetChatRes getChat(GetChatReq getChatReq) {
@@ -465,14 +378,7 @@ public class ChatBizService {
 
                     // 发送流式请求
                     Bot bot = botFactory.getBot(model.getCode());
-                    if (bot instanceof StreamBot) {
-                        ((StreamBot) bot).sendChatStream(botChatContext, sseEmitter);
-                    } else {
-                        // 如果不支持流式，回退到普通模式
-                        bot.sendChat(botChatContext);
-                        sseEmitter.send(SseEmitter.event().name("complete").data(""));
-                        sseEmitter.complete();
-                    }
+                    bot.sendChatStream(botChatContext, sseEmitter);
 
                     // 删除当前线程
                     CHAT_THREAD_MAP.remove(chatSession.getId());

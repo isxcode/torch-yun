@@ -4,7 +4,7 @@ import { http } from '@/utils/http'
 export function SendMessageToAi(params: any): Promise<any> {
     return http.request({
         method: 'post',
-        url: '/chat/sendChat',
+        url: '/chat/sendChatStream',
         params: params
     })
 }
