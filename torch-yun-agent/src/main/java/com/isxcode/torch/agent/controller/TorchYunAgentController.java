@@ -11,9 +11,11 @@ import com.isxcode.torch.common.annotations.successResponse.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.validation.Valid;
 
@@ -63,6 +65,13 @@ public class TorchYunAgentController {
     public ChatAgentAiRes chatAi(@Valid @RequestBody ChatAgentAiReq chatAgentAiReq) {
 
         return torchYunAgentBizService.chatAi(chatAgentAiReq);
+    }
+
+    @Operation(summary = "调用ai流式接口")
+    @PostMapping(value = AgentUrl.CHAT_AI_STREAM_URL, produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter chatAiStream(@Valid @RequestBody ChatAgentAiReq chatAgentAiReq) {
+
+        return torchYunAgentBizService.chatAiStream(chatAgentAiReq);
     }
 
     @Operation(summary = "心跳检测接口")

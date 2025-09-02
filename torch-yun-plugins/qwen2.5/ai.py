@@ -1,14 +1,19 @@
 from fastapi import FastAPI
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 from transformers import (
     AutoModelForCausalLM,
     AutoTokenizer,
     AutoConfig,
     StoppingCriteria,
-    StoppingCriteriaList
+    StoppingCriteriaList,
+    TextIteratorStreamer
 )
 import torch
 import os
+import json
+import asyncio
+from threading import Thread
 
 app = FastAPI()
 
@@ -106,3 +111,90 @@ async def chat_endpoint(request: ChatRequest):
 
     except Exception as e:
         return {"error": str(e)}
+
+@app.post("/chat/stream")
+async def chat_stream_endpoint(request: ChatRequest):
+    """流式聊天接口，返回SSE格式的流式响应"""
+    try:
+        # 准备输入
+        text = tokenizer.apply_chat_template(
+            [m.dict() for m in request.messages],
+            tokenize=False,
+            add_generation_prompt=True
+        )
+        model_inputs = tokenizer([text], return_tensors="pt").to(model.device)
+
+        generation_config = {
+            "max_new_tokens": request.maxTokens,
+            "temperature": request.temperature,
+            "top_k": request.topK,
+            "top_p": request.topP,
+            "repetition_penalty": request.repetitionPenalty,
+            "do_sample": True,
+            "pad_token_id": tokenizer.eos_token_id
+        }
+
+        # 设置 stopping criteria
+        stop_strings = ["ContentLoaded"]
+        stopping_criteria = StoppingCriteriaList([StopOnString(stop_strings, tokenizer)])
+
+        # 创建流式生成器
+        streamer = TextIteratorStreamer(
+            tokenizer,
+            timeout=60.0,
+            skip_prompt=True,
+            skip_special_tokens=True
+        )
+
+        # 在单独线程中运行生成
+        generation_kwargs = {
+            **model_inputs,
+            **generation_config,
+            "stopping_criteria": stopping_criteria,
+            "streamer": streamer
+        }
+
+        thread = Thread(target=model.generate, kwargs=generation_kwargs)
+        thread.start()
+
+        async def generate_stream():
+            """生成SSE流式响应"""
+            try:
+                for new_text in streamer:
+                    if new_text:
+                        # 发送delta事件
+                        yield f"event: delta\ndata: {new_text}\n\n"
+                        await asyncio.sleep(0.01)  # 小延迟以避免过快发送
+
+                # 发送完成事件
+                yield f"event: complete\ndata: \n\n"
+
+            except Exception as e:
+                # 发送错误事件
+                yield f"event: error\ndata: {str(e)}\n\n"
+
+        return StreamingResponse(
+            generate_stream(),
+            media_type="text/event-stream",
+            headers={
+                "Cache-Control": "no-cache",
+                "Connection": "keep-alive",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "*",
+                "Access-Control-Allow-Methods": "*"
+            }
+        )
+
+    except Exception as e:
+        # 返回错误的SSE响应
+        async def error_stream():
+            yield f"event: error\ndata: {str(e)}\n\n"
+
+        return StreamingResponse(
+            error_stream(),
+            media_type="text/event-stream",
+            headers={
+                "Cache-Control": "no-cache",
+                "Connection": "keep-alive"
+            }
+        )
