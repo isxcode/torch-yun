@@ -20,7 +20,8 @@
                 <div class="chat-message-item" v-html="content(item.content)">
                 </div>
             </div>
-            <div class="card-item card-item__ai" v-if="requestLoading">
+            <!-- 显示流式加载状态 -->
+            <div class="card-item card-item__ai" v-if="requestLoading && !hasLoadingMessage">
                 <el-avatar
                     :style="{
                         left: '-44px',
@@ -89,6 +90,11 @@ const content = computed(() => {
   return (content: string) => {
     return renderMarkdown(content)
   }
+})
+
+// 检查是否有加载中的消息
+const hasLoadingMessage = computed(() => {
+  return props.talkMsgList.some(item => item.loading === true)
 })
 
 watch(() => props.talkMsgList, (v: any) => {
