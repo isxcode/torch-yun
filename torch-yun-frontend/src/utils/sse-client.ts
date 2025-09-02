@@ -194,6 +194,7 @@ export class SSEClient {
     // 如果没有检测到标准 SSE 格式，将整个 chunk 当作消息内容处理
     if (!hasSSEFormat && chunk.trim()) {
       console.log('检测到非标准 SSE 格式，当作消息内容处理:', chunk)
+      // 对于纯文本流，每个 chunk 都当作增量消息处理
       this.handleSSEEvent('message', chunk.trim())
       return
     }
@@ -219,8 +220,8 @@ export class SSEClient {
         } catch (jsonError) {
           console.log('数据不是 JSON 格式，使用原始文本:', eventData)
           // 对于非 JSON 数据，根据事件类型处理
-          if (eventType === 'message') {
-            // 对于 message 事件，将文本包装成标准格式
+          if (eventType === 'message' || !eventType) {
+            // 对于 message 事件或无事件类型，将文本包装成标准格式
             data = {
               chatContent: {
                 content: eventData
