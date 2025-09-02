@@ -311,7 +311,7 @@ public class ChatBizService {
         }
 
         // 设置连接关闭和超时的回调
-        sseEmitter.onCompletion(() -> log.info("流式聊天 SSE 连接完成"));
+        sseEmitter.onCompletion(() -> {});
         sseEmitter.onTimeout(() -> log.warn("流式聊天 SSE 连接超时"));
         sseEmitter.onError((ex) -> log.error("流式聊天 SSE 连接错误", ex));
 
