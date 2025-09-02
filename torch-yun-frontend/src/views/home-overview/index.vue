@@ -170,6 +170,9 @@ function startSSEChatStream(params: any) {
                 content: '',
                 loading: true
             })
+
+            // 重置当前消息内容
+            currentAiMessage.value = ''
         },
         onMessage: (data: any) => {
             console.log('SSE 消息:', data)
