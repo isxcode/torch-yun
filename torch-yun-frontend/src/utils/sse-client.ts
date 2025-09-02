@@ -311,20 +311,6 @@ export class SSEClient {
       }
     })
 
-    this.eventSource.addEventListener('delta', (event) => {
-      try {
-        // 处理 delta 事件 - 用于流式对话内容显示
-        const deltaData = {
-          chatContent: {
-            content: event.data
-          }
-        }
-        this.options.onMessage?.(deltaData, event)
-      } catch (error) {
-        console.error('解析 delta 事件数据失败:', error)
-      }
-    })
-
     this.eventSource.addEventListener('complete', () => {
       this.options.onComplete?.()
       this.disconnect()

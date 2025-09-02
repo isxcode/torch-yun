@@ -110,19 +110,19 @@ public class QwenPlus extends Bot {
                 }
             });
 
+            // 发送完成事件
+            try {
+                sseEmitter.send(SseEmitter.event().name("complete").data(""));
+                sseEmitter.complete();
+            } catch (Exception e) {
+                log.error("发送完成事件失败", e);
+            }
+
             // 标记会话结束
             ChatContent chatContent = ChatContent.builder().content(fullContent.toString()).build();
             nowChatSession.setSessionContent(JSON.toJSONString(chatContent));
             nowChatSession.setStatus(ChatSessionStatus.OVER);
             chatSessionRepository.save(nowChatSession);
-
-            // 发送完成事件
-            try {
-                sseEmitter.send(SseEmitter.event().name("complete").data("对话结束"));
-                sseEmitter.complete();
-            } catch (Exception e) {
-                log.error("发送完成事件失败", e);
-            }
 
         } catch (NoApiKeyException | InputRequiredException e) {
             log.error(e.getMessage(), e);
