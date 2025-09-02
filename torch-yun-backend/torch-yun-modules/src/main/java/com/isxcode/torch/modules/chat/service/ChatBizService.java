@@ -196,99 +196,6 @@ public class ChatBizService {
         }
     }
 
-    public SseEmitter getChatStream(GetChatReq getChatReq) {
-
-        // 创建 SSE 连接，设置超时时间为 30 分钟
-        SseEmitter sseEmitter = new SseEmitter(30 * 60 * 1000L);
-
-        try {
-            ChatSessionEntity chatSessionEntity =
-                chatSessionRepository.findBySessionIndexAndChatId(getChatReq.getChatIndex(), getChatReq.getChatId())
-                    .orElseThrow(() -> new IsxAppException("当前会话不存在"));
-
-            // 如果会话已经结束，直接返回完整内容
-            if (ChatSessionStatus.OVER.equals(chatSessionEntity.getStatus())) {
-                ChatContent chatContent = JSON.parseObject(chatSessionEntity.getSessionContent(), ChatContent.class);
-                GetChatRes response =
-                    GetChatRes.builder().status(chatSessionEntity.getStatus()).chatContent(chatContent).build();
-
-                sseEmitter.send(SseEmitter.event().name("message").data(JSON.toJSONString(response)));
-
-                sseEmitter.send(SseEmitter.event().name("complete").data(""));
-
-                sseEmitter.complete();
-                return sseEmitter;
-            }
-
-            // 如果会话正在进行中，开始轮询状态变化
-            new Thread(() -> {
-                try {
-                    String lastContent = "";
-                    ChatSessionEntity currentSession = chatSessionEntity;
-
-                    while (ChatSessionStatus.CHATTING.equals(currentSession.getStatus())) {
-                        // 重新查询最新状态
-                        currentSession = chatSessionRepository
-                            .findBySessionIndexAndChatId(getChatReq.getChatIndex(), getChatReq.getChatId())
-                            .orElse(currentSession);
-
-                        ChatContent chatContent =
-                            JSON.parseObject(currentSession.getSessionContent(), ChatContent.class);
-                        String currentContent = chatContent != null ? chatContent.getContent() : "";
-
-                        // 如果内容有更新，发送增量内容
-                        if (currentContent != null && !currentContent.equals(lastContent)) {
-                            GetChatRes response = GetChatRes.builder().status(currentSession.getStatus())
-                                .chatContent(chatContent).build();
-
-                            sseEmitter.send(SseEmitter.event().name("message").data(JSON.toJSONString(response)));
-
-                            lastContent = currentContent;
-                        }
-
-                        // 短暂休眠避免过度轮询
-                        Thread.sleep(500);
-                    }
-
-                    // 会话结束，发送最终结果
-                    ChatContent finalChatContent =
-                        JSON.parseObject(currentSession.getSessionContent(), ChatContent.class);
-                    GetChatRes finalResponse =
-                        GetChatRes.builder().status(currentSession.getStatus()).chatContent(finalChatContent).build();
-
-                    sseEmitter.send(SseEmitter.event().name("message").data(JSON.toJSONString(finalResponse)));
-
-                    sseEmitter.send(SseEmitter.event().name("complete").data(""));
-
-                    sseEmitter.complete();
-
-                } catch (Exception e) {
-                    log.error("SSE 流处理异常", e);
-                    try {
-                        sseEmitter.send(SseEmitter.event().name("error").data(e.getMessage()));
-                    } catch (Exception ignored) {
-                    }
-                    sseEmitter.completeWithError(e);
-                }
-            }).start();
-
-        } catch (Exception e) {
-            log.error("获取聊天流异常", e);
-            try {
-                sseEmitter.send(SseEmitter.event().name("error").data(e.getMessage()));
-                sseEmitter.completeWithError(e);
-            } catch (Exception ignored) {
-            }
-        }
-
-        // 设置连接关闭和超时的回调
-        sseEmitter.onCompletion(() -> log.info("SSE 连接完成"));
-        sseEmitter.onTimeout(() -> log.warn("SSE 连接超时"));
-        sseEmitter.onError((ex) -> log.error("SSE 连接错误", ex));
-
-        return sseEmitter;
-    }
-
     public SseEmitter sendChatStream(SendChatReq sendChatReq) {
 
         // 创建 SSE 连接，设置超时时间为 30 分钟
@@ -361,7 +268,7 @@ public class ChatBizService {
             nowChatSession.setChatId(sendChatReq.getChatId());
             nowChatSession.setSessionIndex(sendChatReq.getMaxChatIndexId() + 1);
             nowChatSession.setSessionContent("{}");
-            chatSessionRepository.save(nowChatSession);
+            chatSessionRepository.saveAndFlush(nowChatSession);
 
             // 发送开始事件
             SendChatRes response = SendChatRes.builder().chatId(sendChatReq.getChatId())

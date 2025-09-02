@@ -13,7 +13,6 @@ import com.isxcode.torch.api.app.dto.BaseConfig;
 import com.isxcode.torch.api.chat.constants.ChatSessionStatus;
 import com.isxcode.torch.api.chat.dto.ChatContent;
 import com.isxcode.torch.api.model.constant.ModelCode;
-import com.isxcode.torch.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.torch.modules.app.bot.BotChatContext;
 import com.isxcode.torch.modules.chat.entity.ChatSessionEntity;
 import com.isxcode.torch.modules.chat.repository.ChatSessionRepository;
