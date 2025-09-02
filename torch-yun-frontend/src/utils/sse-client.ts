@@ -240,7 +240,18 @@ export class SSEClient {
         case 'message':
           this.options.onMessage?.(data, { data: eventData } as MessageEvent)
           break
+        case 'delta':
+          // 处理 delta 事件 - 用于流式对话内容显示
+          // 注意：即使 eventData 是空字符串也要处理，因为这也是有效的增量内容
+          const deltaData = {
+            chatContent: {
+              content: eventData || '' // 确保 content 至少是空字符串
+            }
+          }
+          this.options.onMessage?.(deltaData, { data: eventData } as MessageEvent)
+          break
         case 'complete':
+          // 只触发完成回调，不显示 complete 事件的数据内容
           this.options.onComplete?.()
           this.disconnect()
           break
@@ -297,6 +308,20 @@ export class SSEClient {
         this.options.onMessage?.(data, event)
       } catch (error) {
         console.error('解析 message 事件数据失败:', error)
+      }
+    })
+
+    this.eventSource.addEventListener('delta', (event) => {
+      try {
+        // 处理 delta 事件 - 用于流式对话内容显示
+        const deltaData = {
+          chatContent: {
+            content: event.data
+          }
+        }
+        this.options.onMessage?.(deltaData, event)
+      } catch (error) {
+        console.error('解析 delta 事件数据失败:', error)
       }
     })
 
