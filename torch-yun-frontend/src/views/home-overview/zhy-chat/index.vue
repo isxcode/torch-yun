@@ -17,11 +17,18 @@
                     :icon="UserFilled"
                     :size="30"
                 />
-                <div class="chat-message-item" v-html="content(item.content)">
+                <div class="chat-message-item" :class="{ 'chat-message-item__loading': item.loading }">
+                    <div v-if="item.loading" class="loading-text__chat">
+                        <el-icon class="is-loading">
+                            <Loading />
+                        </el-icon>
+                        思考中{{ loadingPoint }}
+                    </div>
+                    <div v-else v-html="content(item.content)"></div>
                 </div>
             </div>
-            <!-- 显示流式加载状态 -->
-            <div class="card-item card-item__ai" v-if="requestLoading && !hasLoadingMessage">
+            <!-- 备用加载状态：仅在没有加载消息时显示 -->
+            <div class="card-item card-item__ai" v-if="requestLoading && !hasLoadingMessage && talkMsgList.length === 0">
                 <el-avatar
                     :style="{
                         left: '-44px',
@@ -32,16 +39,13 @@
                     :size="30"
                 />
                 <div class="chat-message-item chat-message-item__loading">
-                    <span class="loading-text__chat">
+                    <div class="loading-text__chat">
                         <el-icon class="is-loading">
                             <Loading />
                         </el-icon>
                         思考中{{ loadingPoint }}
-                    </span>
+                    </div>
                 </div>
-            </div>
-            <div v-if="requestLoading">
-                <!-- <span class="stop-think" @click="stopThink">停止思考</span> -->
             </div>
         </el-scrollbar>
     </div>
@@ -186,14 +190,23 @@ defineExpose({
                 border-radius: 8px;
                 &.chat-message-item__loading {
                     padding: 16px 16px;
+                    background-color: #f8f9fa;
+                    border: 1px solid #e9ecef;
+                    min-width: 120px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
                 }
 
                 .loading-text__chat {
                     color: getCssVar('color', 'primary');
                     display: flex;
                     align-items: center;
+                    font-size: 14px;
+                    white-space: nowrap;
                     .el-icon {
-                        margin-right: 4px;
+                        margin-right: 6px;
+                        font-size: 16px;
                     }
                 }
             }
