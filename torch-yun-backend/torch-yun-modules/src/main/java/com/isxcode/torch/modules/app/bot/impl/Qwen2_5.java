@@ -14,8 +14,8 @@ import com.isxcode.torch.backend.api.base.pojos.BaseResponse;
 import com.isxcode.torch.common.utils.aes.AesUtils;
 import com.isxcode.torch.common.utils.http.HttpUrlUtils;
 import com.isxcode.torch.common.utils.http.HttpUtils;
+import com.isxcode.torch.modules.app.bot.Bot;
 import com.isxcode.torch.modules.app.bot.BotChatContext;
-import com.isxcode.torch.modules.app.bot.StreamBot;
 import com.isxcode.torch.modules.chat.entity.ChatSessionEntity;
 import com.isxcode.torch.modules.chat.repository.ChatSessionRepository;
 import com.isxcode.torch.modules.cluster.entity.ClusterNodeEntity;
@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Random;
 
 @Service
-public class Qwen2_5 extends StreamBot {
+public class Qwen2_5 extends Bot {
 
     private final ChatSessionRepository chatSessionRepository;
 
@@ -48,53 +48,6 @@ public class Qwen2_5 extends StreamBot {
         this.clusterNodeMapper = clusterNodeMapper;
         this.aesUtils = aesUtils;
         this.httpUrlUtils = httpUrlUtils;
-    }
-
-    @Override
-    public void chat(BotChatContext botChatContext) {
-
-        // 随机一个集群id
-        List<ClusterNodeEntity> allEngineNodes = clusterNodeRepository
-            .findAllByClusterIdAndStatus(botChatContext.getClusterConfig().getClusterId(), ClusterNodeStatus.RUNNING);
-        if (allEngineNodes.isEmpty()) {
-            throw new IsxAppException("申请资源失败 : 集群不存在可用节点，请切换一个集群  \n");
-        }
-        ClusterNodeEntity engineNode = allEngineNodes.get(new Random().nextInt(allEngineNodes.size()));
-
-        // 翻译节点信息
-        ScpFileEngineNodeDto scpFileEngineNodeDto =
-            clusterNodeMapper.engineNodeEntityToScpFileEngineNodeDto(engineNode);
-        scpFileEngineNodeDto.setPasswd(aesUtils.decrypt(scpFileEngineNodeDto.getPasswd()));
-
-        // 重新封装对应的请求
-        ChatAgentAiReq chatAgentAiReq = ChatAgentAiReq.builder().topK(botChatContext.getBaseConfig().getTopK())
-            .topP(botChatContext.getBaseConfig().getTopP()).maxTokens(botChatContext.getBaseConfig().getMaxTokens())
-            .temperature(botChatContext.getBaseConfig().getTemperature())
-            .repetitionPenalty(botChatContext.getBaseConfig().getRepetitionPenalty()).prompt(botChatContext.getPrompt())
-            .messages(botChatContext.getChats()).aiPort(botChatContext.getAiPort()).build();
-
-        // 封装请求
-        BaseResponse<?> baseResponse = HttpUtils.doPost(
-            httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), AgentUrl.CHAT_AI_URL),
-            chatAgentAiReq, BaseResponse.class);
-        if (!String.valueOf(HttpStatus.OK.value()).equals(baseResponse.getCode())) {
-            throw new IsxAppException(baseResponse.getMsg());
-        }
-
-        String content;
-        if (baseResponse.getMsg().contains("Connection refused")) {
-            content = "智能体已停用";
-        } else {
-            content = JSON.parseObject(JSON.toJSONString(baseResponse.getData()), ChatAgentAiRes.class).getResponse();
-        }
-
-        // 提交当前会话
-        ChatSessionEntity nowChatSession = chatSessionRepository
-            .findBySessionIndexAndChatId(botChatContext.getNowChatIndex(), botChatContext.getChatId()).get();
-        nowChatSession.setStatus(ChatSessionStatus.OVER);
-        ChatContent build = ChatContent.builder().content(content).build();
-        nowChatSession.setSessionContent(JSON.toJSONString(build));
-        chatSessionRepository.save(nowChatSession);
     }
 
     @Override

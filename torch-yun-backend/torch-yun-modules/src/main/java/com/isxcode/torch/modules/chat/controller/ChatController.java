@@ -34,14 +34,6 @@ public class ChatController {
         return chatBizService.getMaxChatId(getMaxChatIdReq);
     }
 
-    @Operation(summary = "发送对话")
-    @PostMapping("/sendChat")
-    @SuccessResponse("发送成功")
-    public SendChatRes sendChat(@Valid @RequestBody SendChatReq sendChatReq) {
-
-        return chatBizService.sendChat(sendChatReq);
-    }
-
     @Operation(summary = "发送对话(SSE流式)")
     @PostMapping(value = "/sendChatStream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter sendChatStream(@Valid @RequestBody SendChatReq sendChatReq) {
