@@ -49,13 +49,6 @@ public class ChatController {
         return chatBizService.getChat(getChatReq);
     }
 
-    @Operation(summary = "接受对话(SSE流式)")
-    @PostMapping(value = "/getChatStream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter getChatStream(@Valid @RequestBody GetChatReq getChatReq) {
-
-        return chatBizService.getChatStream(getChatReq);
-    }
-
     @Operation(summary = "搜索聊天历史")
     @PostMapping("/pageChatHistory")
     @SuccessResponse("查询成功")
