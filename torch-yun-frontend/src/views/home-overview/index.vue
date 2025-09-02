@@ -173,9 +173,10 @@ function startSSEChatStream(params: any) {
         },
         onMessage: (data: any) => {
             console.log('SSE 消息:', data)
-            // 更新 AI 消息内容
+            // 更新 AI 消息内容 - 累积拼接内容
             if (data.chatContent && data.chatContent.content) {
-                currentAiMessage.value = data.chatContent.content
+                // 将新内容拼接到当前消息中
+                currentAiMessage.value += data.chatContent.content
 
                 // 更新最后一条 AI 消息
                 const lastIndex = talkMsgList.value.length - 1
