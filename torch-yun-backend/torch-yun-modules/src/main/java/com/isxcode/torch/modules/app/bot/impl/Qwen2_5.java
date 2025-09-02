@@ -12,7 +12,6 @@ import com.isxcode.torch.api.model.constant.ModelCode;
 import com.isxcode.torch.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.torch.common.utils.aes.AesUtils;
 import com.isxcode.torch.common.utils.http.HttpUrlUtils;
-import com.isxcode.torch.common.utils.http.HttpUtils;
 import com.isxcode.torch.modules.app.bot.Bot;
 import com.isxcode.torch.modules.app.bot.BotChatContext;
 import com.isxcode.torch.modules.chat.entity.ChatSessionEntity;
@@ -60,9 +59,8 @@ public class Qwen2_5 extends Bot {
 
         try {
             // 随机一个集群id
-            List<ClusterNodeEntity> allEngineNodes = clusterNodeRepository
-                .findAllByClusterIdAndStatus(botChatContext.getClusterConfig().getClusterId(),
-                    ClusterNodeStatus.RUNNING);
+            List<ClusterNodeEntity> allEngineNodes = clusterNodeRepository.findAllByClusterIdAndStatus(
+                botChatContext.getClusterConfig().getClusterId(), ClusterNodeStatus.RUNNING);
             if (allEngineNodes.isEmpty()) {
                 throw new IsxAppException("申请资源失败 : 集群不存在可用节点，请切换一个集群 \n");
             }
@@ -137,8 +135,8 @@ public class Qwen2_5 extends Bot {
                 } else if (line.startsWith("event: error")) {
                     // 错误事件
                     String dataLine = reader.readLine();
-                    String errorMsg = dataLine != null && dataLine.startsWith("data: ") ?
-                        dataLine.substring(6) : "未知错误";
+                    String errorMsg =
+                        dataLine != null && dataLine.startsWith("data: ") ? dataLine.substring(6) : "未知错误";
                     throw new IsxAppException("AI流式响应错误: " + errorMsg);
                 }
             }
