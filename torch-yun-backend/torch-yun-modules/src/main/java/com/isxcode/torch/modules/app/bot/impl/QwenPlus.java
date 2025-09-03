@@ -6,6 +6,7 @@ import com.alibaba.dashscope.aigc.generation.models.QwenParam;
 import com.alibaba.dashscope.common.Message;
 import com.alibaba.dashscope.exception.InputRequiredException;
 import com.alibaba.dashscope.exception.NoApiKeyException;
+import com.isxcode.torch.api.chat.constants.ChatSseEvent;
 import com.isxcode.torch.modules.app.bot.Bot;
 import io.reactivex.Flowable;
 import com.alibaba.fastjson.JSON;
@@ -34,7 +35,7 @@ public class QwenPlus extends Bot {
     }
 
     @Override
-    public void chatStream(BotChatContext botChatContext, SseEmitter sseEmitter) {
+    public void chat(BotChatContext botChatContext, SseEmitter sseEmitter) {
 
         // 获取基础配置
         BaseConfig baseConfig =
@@ -42,10 +43,10 @@ public class QwenPlus extends Bot {
 
         // 重新封装对应的请求
         List<Message> messages = new ArrayList<>();
-        botChatContext.getChats().forEach(chat -> {
-            messages.add(Message.builder().role(chat.getRole()).content(chat.getContent()).build());
-        });
+        botChatContext.getChats()
+            .forEach(chat -> messages.add(Message.builder().role(chat.getRole()).content(chat.getContent()).build()));
 
+        // 封装配置参数
         QwenParam.QwenParamBuilder<?, ?> modelBuild = QwenParam.builder();
 
         if (botChatContext.getPrompt() != null) {
@@ -95,15 +96,18 @@ public class QwenPlus extends Bot {
             Flowable<GenerationResult> resultFlowable = gen.streamCall(modelBuild.model("qwen-plus").messages(messages)
                 .apiKey(botChatContext.getAuthConfig().getApiKey()).build());
 
+            // 遍历流式对话内容
             resultFlowable.blockingForEach(result -> {
 
                 if (result.getOutput() != null && result.getOutput().getText() != null) {
-                    String deltaContent = result.getOutput().getText();
-                    fullContent.append(deltaContent);
 
-                    // 发送SSE事件
+                    // 获取聊天内容
+                    String chatContent = result.getOutput().getText();
+                    fullContent.append(chatContent);
+
+                    // 发送聊天内容
                     try {
-                        sseEmitter.send(SseEmitter.event().name("delta").data(deltaContent));
+                        sseEmitter.send(SseEmitter.event().name(ChatSseEvent.CHAT_EVENT).data(chatContent));
                     } catch (Exception e) {
                         log.error("发送SSE事件失败", e);
                     }
@@ -112,22 +116,23 @@ public class QwenPlus extends Bot {
 
             // 发送完成事件
             try {
-                sseEmitter.send(SseEmitter.event().name("complete").data(""));
+                sseEmitter.send(SseEmitter.event().name(ChatSseEvent.END_EVENT).data("对话结束"));
                 sseEmitter.complete();
             } catch (Exception e) {
                 log.error("发送完成事件失败", e);
             }
 
-            // 标记会话结束
+            // 保存聊天对话状态和内容
             ChatContent chatContent = ChatContent.builder().content(fullContent.toString()).build();
             nowChatSession.setSessionContent(JSON.toJSONString(chatContent));
             nowChatSession.setStatus(ChatSessionStatus.OVER);
             chatSessionRepository.save(nowChatSession);
 
         } catch (NoApiKeyException | InputRequiredException e) {
+
             log.error(e.getMessage(), e);
             try {
-                sseEmitter.send(SseEmitter.event().name("error").data(e.getMessage()));
+                sseEmitter.send(SseEmitter.event().name(ChatSseEvent.ERROR_EVENT).data(e.getMessage()));
                 sseEmitter.completeWithError(e);
             } catch (Exception ignored) {
             }

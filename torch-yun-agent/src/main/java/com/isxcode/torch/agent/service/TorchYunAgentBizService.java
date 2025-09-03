@@ -2,7 +2,6 @@ package com.isxcode.torch.agent.service;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.RuntimeUtil;
-import com.alibaba.fastjson.JSON;
 import com.isxcode.torch.api.agent.req.ChatAgentAiContent;
 import com.isxcode.torch.api.agent.req.*;
 import com.isxcode.torch.api.agent.res.ChatAgentAiRes;
@@ -14,14 +13,9 @@ import com.isxcode.torch.common.utils.http.HttpUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.ServerSocket;
-import java.net.URL;
 import java.nio.file.Paths;
 
 @Slf4j
@@ -124,66 +118,6 @@ public class TorchYunAgentBizService {
         return HttpUtils.doPost("http://127.0.0.1:" + chatAgentAiReq.getAiPort() + "/chat", chatAgentAiContent,
             ChatAgentAiRes.class);
 
-    }
-
-    public SseEmitter chatAiStream(ChatAgentAiReq chatAgentAiReq) {
-        SseEmitter sseEmitter = new SseEmitter(30 * 60 * 1000L); // 30分钟超时
-
-        // 异步处理流式请求
-        new Thread(() -> {
-            try {
-                // 准备请求数据
-                ChatAgentAiContent chatAgentAiContent = new ChatAgentAiContent();
-                chatAgentAiContent.setMessages(chatAgentAiReq.getMessages());
-                chatAgentAiContent.setTopK(chatAgentAiReq.getTopK());
-                chatAgentAiContent.setTopP(chatAgentAiReq.getTopP());
-                chatAgentAiContent.setPrompt(chatAgentAiReq.getPrompt());
-                chatAgentAiContent.setTemperature(chatAgentAiReq.getTemperature());
-                chatAgentAiContent.setRepetitionPenalty(chatAgentAiReq.getRepetitionPenalty());
-                chatAgentAiContent.setMaxTokens(chatAgentAiReq.getMaxTokens());
-
-                // 调用AI的流式接口
-                String streamUrl = "http://127.0.0.1:" + chatAgentAiReq.getAiPort() + "/chat/stream";
-
-                // 创建HTTP连接
-                URL url = new URL(streamUrl);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "application/json");
-                connection.setRequestProperty("Accept", "text/event-stream");
-                connection.setDoOutput(true);
-
-                // 发送请求数据
-                String jsonData = JSON.toJSONString(chatAgentAiContent);
-                connection.getOutputStream().write(jsonData.getBytes("UTF-8"));
-                connection.getOutputStream().flush();
-
-                // 读取流式响应
-                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
-                String line;
-
-                while ((line = reader.readLine()) != null) {
-                    if (line.startsWith("event:") || line.startsWith("data:") || line.trim().isEmpty()) {
-                        // 直接转发SSE格式的数据
-                        sseEmitter.send(line + "\n");
-                    }
-                }
-
-                reader.close();
-                connection.disconnect();
-                sseEmitter.complete();
-
-            } catch (Exception e) {
-                log.error("流式聊天异常", e);
-                try {
-                    sseEmitter.send(SseEmitter.event().name("error").data(e.getMessage()));
-                    sseEmitter.completeWithError(e);
-                } catch (Exception ignored) {
-                }
-            }
-        }).start();
-
-        return sseEmitter;
     }
 
     public CheckAgentAiRes checkAi(CheckAgentAiReq checkAgentAiReq) {
