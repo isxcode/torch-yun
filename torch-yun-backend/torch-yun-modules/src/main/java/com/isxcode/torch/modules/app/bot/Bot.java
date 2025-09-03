@@ -1,8 +1,11 @@
 package com.isxcode.torch.modules.app.bot;
 
+import com.isxcode.torch.api.chat.constants.ChatSseEvent;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+@Slf4j
 public abstract class Bot {
 
     /**
@@ -11,15 +14,35 @@ public abstract class Bot {
     public abstract String name();
 
     /**
-     * 流式对话接口.
+     * 对话方法.
      */
-    public abstract void chatStream(BotChatContext botChatContext, SseEmitter sseEmitter);
+    public abstract void chat(BotChatContext botChatContext, SseEmitter sseEmitter);
 
     /**
      * 异步发送流式聊天.
      */
     @Async
-    public void sendChatStream(BotChatContext botChatContext, SseEmitter sseEmitter) {
-        chatStream(botChatContext, sseEmitter);
+    public void sendChat(BotChatContext botChatContext, SseEmitter sseEmitter) {
+
+        try {
+            // 推送开始事件
+            sseEmitter.send(SseEmitter.event().name(ChatSseEvent.START_EVENT).data("建立连接"));
+
+            // 开始聊天
+            chat(botChatContext, sseEmitter);
+        } catch (Exception e) {
+
+            log.error(e.getMessage(), e);
+            try {
+                sseEmitter.send(SseEmitter.event().name(ChatSseEvent.ERROR_EVENT).data(e.getMessage()));
+                sseEmitter.completeWithError(e);
+            } catch (Exception ignored) {
+            }
+        }
+
+        // 设置连接关闭和超时的回调
+        sseEmitter.onCompletion(() -> log.debug("SSE 聊天连接关闭"));
+        sseEmitter.onTimeout(() -> log.error("流式聊天 SSE 连接超时"));
+        sseEmitter.onError((ex) -> log.error("流式聊天 SSE 连接错误", ex));
     }
 }

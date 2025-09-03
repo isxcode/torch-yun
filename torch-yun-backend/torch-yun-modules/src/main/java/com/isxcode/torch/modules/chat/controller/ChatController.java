@@ -35,10 +35,10 @@ public class ChatController {
     }
 
     @Operation(summary = "发送对话(SSE流式)")
-    @PostMapping(value = "/sendChatStream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter sendChatStream(@Valid @RequestBody SendChatReq sendChatReq) {
+    @PostMapping(value = "/sendChat", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter sendChat(@Valid @RequestBody SendChatReq sendChatReq) {
 
-        return chatBizService.sendChatStream(sendChatReq);
+        return chatBizService.sendChat(sendChatReq);
     }
 
     @Operation(summary = "接受对话")

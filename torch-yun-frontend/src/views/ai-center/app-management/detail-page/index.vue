@@ -45,7 +45,7 @@ import { useRoute, useRouter } from 'vue-router'
 import AppConfigPanel from '../app-config-panel/index.vue'
 import ZhyChat from '../../../home-overview/zhy-chat/index.vue'
 import { ElMessage } from 'element-plus'
-import { GetChatDetailData, GetChatDetailList, GetMaxChatData, SendMessageToAi, StopChatThink } from '@/services/ai-cheat.service'
+import { GetChatDetailData, GetChatDetailList, GetMaxChatData, StopChatThink } from '@/services/ai-cheat.service'
 
 const route = useRoute()
 const router = useRouter()

@@ -2,15 +2,6 @@ import { http } from '@/utils/http'
 import { createSSEClient, SSEClient, SSEOptions } from '@/utils/sse-client'
 import { useAuthStore } from '@/store/useAuth'
 
-// 发送对话 (原有的非流式版本，保留作为备用)
-export function SendMessageToAi(params: any): Promise<any> {
-    return http.request({
-        method: 'post',
-        url: '/chat/sendChatStream',
-        params: params
-    })
-}
-
 // 发送对话 - SSE 流式版本
 export function SendMessageToAiStream(params: any, callbacks: {
     onStart?: (data: any) => void
@@ -22,11 +13,11 @@ export function SendMessageToAiStream(params: any, callbacks: {
     const authStore = useAuthStore()
 
     const sseOptions: SSEOptions = {
-        url: `${import.meta.env.VITE_VUE_APP_BASE_DOMAIN}/chat/sendChatStream`,
+        url: `${import.meta.env.VITE_VUE_APP_BASE_DOMAIN}/chat/sendChat`,
         data: params,
         headers: {
-            'authorization': authStore.token || '',
-            'tenant': authStore.tenantId || '',
+            authorization: authStore.token || '',
+            tenant: authStore.tenantId || '',
             'Content-Type': 'application/json'
         },
         onStart: callbacks.onStart,

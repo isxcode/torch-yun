@@ -27,26 +27,6 @@
                     <div v-else v-html="content(item.content)"></div>
                 </div>
             </div>
-            <!-- 备用加载状态：仅在没有加载消息时显示 -->
-            <div class="card-item card-item__ai" v-if="requestLoading && !hasLoadingMessage && talkMsgList.length === 0">
-                <el-avatar
-                    :style="{
-                        left: '-44px',
-                        color: '#FFFFFF',
-                        'background-color': '#fde3d0'
-                    }"
-                    :icon="UserFilled"
-                    :size="30"
-                />
-                <div class="chat-message-item chat-message-item__loading">
-                    <div class="loading-text__chat">
-                        <el-icon class="is-loading">
-                            <Loading />
-                        </el-icon>
-                        思考中{{ loadingPoint }}
-                    </div>
-                </div>
-            </div>
         </el-scrollbar>
     </div>
 </template>
