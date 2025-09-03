@@ -5,8 +5,8 @@ import { useAuthStore } from '@/store/useAuth'
 // 发送对话 - SSE 流式版本
 export function SendMessageToAiStream(params: any, callbacks: {
     onStart?: (data: any) => void
-    onMessage?: (data: any) => void
-    onComplete?: () => void
+    onChat?: (data: any) => void
+    onEnd?: () => void
     onError?: (error: any) => void
 }): SSEClient {
     // 获取认证信息
@@ -21,8 +21,8 @@ export function SendMessageToAiStream(params: any, callbacks: {
             'Content-Type': 'application/json'
         },
         onStart: callbacks.onStart,
-        onMessage: callbacks.onMessage,
-        onComplete: callbacks.onComplete,
+        onChat: callbacks.onChat,
+        onEnd: callbacks.onEnd,
         onError: callbacks.onError,
         timeout: 30 * 60 * 1000, // 30分钟超时
         retryAttempts: 3,
