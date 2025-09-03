@@ -131,71 +131,6 @@ public class ChatBizService {
         return getMaxChatIdRes;
     }
 
-    public GetChatRes getChat(GetChatReq getChatReq) {
-
-        ChatSessionEntity chatSessionEntity =
-            chatSessionRepository.findBySessionIndexAndChatId(getChatReq.getChatIndex(), getChatReq.getChatId())
-                .orElseThrow(() -> new IsxAppException("当前会话不存在"));
-        return GetChatRes.builder().status(chatSessionEntity.getStatus())
-            .chatContent(JSON.parseObject(chatSessionEntity.getSessionContent(), ChatContent.class)).build();
-    }
-
-    public Page<PageChatHistoryRes> pageChatHistory(PageChatHistoryReq pageChatHistoryReq) {
-
-        // 查询个人所有的聊天，时间倒序
-        JPA_TENANT_MODE.set(false);
-        Page<ChatAo> chatAoPage = chatSessionRepository.pageChatHistory(TENANT_ID.get(),
-            pageChatHistoryReq.getSearchKeyWord(), pageChatHistoryReq.getAppId(), USER_ID.get(),
-            PageRequest.of(pageChatHistoryReq.getPage(), pageChatHistoryReq.getPageSize()));
-        JPA_TENANT_MODE.set(true);
-
-        // 翻译
-        Page<PageChatHistoryRes> map = chatAoPage.map(chatMapper::chatAoToPageChatHistoryRes);
-        map.forEach(e -> {
-            e.setAppName(appService.getAppName(e.getAppId()));
-            e.setChatContent(JSON.parseObject(e.getSessionContent(), ChatContent.class));
-        });
-        return map;
-    }
-
-    public GetFullChatRes getFullChat(GetFullChatReq getFullChatReq) {
-
-        // 判断会话是否存在
-        ChatEntity chat = chatService.getChat(getFullChatReq.getChatId(), USER_ID.get());
-
-        // 封装对话
-        List<ChatSessionEntity> chatSessionList = chatSessionRepository.findAllByChatId(chat.getId());
-        List<ChatContent> chatSessions = new ArrayList<>();
-        chatSessionList.forEach(e -> {
-            ChatContent chatContent = JSON.parseObject(e.getSessionContent(), ChatContent.class);
-            chatSessions.add(ChatContent.builder().content(chatContent.getContent()).role(e.getSessionType())
-                .index(e.getSessionIndex()).build());
-        });
-
-        return GetFullChatRes.builder().appName(appService.getAppName(chat.getAppId())).chatSessions(chatSessions)
-            .build();
-    }
-
-    public void stopChat(StopChatReq stopChatReq) {
-
-        // 杀死进程
-        Thread thread = CHAT_THREAD_MAP.get(stopChatReq.getChatSessionId());
-        try {
-            thread.interrupt();
-        } catch (Exception ignored) {
-
-        }
-
-        Optional<ChatSessionEntity> sessionRepositoryById =
-            chatSessionRepository.findById(stopChatReq.getChatSessionId());
-        if (sessionRepositoryById.isPresent()) {
-            ChatSessionEntity chatSessionEntity = sessionRepositoryById.get();
-            chatSessionEntity.setSessionContent(JSON.toJSONString(ChatContent.builder().content("已停止思考").build()));
-            chatSessionEntity.setStatus(ChatSessionStatus.OVER);
-            chatSessionRepository.save(chatSessionEntity);
-        }
-    }
-
     public SseEmitter sendChat(SendChatReq sendChatReq) {
 
         // 创建 SSE 连接，设置超时时间为 30 分钟
@@ -274,5 +209,70 @@ public class ChatBizService {
         bot.sendChat(botChatContext, sseEmitter);
 
         return sseEmitter;
+    }
+
+    public GetChatRes getChat(GetChatReq getChatReq) {
+
+        ChatSessionEntity chatSessionEntity =
+            chatSessionRepository.findBySessionIndexAndChatId(getChatReq.getChatIndex(), getChatReq.getChatId())
+                .orElseThrow(() -> new IsxAppException("当前会话不存在"));
+        return GetChatRes.builder().status(chatSessionEntity.getStatus())
+            .chatContent(JSON.parseObject(chatSessionEntity.getSessionContent(), ChatContent.class)).build();
+    }
+
+    public Page<PageChatHistoryRes> pageChatHistory(PageChatHistoryReq pageChatHistoryReq) {
+
+        // 查询个人所有的聊天，时间倒序
+        JPA_TENANT_MODE.set(false);
+        Page<ChatAo> chatAoPage = chatSessionRepository.pageChatHistory(TENANT_ID.get(),
+            pageChatHistoryReq.getSearchKeyWord(), pageChatHistoryReq.getAppId(), USER_ID.get(),
+            PageRequest.of(pageChatHistoryReq.getPage(), pageChatHistoryReq.getPageSize()));
+        JPA_TENANT_MODE.set(true);
+
+        // 翻译
+        Page<PageChatHistoryRes> map = chatAoPage.map(chatMapper::chatAoToPageChatHistoryRes);
+        map.forEach(e -> {
+            e.setAppName(appService.getAppName(e.getAppId()));
+            e.setChatContent(JSON.parseObject(e.getSessionContent(), ChatContent.class));
+        });
+        return map;
+    }
+
+    public GetFullChatRes getFullChat(GetFullChatReq getFullChatReq) {
+
+        // 判断会话是否存在
+        ChatEntity chat = chatService.getChat(getFullChatReq.getChatId(), USER_ID.get());
+
+        // 封装对话
+        List<ChatSessionEntity> chatSessionList = chatSessionRepository.findAllByChatId(chat.getId());
+        List<ChatContent> chatSessions = new ArrayList<>();
+        chatSessionList.forEach(e -> {
+            ChatContent chatContent = JSON.parseObject(e.getSessionContent(), ChatContent.class);
+            chatSessions.add(ChatContent.builder().content(chatContent.getContent()).role(e.getSessionType())
+                .index(e.getSessionIndex()).build());
+        });
+
+        return GetFullChatRes.builder().appName(appService.getAppName(chat.getAppId())).chatSessions(chatSessions)
+            .build();
+    }
+
+    public void stopChat(StopChatReq stopChatReq) {
+
+        // 杀死进程
+        Thread thread = CHAT_THREAD_MAP.get(stopChatReq.getChatSessionId());
+        try {
+            thread.interrupt();
+        } catch (Exception ignored) {
+
+        }
+
+        Optional<ChatSessionEntity> sessionRepositoryById =
+            chatSessionRepository.findById(stopChatReq.getChatSessionId());
+        if (sessionRepositoryById.isPresent()) {
+            ChatSessionEntity chatSessionEntity = sessionRepositoryById.get();
+            chatSessionEntity.setSessionContent(JSON.toJSONString(ChatContent.builder().content("已停止思考").build()));
+            chatSessionEntity.setStatus(ChatSessionStatus.OVER);
+            chatSessionRepository.save(chatSessionEntity);
+        }
     }
 }
