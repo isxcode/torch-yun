@@ -27,6 +27,11 @@ export class SSEClient {
     private isConnected = false
     private abortController: AbortController | null = null
 
+    // 用于存储解析过程中的事件信息
+    private currentEventType: string = ''
+    private currentEventData: string = ''
+    private buffer: string = ''
+
     constructor(options: SSEOptions) {
         this.options = {
             timeout: 30 * 60 * 1000, // 30分钟默认超时
@@ -151,27 +156,64 @@ export class SSEClient {
      * 解析 SSE 数据格式
      */
     private parseSSEData(chunk: string): void {
+        console.log('SSE 接受数据:', JSON.stringify(chunk))
 
-        console.log('SSE 接受数据:', chunk)
+        // 将新数据添加到缓冲区
+        this.buffer += chunk
 
-        let eventType = ''
-        let eventData = ''
-        let hasSSEFormat = false
+        // 处理缓冲区中的完整行
+        this.processBuffer()
+    }
 
-        if (chunk.startsWith('event:')) {
-            eventType = chunk.substring(6).trim()
-            hasSSEFormat = true
-            console.log('SSE 事件类型:', eventType)
-        } else if (chunk.startsWith('data:')) {
-            eventData = chunk.substring(5).trim()
-            hasSSEFormat = true
-            console.log('SSE 事件数据:', eventData)
-        } else if (chunk === '' && eventType && eventData) {
-            // 处理完整的事件
-            console.log('处理 SSE 事件:', eventType, eventData)
-            this.handleSSEEvent(eventType, eventData)
-            eventType = ''
-            eventData = ''
+    /**
+     * 处理缓冲区中的数据
+     */
+    private processBuffer(): void {
+        let newlineIndex: number
+
+        // 持续处理缓冲区中的完整行
+        while ((newlineIndex = this.buffer.indexOf('\n')) !== -1) {
+            // 提取一行数据（包含换行符前的内容）
+            const line = this.buffer.substring(0, newlineIndex)
+
+            // 从缓冲区中移除已处理的行（包括换行符）
+            this.buffer = this.buffer.substring(newlineIndex + 1)
+
+            // 处理这一行
+            this.processSSELine(line)
+        }
+    }
+
+    /**
+     * 处理单行 SSE 数据
+     */
+    private processSSELine(line: string): void {
+        console.log('处理 SSE 行:', JSON.stringify(line))
+
+        if (line.startsWith('event:')) {
+            this.currentEventType = line.substring(6).trim()
+            console.log('SSE 事件类型:', this.currentEventType)
+        } else if (line.startsWith('data:')) {
+            // 获取 data: 后的内容（保留原始格式，包括空格）
+            const dataContent = line.substring(5)
+
+            // 如果已经有数据，需要用换行符连接
+            if (this.currentEventData) {
+                this.currentEventData += '\n' + dataContent
+            } else {
+                this.currentEventData = dataContent
+            }
+            console.log('SSE 事件数据:', JSON.stringify(this.currentEventData))
+        } else if (line === '') {
+            // 空行表示事件结束，处理完整的事件
+            if (this.currentEventType) {
+                console.log('处理 SSE 事件:', this.currentEventType, JSON.stringify(this.currentEventData))
+                this.handleSSEEvent(this.currentEventType, this.currentEventData)
+
+                // 重置事件信息
+                this.currentEventType = ''
+                this.currentEventData = ''
+            }
         }
     }
 
@@ -252,6 +294,11 @@ export class SSEClient {
             this.abortController.abort()
             this.abortController = null
         }
+
+        // 重置解析状态
+        this.currentEventType = ''
+        this.currentEventData = ''
+        this.buffer = ''
 
         this.isConnected = false
     }
