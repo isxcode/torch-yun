@@ -174,7 +174,7 @@ function startSSEChatStream(params: any) {
             // 重置当前消息内容
             currentAiMessage.value = ''
         },
-        onMessage: (data: any) => {
+        onChat: (data: any) => {
             console.log('SSE 消息:', data)
             // 更新 AI 消息内容 - 累积拼接内容
             if (data.chatContent && data.chatContent.content) {
@@ -189,7 +189,7 @@ function startSSEChatStream(params: any) {
                 }
             }
         },
-        onComplete: () => {
+        onEnd: () => {
             console.log('SSE 连接完成')
             requestLoading.value = false
 
