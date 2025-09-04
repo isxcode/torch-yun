@@ -22,11 +22,15 @@ import com.isxcode.torch.modules.chat.repository.ChatSessionRepository;
 import com.isxcode.torch.modules.cluster.entity.ClusterNodeEntity;
 import com.isxcode.torch.modules.cluster.mapper.ClusterNodeMapper;
 import com.isxcode.torch.modules.cluster.repository.ClusterNodeRepository;
+
+import java.io.IOException;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -45,7 +49,7 @@ public class Qwen2_5 extends Bot {
     private final HttpUrlUtils httpUrlUtils;
 
     public Qwen2_5(ChatSessionRepository chatSessionRepository, ClusterNodeRepository clusterNodeRepository,
-        ClusterNodeMapper clusterNodeMapper, AesUtils aesUtils, HttpUrlUtils httpUrlUtils) {
+                   ClusterNodeMapper clusterNodeMapper, AesUtils aesUtils, HttpUrlUtils httpUrlUtils) {
         this.chatSessionRepository = chatSessionRepository;
         this.clusterNodeRepository = clusterNodeRepository;
         this.clusterNodeMapper = clusterNodeMapper;
@@ -91,15 +95,25 @@ public class Qwen2_5 extends Bot {
             content = JSON.parseObject(JSON.toJSONString(baseResponse.getData()), ChatAgentAiRes.class).getResponse();
         }
 
-        // 推送SSE消息
+        // 推送SSE消息 - 分块发送大内容
         try {
-            sseEmitter.send(SseEmitter.event().name(ChatSseEvent.CHAT_EVENT).data(content));
+
+            Arrays.asList(content.split("\n")).forEach(
+                str -> {
+                    try {
+                        sseEmitter.send(SseEmitter.event().name(ChatSseEvent.CHAT_EVENT).data(str));
+                    } catch (IOException e) {
+                        log.error(e.getMessage(), e);
+                    }
+                }
+            );
 
             // 发送完成事件
             sseEmitter.send(SseEmitter.event().name(ChatSseEvent.END_EVENT).data("对话结束"));
             sseEmitter.complete();
 
-        } catch (Exception e) {
+        } catch (
+            Exception e) {
             log.error(e.getMessage(), e);
             try {
                 sseEmitter.send(SseEmitter.event().name(ChatSseEvent.ERROR_EVENT).data(e.getMessage()));

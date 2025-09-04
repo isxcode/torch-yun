@@ -21,7 +21,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -105,12 +107,15 @@ public class QwenPlus extends Bot {
                     String chatContent = result.getOutput().getText();
                     fullContent.append(chatContent);
 
-                    // 发送聊天内容
-                    try {
-                        sseEmitter.send(SseEmitter.event().name(ChatSseEvent.CHAT_EVENT).data(chatContent));
-                    } catch (Exception e) {
-                        log.error("发送SSE事件失败", e);
-                    }
+                    Arrays.asList(chatContent.split("\n")).forEach(
+                        str -> {
+                            try {
+                                sseEmitter.send(SseEmitter.event().name(ChatSseEvent.CHAT_EVENT).data(str));
+                            } catch (IOException e) {
+                                log.error(e.getMessage(), e);
+                            }
+                        }
+                    );
                 }
             });
 
