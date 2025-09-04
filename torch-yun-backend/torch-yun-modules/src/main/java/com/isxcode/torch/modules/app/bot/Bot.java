@@ -1,5 +1,7 @@
 package com.isxcode.torch.modules.app.bot;
 
+import com.alibaba.fastjson.JSON;
+import com.isxcode.torch.api.app.dto.SseBody;
 import com.isxcode.torch.api.chat.constants.ChatSseEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -26,7 +28,7 @@ public abstract class Bot {
 
         try {
             // 推送开始事件
-            sseEmitter.send(SseEmitter.event().name(ChatSseEvent.START_EVENT).data("建立连接"));
+            sseEmitter.send(SseEmitter.event().name(ChatSseEvent.START_EVENT).data(JSON.toJSONString(SseBody.builder().msg("建立连接").build())));
 
             // 开始聊天
             chat(botChatContext, sseEmitter);
@@ -34,7 +36,7 @@ public abstract class Bot {
 
             log.error(e.getMessage(), e);
             try {
-                sseEmitter.send(SseEmitter.event().name(ChatSseEvent.ERROR_EVENT).data(e.getMessage()));
+                sseEmitter.send(SseEmitter.event().name(ChatSseEvent.ERROR_EVENT).data(JSON.toJSONString(SseBody.builder().msg(e.getMessage()).build())));
                 sseEmitter.completeWithError(e);
             } catch (Exception ignored) {
             }
