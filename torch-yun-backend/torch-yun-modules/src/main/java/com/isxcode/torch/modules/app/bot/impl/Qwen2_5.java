@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.isxcode.torch.api.agent.constants.AgentUrl;
 import com.isxcode.torch.api.agent.req.ChatAgentAiReq;
 import com.isxcode.torch.api.agent.res.ChatAgentAiRes;
+import com.isxcode.torch.api.app.dto.SseBody;
 import com.isxcode.torch.api.chat.constants.ChatSessionStatus;
 import com.isxcode.torch.api.chat.constants.ChatSseEvent;
 import com.isxcode.torch.api.chat.dto.ChatContent;
@@ -98,25 +99,17 @@ public class Qwen2_5 extends Bot {
         // 推送SSE消息 - 分块发送大内容
         try {
 
-            Arrays.asList(content.split("\n")).forEach(
-                str -> {
-                    try {
-                        sseEmitter.send(SseEmitter.event().name(ChatSseEvent.CHAT_EVENT).data(str));
-                    } catch (IOException e) {
-                        log.error(e.getMessage(), e);
-                    }
-                }
-            );
+            sseEmitter.send(SseEmitter.event().name(ChatSseEvent.CHAT_EVENT).data(JSON.toJSONString(SseBody.builder().chat(content).build())));
 
             // 发送完成事件
-            sseEmitter.send(SseEmitter.event().name(ChatSseEvent.END_EVENT).data("对话结束"));
+            sseEmitter.send(SseEmitter.event().name(ChatSseEvent.END_EVENT).data(JSON.toJSONString(SseBody.builder().msg("对话结束").build())));
             sseEmitter.complete();
 
         } catch (
             Exception e) {
             log.error(e.getMessage(), e);
             try {
-                sseEmitter.send(SseEmitter.event().name(ChatSseEvent.ERROR_EVENT).data(e.getMessage()));
+                sseEmitter.send(SseEmitter.event().name(ChatSseEvent.ERROR_EVENT).data(JSON.toJSONString(SseBody.builder().msg(e.getMessage()).build())));
                 sseEmitter.completeWithError(e);
             } catch (Exception ignored) {
             }
