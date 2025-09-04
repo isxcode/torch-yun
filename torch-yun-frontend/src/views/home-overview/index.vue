@@ -58,11 +58,13 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive, ref, nextTick } from 'vue'
+import { onMounted, reactive, ref, nextTick, onUnmounted } from 'vue'
+import { ElMessage } from 'element-plus'
 import ZhyChat from './zhy-chat/index.vue'
 import AppItem from './app-item/index.vue'
 import LoadingPage from '@/components/loading/index.vue'
-import { GetChatDetailData, GetChatDetailList, GetMaxChatData, SendMessageToAi, StopChatThink } from '@/services/ai-cheat.service.ts'
+import { GetChatDetailData, GetChatDetailList, GetMaxChatData, SendMessageToAiStream, StopChatThink } from '@/services/ai-cheat.service.ts'
+import { SSEClient } from '@/utils/sse-client'
 import { useAuthStore } from '@/store/useAuth'
 import HistoryList from './history-list/index.vue'
 
@@ -82,6 +84,11 @@ const requestLoading = ref<boolean>(false)  // 发送消息-加载状态
 const isTalking = ref<boolean>(false)       // 是否已经开启了对话
 const talkMsgList = ref<any[]>([])          // 当前对话的记录
 const isComposing = ref<boolean>(false)     // 输入法是否正在输入
+
+// SSE 相关状态
+const sseClient = ref<SSEClient | null>(null)  // SSE 客户端实例
+const currentAiMessage = ref<string>('')        // 当前 AI 回复的消息（用于流式显示）
+const chatSessionId = ref<string>('')           // 当前聊天会话ID
 
 // 打开历史记录
 function showHistoryEvent() {
@@ -109,12 +116,21 @@ function clickAppEvent(e: any) {
 
 // 结束对话
 function stopChat() {
+    // 断开 SSE 连接
+    if (sseClient.value) {
+        sseClient.value.disconnect()
+        sseClient.value = null
+    }
+
     isTalking.value = false
     appInfo.value = null
     talkMessage.value = ''
     maxChatIndexId.value = 0
     chatId.value = ''
+    chatSessionId.value = ''
     talkMsgList.value = []
+    currentAiMessage.value = ''
+    requestLoading.value = false
 
     authStore.setChatInfo({
         chatId: chatId.value,
@@ -123,35 +139,94 @@ function stopChat() {
     })
 }
 
-// 获取对话结果
-function getChatResult() {
-    GetChatDetailData({
-        chatId: chatId.value || null,
-        chatIndex: maxChatIndexId.value
-    }).then((res: any) => {
-        if (res.data.status === 'CHATTING') {
-            setTimeout(() => {
-                getChatResult()
-            }, 1000);
-        } else {
-            requestLoading.value = false
-            nextTick(() => {
-                talkMsgList.value.push({
-                    type: 'ai',
-                    content: res.data.chatContent.content
-                })
+// SSE 流式获取对话结果
+function startSSEChatStream(params: any) {
+    // 断开之前的连接
+    if (sseClient.value) {
+        sseClient.value.disconnect()
+    }
+
+    // 初始化当前 AI 消息
+    currentAiMessage.value = ''
+
+    // 创建新的 SSE 连接
+    sseClient.value = SendMessageToAiStream(params, {
+        onStart: (data: any) => {
+            // 保存聊天会话ID和响应索引
+            if (data.chatSessionId) {
+                chatSessionId.value = data.chatSessionId
+            }
+            if (data.responseIndexId) {
+                maxChatIndexId.value = data.responseIndexId
+            }
+            if (data.chatId) {
+                chatId.value = data.chatId
+            }
+
+            // 添加一个空的 AI 消息占位符
+            talkMsgList.value.push({
+                type: 'ai',
+                content: '',
+                loading: true
             })
-            // 会话结束获取最新的索引
+
+            // 重置当前消息内容
+            currentAiMessage.value = ''
+        },
+        onChat: (data: any) => {
+            // 解析 SseBody JSON 格式的数据
+            const sseBody = JSON.parse(data)
+            const chatContent = sseBody.chat || ''
+
+            // 更新 AI 消息内容 - 直接拼接，不添加换行符
+            if (chatContent !== undefined) {
+                currentAiMessage.value += chatContent
+
+                // 更新最后一条 AI 消息
+                const lastIndex = talkMsgList.value.length - 1
+                if (lastIndex >= 0 && talkMsgList.value[lastIndex].type === 'ai') {
+                    talkMsgList.value[lastIndex].content = currentAiMessage.value
+                    talkMsgList.value[lastIndex].loading = false
+                }
+            }
+        },
+        onEnd: () => {
+            requestLoading.value = false
+
+            // 确保最后一条消息不再显示加载状态
+            const lastIndex = talkMsgList.value.length - 1
+            if (lastIndex >= 0 && talkMsgList.value[lastIndex].type === 'ai') {
+                talkMsgList.value[lastIndex].loading = false
+            }
+
+            // 获取最新的索引
             getMaxChatData().catch(() => {
                 // 获取最新索引失败，不影响对话显示
             })
+
+            // 清理 SSE 客户端
+            sseClient.value = null
+        },
+        onError: (error: any) => {
+            console.error('SSE 连接错误:', error)
+            requestLoading.value = false
+
+            // 移除加载中的 AI 消息
+            const lastIndex = talkMsgList.value.length - 1
+            if (lastIndex >= 0 && talkMsgList.value[lastIndex].type === 'ai' && talkMsgList.value[lastIndex].loading) {
+                talkMsgList.value.pop()
+            }
+
+            // 显示错误消息
+            ElMessage.error(typeof error === 'string' ? error : '聊天连接失败，请重试')
+
+            // 清理 SSE 客户端
+            sseClient.value = null
         }
-    }).catch(() => {
-        requestLoading.value = false
     })
 }
 
-// 发送问题
+// 发送问题 - 使用 SSE 流式响应
 async function sendQuestionEvent() {
     if (!talkMessage.value) {
         return
@@ -163,11 +238,12 @@ async function sendQuestionEvent() {
 
     // 记录是否是第一次对话（用于错误处理时判断是否需要退出全屏模式）
     const wasAlreadyTalking = isTalking.value
+    const userMessage = talkMessage.value
 
     isTalking.value = true
     talkMsgList.value.push({
         type: 'user',
-        content: talkMessage.value
+        content: userMessage
     })
     requestLoading.value = true
 
@@ -176,32 +252,22 @@ async function sendQuestionEvent() {
             await getMaxChatData()
         }
 
-        SendMessageToAi({
+        // 使用 SSE 流式发送消息
+        startSSEChatStream({
             chatId: chatId.value || null,
             appId: appInfo.value ? appInfo.value.id : null,
             maxChatIndexId: maxChatIndexId.value,
             chatContent: {
-                content: talkMessage.value,
-                // index: talkMsgList.length - 1,
-                // role: ''
-            }
-        }).then((res: any) => {
-            talkMessage.value = ''
-            maxChatIndexId.value = res.data.responseIndexId
-            getChatResult()
-        }).catch(() => {
-            talkMessage.value = ''
-            requestLoading.value = false
-
-            // 如果之前没有在对话状态（即这是第一次输入），则退出全屏对话模式
-            if (!wasAlreadyTalking) {
-                isTalking.value = false
-                // 移除刚添加的用户消息
-                talkMsgList.value.pop()
+                content: userMessage
             }
         })
+
+        // 清空输入框
+        talkMessage.value = ''
+
     } catch (error) {
         // getMaxChatData 调用失败的处理
+        console.error('发送消息失败:', error)
         talkMessage.value = ''
         requestLoading.value = false
 
@@ -211,6 +277,8 @@ async function sendQuestionEvent() {
             // 移除刚添加的用户消息
             talkMsgList.value.pop()
         }
+
+        ElMessage.error('发送消息失败，请重试')
     }
 }
 
@@ -315,12 +383,32 @@ function onCompositionEnd() {
 }
 
 function stopThink() {
-    StopChatThink({
-        chatSessionId: chatId.value || null
-    }).then((res: any) => {
-        
-    }).catch((err: any) => {
-    })
+    // 断开 SSE 连接
+    if (sseClient.value) {
+        sseClient.value.disconnect()
+        sseClient.value = null
+    }
+
+    // 停止加载状态
+    requestLoading.value = false
+
+    // 移除加载中的 AI 消息
+    const lastIndex = talkMsgList.value.length - 1
+    if (lastIndex >= 0 && talkMsgList.value[lastIndex].type === 'ai' && talkMsgList.value[lastIndex].loading) {
+        talkMsgList.value[lastIndex].content = '已停止思考'
+        talkMsgList.value[lastIndex].loading = false
+    }
+
+    // 调用后端停止接口
+    if (chatSessionId.value) {
+        StopChatThink({
+            chatSessionId: chatSessionId.value
+        }).then((res: any) => {
+            console.log('停止思考成功')
+        }).catch((err: any) => {
+            console.error('停止思考失败:', err)
+        })
+    }
 }
 
 onMounted(() => {
@@ -335,6 +423,14 @@ onMounted(() => {
                 // 页面初始化时获取最新索引失败，不影响页面显示
             })
         })
+    }
+})
+
+// 组件卸载时清理 SSE 连接
+onUnmounted(() => {
+    if (sseClient.value) {
+        sseClient.value.disconnect()
+        sseClient.value = null
     }
 })
 </script>

@@ -16,6 +16,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -65,7 +66,10 @@ public class WebSecurityConfig {
         http.csrf().disable();
         http.headers().cacheControl();
         http.headers().frameOptions().disable();
-        http.sessionManagement().disable();
+
+        // 配置 Session 管理策略为 STATELESS，避免 SSE 响应提交后的 SecurityContext 存储警告
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).maximumSessions(1)
+            .maxSessionsPreventsLogin(false);
 
         // 访问h2,swagger，druid界面需要的权限
         http.authorizeRequests().antMatchers(isxAppProperties.getAdminUrl().toArray(new String[0])).hasRole("ADMIN");

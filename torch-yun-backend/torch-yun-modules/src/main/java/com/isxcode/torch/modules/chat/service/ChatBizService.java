@@ -34,6 +34,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.transaction.Transactional;
 
@@ -130,7 +131,10 @@ public class ChatBizService {
         return getMaxChatIdRes;
     }
 
-    public SendChatRes sendChat(SendChatReq sendChatReq) {
+    public SseEmitter sendChat(SendChatReq sendChatReq) {
+
+        // 创建 SSE 连接，设置超时时间为 30 分钟
+        SseEmitter sseEmitter = new SseEmitter(30 * 60 * 1000L);
 
         // 判断应用是否存在
         AppEntity app = appService.getApp(sendChatReq.getAppId());
@@ -154,7 +158,7 @@ public class ChatBizService {
             }
         }
 
-        // 初始化当前会话
+        // 封装请求对话
         ChatSessionEntity chatSession = new ChatSessionEntity();
         chatSession.setSessionType(ChatSessionType.USER);
         chatSession.setStatus(ChatSessionStatus.OVER);
@@ -163,7 +167,7 @@ public class ChatBizService {
         chatSession.setSessionIndex(sendChatReq.getMaxChatIndexId());
         chatSession.setSessionContent(JSON.toJSONString(sendChatReq.getChatContent()));
 
-        // 获取上下文
+        // 封装上下文
         List<ChatSessionEntity> chatSessionList = chatSessionRepository.findAllByChatId(chat.getId());
         chatSessionList.add(chatSession);
 
@@ -187,18 +191,8 @@ public class ChatBizService {
             botChatContext.setPrompt(app.getPrompt());
         }
 
-        // 记录当前线程
-        CHAT_THREAD_MAP.put(chatSession.getId(), Thread.currentThread());
-
-        // 发送请求
-        Bot bot = botFactory.getBot(model.getCode());
-        bot.sendChat(botChatContext);
-
-        // 删除当前线程
-        CHAT_THREAD_MAP.remove(chatSession.getId());
-
         // 保存请求会话
-        chatSessionRepository.save(chatSession);
+        chatSessionRepository.saveAndFlush(chatSession);
 
         // 初始化当前会话
         ChatSessionEntity nowChatSession = new ChatSessionEntity();
@@ -208,12 +202,13 @@ public class ChatBizService {
         nowChatSession.setChatId(sendChatReq.getChatId());
         nowChatSession.setSessionIndex(sendChatReq.getMaxChatIndexId() + 1);
         nowChatSession.setSessionContent("{}");
-        chatSessionRepository.save(nowChatSession);
+        chatSessionRepository.saveAndFlush(nowChatSession);
 
-        // 返回成功和响应的index
-        return SendChatRes.builder().chatId(sendChatReq.getChatId())
-            .responseIndexId(sendChatReq.getMaxChatIndexId() + 1).chatSessionId(chatSession.getId())
-            .appId(sendChatReq.getAppId()).build();
+        // 发送流式请求
+        Bot bot = botFactory.getBot(model.getCode());
+        bot.sendChat(botChatContext, sseEmitter);
+
+        return sseEmitter;
     }
 
     public GetChatRes getChat(GetChatReq getChatReq) {

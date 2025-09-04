@@ -1,12 +1,37 @@
 import { http } from '@/utils/http'
+import { createSSEClient, SSEClient, SSEOptions } from '@/utils/sse-client'
+import { useAuthStore } from '@/store/useAuth'
 
-// 发送对话
-export function SendMessageToAi(params: any): Promise<any> {
-    return http.request({
-        method: 'post',
-        url: '/chat/sendChat',
-        params: params
-    })
+// 发送对话 - SSE 流式版本
+export function SendMessageToAiStream(params: any, callbacks: {
+    onStart?: (data: any) => void
+    onChat?: (data: any) => void
+    onEnd?: () => void
+    onError?: (error: any) => void
+}): SSEClient {
+    // 获取认证信息
+    const authStore = useAuthStore()
+
+    const sseOptions: SSEOptions = {
+        url: `${import.meta.env.VITE_VUE_APP_BASE_DOMAIN}/chat/sendChat`,
+        data: params,
+        headers: {
+            authorization: authStore.token || '',
+            tenant: authStore.tenantId || '',
+            'Content-Type': 'application/json'
+        },
+        onStart: callbacks.onStart,
+        onChat: callbacks.onChat,
+        onEnd: callbacks.onEnd,
+        onError: callbacks.onError,
+        timeout: 30 * 60 * 1000, // 30分钟超时
+        retryAttempts: 3,
+        retryDelay: 2000
+    }
+
+    const sseClient = createSSEClient(sseOptions)
+    sseClient.connect()
+    return sseClient
 }
 
 // 获取最大对话

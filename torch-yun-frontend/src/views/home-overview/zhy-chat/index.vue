@@ -17,30 +17,15 @@
                     :icon="UserFilled"
                     :size="30"
                 />
-                <div class="chat-message-item" v-html="content(item.content)">
-                </div>
-            </div>
-            <div class="card-item card-item__ai" v-if="requestLoading">
-                <el-avatar
-                    :style="{
-                        left: '-44px',
-                        color: '#FFFFFF',
-                        'background-color': '#fde3d0'
-                    }"
-                    :icon="UserFilled"
-                    :size="30"
-                />
-                <div class="chat-message-item chat-message-item__loading">
-                    <span class="loading-text__chat">
+                <div class="chat-message-item" :class="{ 'chat-message-item__loading': item.loading }">
+                    <div v-if="item.loading" class="loading-text__chat">
                         <el-icon class="is-loading">
                             <Loading />
                         </el-icon>
                         思考中{{ loadingPoint }}
-                    </span>
+                    </div>
+                    <div v-else v-html="content(item.content)"></div>
                 </div>
-            </div>
-            <div v-if="requestLoading">
-                <!-- <span class="stop-think" @click="stopThink">停止思考</span> -->
             </div>
         </el-scrollbar>
     </div>
@@ -89,6 +74,11 @@ const content = computed(() => {
   return (content: string) => {
     return renderMarkdown(content)
   }
+})
+
+// 检查是否有加载中的消息
+const hasLoadingMessage = computed(() => {
+  return props.talkMsgList.some(item => item.loading === true)
 })
 
 watch(() => props.talkMsgList, (v: any) => {
@@ -180,14 +170,23 @@ defineExpose({
                 border-radius: 8px;
                 &.chat-message-item__loading {
                     padding: 16px 16px;
+                    background-color: #f8f9fa;
+                    border: 1px solid #e9ecef;
+                    min-width: 120px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
                 }
 
                 .loading-text__chat {
                     color: getCssVar('color', 'primary');
                     display: flex;
                     align-items: center;
+                    font-size: 14px;
+                    white-space: nowrap;
                     .el-icon {
-                        margin-right: 4px;
+                        margin-right: 6px;
+                        font-size: 16px;
                     }
                 }
             }

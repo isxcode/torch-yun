@@ -9,10 +9,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.validation.Valid;
 
@@ -32,10 +34,9 @@ public class ChatController {
         return chatBizService.getMaxChatId(getMaxChatIdReq);
     }
 
-    @Operation(summary = "发送对话")
-    @PostMapping("/sendChat")
-    @SuccessResponse("发送成功")
-    public SendChatRes sendChat(@Valid @RequestBody SendChatReq sendChatReq) {
+    @Operation(summary = "发送对话(SSE流式)")
+    @PostMapping(value = "/sendChat", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter sendChat(@Valid @RequestBody SendChatReq sendChatReq) {
 
         return chatBizService.sendChat(sendChatReq);
     }
