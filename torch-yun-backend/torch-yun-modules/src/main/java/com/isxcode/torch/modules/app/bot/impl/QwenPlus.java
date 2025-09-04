@@ -108,7 +108,8 @@ public class QwenPlus extends Bot {
 
                     // 发送聊天内容
                     try {
-                        sseEmitter.send(SseEmitter.event().name(ChatSseEvent.CHAT_EVENT).data(JSON.toJSONString(SseBody.builder().chat(chatContent).build())));
+                        sseEmitter.send(SseEmitter.event().name(ChatSseEvent.CHAT_EVENT)
+                            .data(JSON.toJSONString(SseBody.builder().chat(chatContent).build())));
                     } catch (Exception e) {
                         log.error("发送SSE事件失败", e);
                     }
@@ -123,7 +124,8 @@ public class QwenPlus extends Bot {
 
             // 发送完成事件
             try {
-                sseEmitter.send(SseEmitter.event().name(ChatSseEvent.END_EVENT).data(JSON.toJSONString(SseBody.builder().msg("对话结束").build())));
+                sseEmitter.send(SseEmitter.event().name(ChatSseEvent.END_EVENT)
+                    .data(JSON.toJSONString(SseBody.builder().msg("对话结束").build())));
                 sseEmitter.complete();
             } catch (Exception e) {
                 log.error("发送完成事件失败", e);
@@ -133,7 +135,8 @@ public class QwenPlus extends Bot {
 
             log.error(e.getMessage(), e);
             try {
-                sseEmitter.send(SseEmitter.event().name(ChatSseEvent.ERROR_EVENT).data(JSON.toJSONString(SseBody.builder().msg(e.getMessage()).build())));
+                sseEmitter.send(SseEmitter.event().name(ChatSseEvent.ERROR_EVENT)
+                    .data(JSON.toJSONString(SseBody.builder().msg(e.getMessage()).build())));
                 sseEmitter.completeWithError(e);
             } catch (Exception ignored) {
             }

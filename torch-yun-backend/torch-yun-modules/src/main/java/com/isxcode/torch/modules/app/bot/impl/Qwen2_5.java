@@ -24,14 +24,12 @@ import com.isxcode.torch.modules.cluster.entity.ClusterNodeEntity;
 import com.isxcode.torch.modules.cluster.mapper.ClusterNodeMapper;
 import com.isxcode.torch.modules.cluster.repository.ClusterNodeRepository;
 
-import java.io.IOException;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -50,7 +48,7 @@ public class Qwen2_5 extends Bot {
     private final HttpUrlUtils httpUrlUtils;
 
     public Qwen2_5(ChatSessionRepository chatSessionRepository, ClusterNodeRepository clusterNodeRepository,
-                   ClusterNodeMapper clusterNodeMapper, AesUtils aesUtils, HttpUrlUtils httpUrlUtils) {
+        ClusterNodeMapper clusterNodeMapper, AesUtils aesUtils, HttpUrlUtils httpUrlUtils) {
         this.chatSessionRepository = chatSessionRepository;
         this.clusterNodeRepository = clusterNodeRepository;
         this.clusterNodeMapper = clusterNodeMapper;
@@ -99,13 +97,14 @@ public class Qwen2_5 extends Bot {
         // 推送SSE消息 - 分块发送大内容
         try {
 
-            sseEmitter.send(SseEmitter.event().name(ChatSseEvent.CHAT_EVENT).data(JSON.toJSONString(SseBody.builder().chat(content).build())));
+            sseEmitter.send(SseEmitter.event().name(ChatSseEvent.CHAT_EVENT)
+                .data(JSON.toJSONString(SseBody.builder().chat(content).build())));
 
-        } catch (
-            Exception e) {
+        } catch (Exception e) {
             log.error(e.getMessage(), e);
             try {
-                sseEmitter.send(SseEmitter.event().name(ChatSseEvent.ERROR_EVENT).data(JSON.toJSONString(SseBody.builder().msg(e.getMessage()).build())));
+                sseEmitter.send(SseEmitter.event().name(ChatSseEvent.ERROR_EVENT)
+                    .data(JSON.toJSONString(SseBody.builder().msg(e.getMessage()).build())));
                 sseEmitter.completeWithError(e);
             } catch (Exception ignored) {
             }
@@ -121,7 +120,8 @@ public class Qwen2_5 extends Bot {
 
         // 发送完成事件
         try {
-            sseEmitter.send(SseEmitter.event().name(ChatSseEvent.END_EVENT).data(JSON.toJSONString(SseBody.builder().msg("对话结束").build())));
+            sseEmitter.send(SseEmitter.event().name(ChatSseEvent.END_EVENT)
+                .data(JSON.toJSONString(SseBody.builder().msg("对话结束").build())));
             sseEmitter.complete();
         } catch (Exception e) {
             log.error("发送完成事件失败", e);

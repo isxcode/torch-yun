@@ -28,7 +28,8 @@ public abstract class Bot {
 
         try {
             // 推送开始事件
-            sseEmitter.send(SseEmitter.event().name(ChatSseEvent.START_EVENT).data(JSON.toJSONString(SseBody.builder().msg("建立连接").build())));
+            sseEmitter.send(SseEmitter.event().name(ChatSseEvent.START_EVENT)
+                .data(JSON.toJSONString(SseBody.builder().msg("建立连接").build())));
 
             // 开始聊天
             chat(botChatContext, sseEmitter);
@@ -36,7 +37,8 @@ public abstract class Bot {
 
             log.error(e.getMessage(), e);
             try {
-                sseEmitter.send(SseEmitter.event().name(ChatSseEvent.ERROR_EVENT).data(JSON.toJSONString(SseBody.builder().msg(e.getMessage()).build())));
+                sseEmitter.send(SseEmitter.event().name(ChatSseEvent.ERROR_EVENT)
+                    .data(JSON.toJSONString(SseBody.builder().msg(e.getMessage()).build())));
                 sseEmitter.completeWithError(e);
             } catch (Exception ignored) {
             }
