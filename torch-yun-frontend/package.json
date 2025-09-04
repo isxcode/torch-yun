@@ -33,6 +33,7 @@
     "dayjs": "^1.11.10",
     "echarts": "^5.4.3",
     "element-plus": "2.3.5",
+    "eventsource-parser": "^3.0.6",
     "highlight.js": "^11.11.1",
     "jsplumb": "^2.15.6",
     "lodash-es": "^4.17.21",
