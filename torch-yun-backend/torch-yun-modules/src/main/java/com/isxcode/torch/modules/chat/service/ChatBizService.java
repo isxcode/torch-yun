@@ -192,7 +192,7 @@ public class ChatBizService {
         }
 
         // 保存请求会话
-        chatSessionRepository.save(chatSession);
+        chatSessionRepository.saveAndFlush(chatSession);
 
         // 初始化当前会话
         ChatSessionEntity nowChatSession = new ChatSessionEntity();
@@ -202,7 +202,7 @@ public class ChatBizService {
         nowChatSession.setChatId(sendChatReq.getChatId());
         nowChatSession.setSessionIndex(sendChatReq.getMaxChatIndexId() + 1);
         nowChatSession.setSessionContent("{}");
-        chatSessionRepository.save(nowChatSession);
+        chatSessionRepository.saveAndFlush(nowChatSession);
 
         // 发送流式请求
         Bot bot = botFactory.getBot(model.getCode());
