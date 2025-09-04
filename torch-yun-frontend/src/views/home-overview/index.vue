@@ -152,7 +152,6 @@ function startSSEChatStream(params: any) {
     // 创建新的 SSE 连接
     sseClient.value = SendMessageToAiStream(params, {
         onStart: (data: any) => {
-            console.log('SSE 连接开始:', data)
             // 保存聊天会话ID和响应索引
             if (data.chatSessionId) {
                 chatSessionId.value = data.chatSessionId
@@ -175,12 +174,13 @@ function startSSEChatStream(params: any) {
             currentAiMessage.value = ''
         },
         onChat: (data: any) => {
-            console.log('SSE 消息:', data)
-            // 更新 AI 消息内容 - 累积拼接内容
-            // 后端直接发送字符串内容，不是包装在对象中
-            if (data && typeof data === 'string') {
-                // 将新内容拼接到当前消息中
-                currentAiMessage.value += data
+            // 解析 SseBody JSON 格式的数据
+            const sseBody = JSON.parse(data)
+            const chatContent = sseBody.chat || ''
+
+            // 更新 AI 消息内容 - 直接拼接，不添加换行符
+            if (chatContent !== undefined) {
+                currentAiMessage.value += chatContent
 
                 // 更新最后一条 AI 消息
                 const lastIndex = talkMsgList.value.length - 1
@@ -191,7 +191,6 @@ function startSSEChatStream(params: any) {
             }
         },
         onEnd: () => {
-            console.log('SSE 连接完成')
             requestLoading.value = false
 
             // 确保最后一条消息不再显示加载状态

@@ -115,6 +115,12 @@ public class QwenPlus extends Bot {
                 }
             });
 
+            // 保存聊天对话状态和内容
+            ChatContent chatContent = ChatContent.builder().content(fullContent.toString()).build();
+            nowChatSession.setSessionContent(JSON.toJSONString(chatContent));
+            nowChatSession.setStatus(ChatSessionStatus.OVER);
+            chatSessionRepository.saveAndFlush(nowChatSession);
+
             // 发送完成事件
             try {
                 sseEmitter.send(SseEmitter.event().name(ChatSseEvent.END_EVENT).data(JSON.toJSONString(SseBody.builder().msg("对话结束").build())));
@@ -122,12 +128,6 @@ public class QwenPlus extends Bot {
             } catch (Exception e) {
                 log.error("发送完成事件失败", e);
             }
-
-            // 保存聊天对话状态和内容
-            ChatContent chatContent = ChatContent.builder().content(fullContent.toString()).build();
-            nowChatSession.setSessionContent(JSON.toJSONString(chatContent));
-            nowChatSession.setStatus(ChatSessionStatus.OVER);
-            chatSessionRepository.save(nowChatSession);
 
         } catch (NoApiKeyException | InputRequiredException e) {
 
