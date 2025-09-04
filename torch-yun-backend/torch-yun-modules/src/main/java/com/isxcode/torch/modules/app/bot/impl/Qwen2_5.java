@@ -101,10 +101,6 @@ public class Qwen2_5 extends Bot {
 
             sseEmitter.send(SseEmitter.event().name(ChatSseEvent.CHAT_EVENT).data(JSON.toJSONString(SseBody.builder().chat(content).build())));
 
-            // 发送完成事件
-            sseEmitter.send(SseEmitter.event().name(ChatSseEvent.END_EVENT).data(JSON.toJSONString(SseBody.builder().msg("对话结束").build())));
-            sseEmitter.complete();
-
         } catch (
             Exception e) {
             log.error(e.getMessage(), e);
@@ -121,7 +117,15 @@ public class Qwen2_5 extends Bot {
         nowChatSession.setStatus(ChatSessionStatus.OVER);
         ChatContent build = ChatContent.builder().content(content).build();
         nowChatSession.setSessionContent(JSON.toJSONString(build));
-        chatSessionRepository.save(nowChatSession);
+        chatSessionRepository.saveAndFlush(nowChatSession);
+
+        // 发送完成事件
+        try {
+            sseEmitter.send(SseEmitter.event().name(ChatSseEvent.END_EVENT).data(JSON.toJSONString(SseBody.builder().msg("对话结束").build())));
+            sseEmitter.complete();
+        } catch (Exception e) {
+            log.error("发送完成事件失败", e);
+        }
     }
 
     @Override

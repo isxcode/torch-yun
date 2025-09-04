@@ -70,6 +70,8 @@ export function createSSEClient(options: SSEOptions): SSEClient {
         onEvent: (event: EventSourceMessage) => {
           const { event: eventType, data: eventData } = event
 
+
+
           try {
             switch (eventType) {
               case 'start':
@@ -95,7 +97,7 @@ export function createSSEClient(options: SSEOptions): SSEClient {
           }
         },
         onRetry: (retryInterval) => {
-          console.log('Server requested retry interval:', retryInterval)
+          // Server requested retry
         }
       })
 
@@ -109,15 +111,36 @@ export function createSSEClient(options: SSEOptions): SSEClient {
       }, timeout)
 
       try {
+        let rawData = ''
+        let buffer = '' // 添加缓冲区来处理不完整的事件
+
         while (isConnected) {
           const { done, value } = await reader.read()
-          
+
           if (done) {
+            // 处理缓冲区中剩余的数据
+            if (buffer.trim()) {
+              parser.feed(buffer)
+            }
             break
           }
 
           const chunk = decoder.decode(value, { stream: true })
-          parser.feed(chunk)
+          rawData += chunk
+          buffer += chunk
+
+
+
+          // 查找完整的事件（以双换行符结尾）
+          let eventEndIndex
+          while ((eventEndIndex = buffer.indexOf('\n\n')) !== -1) {
+            const completeEvent = buffer.substring(0, eventEndIndex + 2)
+            buffer = buffer.substring(eventEndIndex + 2)
+
+
+
+            parser.feed(completeEvent)
+          }
         }
       } finally {
         clearTimeout(timeoutId)
@@ -137,8 +160,7 @@ export function createSSEClient(options: SSEOptions): SSEClient {
       // 重试逻辑
       if (retryCount < retryAttempts) {
         retryCount++
-        console.log(`SSE connection failed, retrying... (${retryCount}/${retryAttempts})`)
-        
+
         setTimeout(() => {
           connect()
         }, retryDelay)

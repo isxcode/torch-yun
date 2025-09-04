@@ -202,7 +202,7 @@ public class ChatBizService {
         nowChatSession.setChatId(sendChatReq.getChatId());
         nowChatSession.setSessionIndex(sendChatReq.getMaxChatIndexId() + 1);
         nowChatSession.setSessionContent("{}");
-        chatSessionRepository.saveAndFlush(nowChatSession);
+        chatSessionRepository.save(nowChatSession);
 
         // 发送流式请求
         Bot bot = botFactory.getBot(model.getCode());
