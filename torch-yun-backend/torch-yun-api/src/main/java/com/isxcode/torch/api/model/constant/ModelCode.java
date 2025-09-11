@@ -5,4 +5,6 @@ public interface ModelCode {
     String QWEN_PLUS = "Qwen-Plus";
 
     String QWEN2_5 = "Qwen2.5-0.5B";
+
+    String GEMMA3_270M = "Gemma3-270M";
 }
