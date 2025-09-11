@@ -54,7 +54,7 @@ public class TorchYunAgentBizService {
         String pluginName = "";
         if ("Qwen2.5-0.5B".equals(deployAiReq.getModelCode())) {
             pluginName = "qwen2.5";
-        }else if("Gemma3-270M".equals(deployAiReq.getModelCode())){
+        } else if ("Gemma3-270M".equals(deployAiReq.getModelCode())) {
             pluginName = "gemma3";
         }
 

@@ -46,7 +46,7 @@ public class Gemma3 extends Bot {
     private final HttpUrlUtils httpUrlUtils;
 
     public Gemma3(ChatSessionRepository chatSessionRepository, ClusterNodeRepository clusterNodeRepository,
-                  ClusterNodeMapper clusterNodeMapper, AesUtils aesUtils, HttpUrlUtils httpUrlUtils) {
+        ClusterNodeMapper clusterNodeMapper, AesUtils aesUtils, HttpUrlUtils httpUrlUtils) {
         this.chatSessionRepository = chatSessionRepository;
         this.clusterNodeRepository = clusterNodeRepository;
         this.clusterNodeMapper = clusterNodeMapper;
