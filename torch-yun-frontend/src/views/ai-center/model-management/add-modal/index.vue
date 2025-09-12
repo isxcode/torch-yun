@@ -71,6 +71,10 @@ const codeList = ref([
     {
         label: 'Qwen2.5-0.5B',
         value: 'Qwen2.5-0.5B'
+    },
+    {
+        label: 'Gemma3-270M',
+        value: 'Gemma3-270M'
     }
 ])
 const modelType = ref<string>('')

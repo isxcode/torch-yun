@@ -155,7 +155,7 @@ public class ScpFileService {
 
                 if (!ai.getAiLog().contains("进度:" + scpPercent + "%")) {
                     ai.setAiLog(
-                        ai.getAiLog() + "\n " + LocalDateTime.now() + WorkLog.SUCCESS_INFO + "进度:" + scpPercent + "%");
+                        ai.getAiLog() + "\n" + LocalDateTime.now() + WorkLog.SUCCESS_INFO + "进度:" + scpPercent + "%");
                     ai = aiRepository.saveAndFlush(ai);
                 }
             }

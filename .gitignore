@@ -39,3 +39,7 @@ torch-yun-dist/zhishuyun-agent/file/*
 # docker的gradle repo不提交
 gradle-repo
 .pnpm-store
+
+# 本地python缓存不提交
+torch-yun-vip/torch-yun-plugins/**/__pycache__
+torch-yun-plugins/**/__pycache__

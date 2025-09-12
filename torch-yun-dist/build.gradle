@@ -25,6 +25,7 @@ tasks.register('build_agent_lib', Copy) {
 tasks.register('build_agent_plugins', Copy) {
 
     from rootDir.getAbsolutePath() + '/torch-yun-plugins/'
+    from rootDir.getAbsolutePath() + '/torch-yun-vip/torch-yun-plugins/'
     into 'build/zhishuyun-agent/plugins'
 }
 
