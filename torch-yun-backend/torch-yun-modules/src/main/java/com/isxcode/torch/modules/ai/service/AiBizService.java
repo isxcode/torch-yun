@@ -140,6 +140,7 @@ public class AiBizService {
         BaseConfig baseConfig = BaseConfig.builder().topK(50).topP(0.9).maxTokens(512).repetitionPenalty(1.2f)
             .enableSearch(false).temperature(0.8f).build();
         appEntity.setBaseConfig(JSON.toJSONString(baseConfig));
+        appEntity.setPrompt("");
 
         // 判断是否需要制定默认app应用
         List<AppEntity> allApp = appRepository.findAll();
@@ -166,9 +167,9 @@ public class AiBizService {
 
         AiEntity aiEntity = aiMapper.updateAiReqToAiEntity(updateAiReq, ai);
 
-        JPA_TENANT_MODE.set(true);
-        ModelEntity model = modelService.getModel(updateAiReq.getId());
         JPA_TENANT_MODE.set(false);
+        ModelEntity model = modelService.getModel(ai.getModelId());
+        JPA_TENANT_MODE.set(true);
 
         if (ModelType.API.equals(model.getModelType())) {
             if (updateAiReq.getAuthConfig() == null) {
@@ -203,8 +204,8 @@ public class AiBizService {
             JPA_TENANT_MODE.set(false);
             aiEntity.setModelName(modelService.getModelName(aiEntity.getModelId()));
             JPA_TENANT_MODE.set(true);
-            ModelEntity model = modelService.getModel(aiEntity.getModelId());
-            aiEntity.setAiType(model.getModelType());
+
+            aiEntity.setAiType(modelService.getModelType(aiEntity.getModelId()));
         });
 
         return result;

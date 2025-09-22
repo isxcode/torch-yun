@@ -58,6 +58,7 @@ public class AppBizService {
         // 应用添加默认配置
         BaseConfig baseConfig = BaseConfig.builder().topK(50).topP(0.9).maxTokens(512).repetitionPenalty(1.2f)
             .enableSearch(false).temperature(0.8f).build();
+        appEntity.setPrompt("");
         appEntity.setBaseConfig(JSON.toJSONString(baseConfig));
 
         appEntity = appRepository.save(appEntity);
