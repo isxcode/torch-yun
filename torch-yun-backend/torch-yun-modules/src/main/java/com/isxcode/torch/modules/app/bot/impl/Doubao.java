@@ -1,5 +1,3 @@
-
-
 package com.isxcode.torch.modules.app.bot.impl;
 
 import com.isxcode.torch.api.agent.req.ChatAgentAiReq;
