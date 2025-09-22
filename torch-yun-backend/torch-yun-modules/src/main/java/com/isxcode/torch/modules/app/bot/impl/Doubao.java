@@ -55,7 +55,7 @@ public class Doubao extends Bot {
         Resource resource = resourceLoader.getResource("classpath:ai/deepseek/ai.py");
         String pythonScript;
         try (InputStream inputStream = resource.getInputStream();
-             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
             pythonScript = reader.lines().collect(Collectors.joining("\n"));
         } catch (Exception e) {
             throw new IsxAppException("文件获取异常");
