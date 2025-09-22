@@ -1,17 +1,17 @@
 INSERT INTO TY_MODEL
 (ID, NAME, CODE, MODEL_TYPE, MODEL_LABEL, STATUS, REMARK, CREATE_BY, CREATE_DATE_TIME, LAST_MODIFIED_BY,
  LAST_MODIFIED_DATE_TIME, DELETED, VERSION_NUMBER, TENANT_ID)
-VALUES ('qwen', '通义千问', 'Qwen', 'API', 'LangCain', 'ENABLE', '系统默认', 'zhishuyun',
+VALUES ('qwen', '通义千问', 'Qwen', 'API', 'LangChain', 'ENABLE', '系统默认', 'zhishuyun',
         '2025-03-07 16:02:59.000000', 'zhishuyun', '2025-03-07 16:03:06.000000', 0, 1, 'zhishuyun');
 
 INSERT INTO TY_MODEL
 (ID, NAME, CODE, MODEL_TYPE, MODEL_LABEL, STATUS, REMARK, CREATE_BY, CREATE_DATE_TIME, LAST_MODIFIED_BY,
  LAST_MODIFIED_DATE_TIME, DELETED, VERSION_NUMBER, TENANT_ID)
-VALUES ('deepseek', 'DeepSeek', 'DeepSeek', 'API', 'LangCain', 'ENABLE', '系统默认', 'zhishuyun',
+VALUES ('deepseek', 'DeepSeek', 'DeepSeek', 'API', 'LangChain', 'ENABLE', '系统默认', 'zhishuyun',
         '2025-03-07 16:02:59.000000', 'zhishuyun', '2025-03-07 16:03:06.000000', 0, 1, 'zhishuyun');
 
 INSERT INTO TY_MODEL
 (ID, NAME, CODE, MODEL_TYPE, MODEL_LABEL, STATUS, REMARK, CREATE_BY, CREATE_DATE_TIME, LAST_MODIFIED_BY,
  LAST_MODIFIED_DATE_TIME, DELETED, VERSION_NUMBER, TENANT_ID)
-VALUES ('doubao', '豆包', 'Doubao', 'API', 'LangCain', 'ENABLE', '系统默认', 'zhishuyun',
+VALUES ('doubao', '豆包', 'Doubao', 'API', 'LangChain', 'ENABLE', '系统默认', 'zhishuyun',
         '2025-03-07 16:02:59.000000', 'zhishuyun', '2025-03-07 16:03:06.000000', 0, 1, 'zhishuyun');
