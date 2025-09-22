@@ -17,6 +17,9 @@
 torch-yun-backend/torch-yun-main/src/main/resources/templates
 torch-yun-backend/torch-yun-main/src/main/resources/static
 
+# ai脚本不提交
+torch-yun-backend/torch-yun-main/src/main/resources/ai
+
 # 代理安装包不提交
 torch-yun-backend/torch-yun-main/src/main/resources/agent
 

@@ -7,6 +7,7 @@ import com.isxcode.torch.api.app.dto.SseBody;
 import com.isxcode.torch.api.chat.constants.ChatSessionStatus;
 import com.isxcode.torch.api.chat.constants.ChatSseEvent;
 import com.isxcode.torch.api.chat.dto.ChatContent;
+import com.isxcode.torch.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.torch.modules.app.bot.Bot;
 import com.alibaba.fastjson.JSON;
 import com.isxcode.torch.api.model.constant.ModelCode;
@@ -14,13 +15,17 @@ import com.isxcode.torch.modules.app.bot.BotChatContext;
 import com.isxcode.torch.modules.chat.entity.ChatSessionEntity;
 import com.isxcode.torch.modules.chat.repository.ChatSessionRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Base64;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -28,8 +33,11 @@ public class Qwen extends Bot {
 
     private final ChatSessionRepository chatSessionRepository;
 
-    public Qwen(ChatSessionRepository chatSessionRepository) {
+    private final ResourceLoader resourceLoader;
+
+    public Qwen(ChatSessionRepository chatSessionRepository, ResourceLoader resourceLoader) {
         this.chatSessionRepository = chatSessionRepository;
+        this.resourceLoader = resourceLoader;
     }
 
     @Override
@@ -45,10 +53,17 @@ public class Qwen extends Bot {
         // base64压缩请求体
         String aiReq = Base64.getEncoder().encodeToString(JSON.toJSONString(chatAgentAiReq).getBytes());
 
-        String pythonScriptPath = "/Users/ispong/isxcode/torch-yun/torch-yun-vip/torch-yun-plugins/tongyi/ai.py";
+        Resource resource = resourceLoader.getResource("classpath:ai/qwen/ai.py");
+        String pythonScript;
+        try (InputStream inputStream = resource.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+            pythonScript = reader.lines().collect(Collectors.joining("\n"));
+        } catch (Exception e) {
+            throw new IsxAppException("文件获取异常");
+        }
 
         // 提交到本地的python脚本中
-        ProcessBuilder processBuilder = new ProcessBuilder("python3", "-u", pythonScriptPath, aiReq);
+        ProcessBuilder processBuilder = new ProcessBuilder("python3", "-u", "-c", pythonScript, aiReq);
 
         // 获取当前会话实体
         ChatSessionEntity nowChatSession = chatSessionRepository
