@@ -28,6 +28,9 @@
                     />
                 </el-select>
             </el-form-item>
+            <el-form-item v-if="formData.aiType === 'API' && formData.modelId === 'doubao'" label="EndPointId" prop="authConfig.endpointId">
+                <el-input v-model="formData.authConfig.endpointId" maxlength="100" show-password placeholder="请输入" />
+            </el-form-item>
             <el-form-item v-if="formData.aiType === 'API'" label="Key" prop="authConfig.apiKey">
                 <el-input v-model="formData.authConfig.apiKey" maxlength="100" type="password" show-password placeholder="请输入" />
             </el-form-item>
@@ -58,6 +61,7 @@ import { GetComputerGroupList } from '@/services/computer-group.service';
 
 interface ApiKey {
     apiKey: string
+    endpointId: string
 }
 
 interface ClusterConfig {
@@ -119,7 +123,8 @@ const formData = reactive<FormParams>({
     remark: '',
     aiType: 'API',
     authConfig: {
-        apiKey: ''
+        apiKey: '',
+        endpointId: ''
     },
     clusterConfig: {
         clusterId: ''
@@ -131,6 +136,7 @@ const rules = reactive<FormRules>({
     aiType: [{ required: true, message: '请选择类型', trigger: ['change', 'blur']}],
     modelId: [{ required: true, message: '请选择模型', trigger: ['change', 'blur']}],
     'authConfig.apiKey': [{ required: true, message: '请输入Key', trigger: ['change', 'blur']}],
+    'authConfig.endpointId': [{ required: true, message: '请输入EndPointId', trigger: ['change', 'blur']}],
     'clusterConfig.clusterId': [{ required: true, message: '请选择集群', trigger: ['change', 'blur']}],
 })
 
