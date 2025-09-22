@@ -73,8 +73,6 @@ check_system_dependencies() {
 
     check_command "java" "请安装 Java"
     check_command "node" "请安装 Node.js"
-    check_command "python" "请安装 Python"
-    check_command "pip" "请安装 Pip"
 
     # 检查并安装 pnpm
     if ! command -v pnpm &>/dev/null; then
@@ -83,15 +81,6 @@ check_system_dependencies() {
         echo "pnpm 安装完成"
     else
         echo "pnpm 命令检查通过"
-    fi
-
-    # 检查并安装 langChain
-    if ! python -c "import langchain_core, langchain_openai" &>/dev/null; then
-        echo "未检测到 pnpm，正在安装..."
-        pip install langchain-openai langchain-core
-        echo "langChain 安装完成"
-    else
-        echo "langChain 命令检查通过"
     fi
 }
 
