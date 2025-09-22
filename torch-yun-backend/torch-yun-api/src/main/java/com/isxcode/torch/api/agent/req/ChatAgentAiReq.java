@@ -28,5 +28,5 @@ public class ChatAgentAiReq {
 
     private String apiKey;
 
-    private String endPointId;
+    private String endpointId;
 }
