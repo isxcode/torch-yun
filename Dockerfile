@@ -12,6 +12,10 @@ ARG LOG_LEVEL='info'
 COPY ./torch-yun-backend/torch-yun-main/build/libs/zhishuyun.jar /opt/zhishuyun/zhishuyun.jar
 COPY ./torch-yun-backend/torch-yun-main/src/main/resources/application-docker.yml /etc/zhishuyun/conf/
 
+RUN apt-get update
+RUN apt-get install -y build-essential python-dev libsasl2-dev libsasl2-modules-gssapi-mit libsasl2-modules pip
+RUN pip install langchain-openai langchain-core
+
 EXPOSE 8080
 
 ENV ADMIN_PASSWORD=${ADMIN_PASSWORD}
