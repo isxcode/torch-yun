@@ -14,4 +14,9 @@ public class AuthConfig {
 
     @Schema(title = "api的key", example = "ai")
     private String apiKey;
+
+    /**
+     * 豆包的endpointId。moduleId.
+     */
+    private String endpointId;
 }
