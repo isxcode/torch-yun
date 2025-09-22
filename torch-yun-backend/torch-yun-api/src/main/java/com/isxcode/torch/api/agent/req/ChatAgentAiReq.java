@@ -25,4 +25,8 @@ public class ChatAgentAiReq {
     private Float repetitionPenalty;
 
     private String prompt;
+
+    private String apiKey;
+
+    private String endPointId;
 }
