@@ -162,6 +162,9 @@ public class ChatBizService {
         // 查询用户历史对话
         List<ChatSessionEntity> chatSessionList = chatSessionRepository.findAllByChatId(chat.getId());
 
+        // 封装所有子对话内容
+
+
         // 封装并保存用户请求对话
         ChatSessionEntity userAskSession = new ChatSessionEntity();
         userAskSession.setSessionType(ChatSessionType.USER);
