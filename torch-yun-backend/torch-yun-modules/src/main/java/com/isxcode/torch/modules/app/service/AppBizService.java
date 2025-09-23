@@ -71,7 +71,7 @@ public class AppBizService {
         // 检测名称重复
         AppEntity app = appService.getApp(updateAppReq.getId());
 
-         Optional<AppEntity> appEntityByName = appRepository.findByName(updateAppReq.getName());
+        Optional<AppEntity> appEntityByName = appRepository.findByName(updateAppReq.getName());
         if (appEntityByName.isPresent() && !appEntityByName.get().getId().equals(updateAppReq.getId())) {
             throw new IsxAppException("应用名称重复");
         }
