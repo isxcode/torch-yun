@@ -180,7 +180,7 @@ public class AiBizService {
             if (updateAiReq.getClusterConfig() == null) {
                 throw new IsxAppException("集群配置缺失");
             }
-            aiEntity.setClusterConfig(JSON.toJSONString(updateAiReq.getClusterConfig()));
+            aiEntity.setClusterConfig(updateAiReq.getClusterConfig().getClusterId());
             aiEntity.setStatus(AiStatus.DISABLE);
         } else {
             throw new IsxAppException("当前模型不支持");
@@ -228,17 +228,25 @@ public class AiBizService {
             model.setCode("Qwen2.5-0.5B");
             model.setModelFile("Qwen2.5-0.5B.zip");
         } else {
+            JPA_TENANT_MODE.set(false);
             model = modelService.getModel(ai.getModelId());
+            JPA_TENANT_MODE.set(true);
         }
 
-        // 封装请求体
-        DeployAiContext deployAiContext = DeployAiContext.builder().aiId(ai.getId())
-            .clusterConfig(JSON.parseObject(ai.getClusterConfig(), ClusterConfig.class)).modelCode(model.getCode())
-            .modelFileId(model.getModelFile()).build();
-        deployAiService.deployAi(deployAiContext);
+        // 本地部署需要启动服务、
+        if (ModelType.MANUAL.equals(model.getModelType())) {
+            // 封装请求体
+            DeployAiContext deployAiContext = DeployAiContext.builder().aiId(ai.getId())
+                .clusterConfig(JSON.parseObject(ai.getClusterConfig(), ClusterConfig.class)).modelCode(model.getCode())
+                .modelFileId(model.getModelFile()).build();
+            deployAiService.deployAi(deployAiContext);
+        }
 
         // 修改状态
         ai.setStatus(AiStatus.DEPLOYING);
+        if (ModelType.API.equals(model.getModelType())) {
+            ai.setStatus(AiStatus.ENABLE);
+        }
         aiRepository.save(ai);
     }
 
@@ -247,32 +255,38 @@ public class AiBizService {
         // 判断ai是否存在
         AiEntity ai = aiService.getAi(stopAiReq.getId());
 
-        // 判断pid值
-        if (Strings.isEmpty(ai.getAiPid())) {
-            throw new IsxAppException("智能体启动异常");
-        }
-        // 随机一个集群id
-        List<ClusterNodeEntity> allEngineNodes = clusterNodeRepository.findAllByClusterIdAndStatus(
-            JSON.parseObject(ai.getClusterConfig(), ClusterConfig.class).getClusterId(), ClusterNodeStatus.RUNNING);
-        if (allEngineNodes.isEmpty()) {
-            throw new IsxAppException("申请资源失败 : 集群不存在可用节点，请切换一个集群  \n");
-        }
-        ClusterNodeEntity engineNode = allEngineNodes.get(new Random().nextInt(allEngineNodes.size()));
+        // 本地模型，需要停止服务
+        JPA_TENANT_MODE.set(false);
+        ModelEntity model = modelService.getModel(ai.getModelId());
+        JPA_TENANT_MODE.set(true);
+        if (ModelType.MANUAL.equals(model.getModelType())) {
+            // 判断pid值
+            if (Strings.isEmpty(ai.getAiPid())) {
+                throw new IsxAppException("智能体启动异常");
+            }
+            // 随机一个集群id
+            List<ClusterNodeEntity> allEngineNodes = clusterNodeRepository.findAllByClusterIdAndStatus(
+                JSON.parseObject(ai.getClusterConfig(), ClusterConfig.class).getClusterId(), ClusterNodeStatus.RUNNING);
+            if (allEngineNodes.isEmpty()) {
+                throw new IsxAppException("申请资源失败 : 集群不存在可用节点，请切换一个集群  \n");
+            }
+            ClusterNodeEntity engineNode = allEngineNodes.get(new Random().nextInt(allEngineNodes.size()));
 
-        // 翻译节点信息
-        ScpFileEngineNodeDto scpFileEngineNodeDto =
-            clusterNodeMapper.engineNodeEntityToScpFileEngineNodeDto(engineNode);
-        scpFileEngineNodeDto.setPasswd(aesUtils.decrypt(scpFileEngineNodeDto.getPasswd()));
+            // 翻译节点信息
+            ScpFileEngineNodeDto scpFileEngineNodeDto =
+                clusterNodeMapper.engineNodeEntityToScpFileEngineNodeDto(engineNode);
+            scpFileEngineNodeDto.setPasswd(aesUtils.decrypt(scpFileEngineNodeDto.getPasswd()));
 
-        // 获取pid
-        StopAgentAiReq stopAgentAiReq = StopAgentAiReq.builder().pid(ai.getAiPid()).build();
+            // 获取pid
+            StopAgentAiReq stopAgentAiReq = StopAgentAiReq.builder().pid(ai.getAiPid()).build();
 
-        // 调用代理停止
-        BaseResponse<?> baseResponse = HttpUtils.doPost(
-            httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), AgentUrl.STOP_AI_URL),
-            stopAgentAiReq, BaseResponse.class);
-        if (!String.valueOf(HttpStatus.OK.value()).equals(baseResponse.getCode())) {
-            throw new IsxAppException(baseResponse.getMsg());
+            // 调用代理停止
+            BaseResponse<?> baseResponse = HttpUtils.doPost(
+                httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), AgentUrl.STOP_AI_URL),
+                stopAgentAiReq, BaseResponse.class);
+            if (!String.valueOf(HttpStatus.OK.value()).equals(baseResponse.getCode())) {
+                throw new IsxAppException(baseResponse.getMsg());
+            }
         }
 
         // 修改智能体状态
@@ -428,29 +442,35 @@ public class AiBizService {
             throw new IsxAppException("智能体正在部署中，请等待部署完成后再删除");
         }
 
-        // 随机一个集群节点
-        List<ClusterNodeEntity> allEngineNodes = clusterNodeRepository.findAllByClusterIdAndStatus(
-            JSON.parseObject(ai.getClusterConfig(), ClusterConfig.class).getClusterId(), ClusterNodeStatus.RUNNING);
-        allEngineNodes.forEach(clusterNode -> {
-            // 翻译节点信息
-            ScpFileEngineNodeDto scpFileEngineNodeDto =
-                clusterNodeMapper.engineNodeEntityToScpFileEngineNodeDto(clusterNode);
-            scpFileEngineNodeDto.setPasswd(aesUtils.decrypt(scpFileEngineNodeDto.getPasswd()));
+        JPA_TENANT_MODE.set(false);
+        ModelEntity model = modelService.getModel(ai.getModelId());
+        JPA_TENANT_MODE.set(true);
 
-            // 封装请求
-            DeleteAgentAiReq deleteAgentAiReq =
-                DeleteAgentAiReq.builder().agentHomePath(clusterNode.getAgentHomePath()).aiId(ai.getId()).build();
+        if (ModelType.MANUAL.equals(model.getModelType())) {
 
-            // 调用Agent检测接口
-            BaseResponse<?> baseResponse = HttpUtils.doPost(
-                httpUrlUtils.genHttpUrl(clusterNode.getHost(), clusterNode.getAgentPort(), AgentUrl.DELETE_AI_URL),
-                deleteAgentAiReq, BaseResponse.class);
+            // 随机一个集群节点
+            List<ClusterNodeEntity> allEngineNodes = clusterNodeRepository.findAllByClusterIdAndStatus(
+                JSON.parseObject(ai.getClusterConfig(), ClusterConfig.class).getClusterId(), ClusterNodeStatus.RUNNING);
+            allEngineNodes.forEach(clusterNode -> {
+                // 翻译节点信息
+                ScpFileEngineNodeDto scpFileEngineNodeDto =
+                    clusterNodeMapper.engineNodeEntityToScpFileEngineNodeDto(clusterNode);
+                scpFileEngineNodeDto.setPasswd(aesUtils.decrypt(scpFileEngineNodeDto.getPasswd()));
 
-            if (!String.valueOf(HttpStatus.OK.value()).equals(baseResponse.getCode())) {
-                throw new IsxAppException(baseResponse.getMsg());
-            }
-        });
+                // 封装请求
+                DeleteAgentAiReq deleteAgentAiReq =
+                    DeleteAgentAiReq.builder().agentHomePath(clusterNode.getAgentHomePath()).aiId(ai.getId()).build();
 
+                // 调用Agent检测接口
+                BaseResponse<?> baseResponse = HttpUtils.doPost(
+                    httpUrlUtils.genHttpUrl(clusterNode.getHost(), clusterNode.getAgentPort(), AgentUrl.DELETE_AI_URL),
+                    deleteAgentAiReq, BaseResponse.class);
+
+                if (!String.valueOf(HttpStatus.OK.value()).equals(baseResponse.getCode())) {
+                    throw new IsxAppException(baseResponse.getMsg());
+                }
+            });
+        }
 
         // 删除智能体
         aiRepository.deleteById(ai.getId());

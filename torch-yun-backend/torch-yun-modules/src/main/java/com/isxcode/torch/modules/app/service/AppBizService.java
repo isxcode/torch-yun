@@ -68,13 +68,15 @@ public class AppBizService {
 
     public void updateApp(UpdateAppReq updateAppReq) {
 
-        // 检测数据源名称重复
-        Optional<AppEntity> appEntityByName = appRepository.findByName(updateAppReq.getName());
+        // 检测名称重复
+        AppEntity app = appService.getApp(updateAppReq.getId());
+
+         Optional<AppEntity> appEntityByName = appRepository.findByName(updateAppReq.getName());
         if (appEntityByName.isPresent() && !appEntityByName.get().getId().equals(updateAppReq.getId())) {
             throw new IsxAppException("应用名称重复");
         }
 
-        AppEntity appEntity = appMapper.updateAppReqToAppEntity(appEntityByName.get(), updateAppReq);
+        AppEntity appEntity = appMapper.updateAppReqToAppEntity(app, updateAppReq);
         appRepository.save(appEntity);
     }
 
