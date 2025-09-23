@@ -1,9 +1,7 @@
 package com.isxcode.torch.modules.chat.service;
 
 import com.alibaba.fastjson.JSON;
-import com.isxcode.torch.api.ai.dto.ClusterConfig;
 import com.isxcode.torch.api.app.constants.DefaultAppStatus;
-import com.isxcode.torch.api.app.dto.BaseConfig;
 import com.isxcode.torch.api.chat.ao.ChatAo;
 import com.isxcode.torch.api.chat.constants.ChatSessionStatus;
 import com.isxcode.torch.api.chat.constants.ChatSessionType;
@@ -11,15 +9,14 @@ import com.isxcode.torch.api.chat.constants.ChatType;
 import com.isxcode.torch.api.chat.dto.ChatContent;
 import com.isxcode.torch.api.chat.req.*;
 import com.isxcode.torch.api.chat.res.*;
-import com.isxcode.torch.api.model.constant.ModelType;
 import com.isxcode.torch.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.torch.modules.ai.entity.AiEntity;
 import com.isxcode.torch.modules.ai.service.AiService;
-import com.isxcode.torch.modules.app.bot.Bot;
 import com.isxcode.torch.modules.app.bot.BotChatContext;
-import com.isxcode.torch.modules.app.bot.BotFactory;
 import com.isxcode.torch.modules.app.entity.AppEntity;
 import com.isxcode.torch.modules.app.repository.AppRepository;
+import com.isxcode.torch.modules.app.run.App;
+import com.isxcode.torch.modules.app.run.AppFactory;
 import com.isxcode.torch.modules.app.service.AppService;
 import com.isxcode.torch.modules.chat.entity.ChatEntity;
 import com.isxcode.torch.modules.chat.entity.ChatSessionEntity;
@@ -58,7 +55,7 @@ public class ChatBizService {
 
     private final AiService aiService;
 
-    private final BotFactory botFactory;
+    private final AppFactory appFactory;
 
     private final ModelService modelService;
 
@@ -136,13 +133,17 @@ public class ChatBizService {
         // 创建 SSE 连接，设置超时时间为 30 分钟
         SseEmitter sseEmitter = new SseEmitter(30 * 60 * 1000L);
 
-        // 判断应用是否存在
+        // 判断应用和对话和ai是否存在
         AppEntity app = appService.getApp(sendChatReq.getAppId());
-
-        // 判断会话是否存在
         ChatEntity chat = chatService.getChat(sendChatReq.getChatId());
+        AiEntity ai = aiService.getAi(app.getAiId());
 
-        // 判断会话index是否存在
+        // 获取模型信息
+        JPA_TENANT_MODE.set(false);
+        ModelEntity model = modelService.getModel(ai.getModelId());
+        JPA_TENANT_MODE.set(true);
+
+        // 判断会话index是否存在，防止重复对话
         if (chatSessionRepository.existsBySessionIndexAndChatId(sendChatReq.getMaxChatIndexId(),
             sendChatReq.getChatId())) {
             throw new IsxAppException("当前index已存在");
@@ -158,7 +159,7 @@ public class ChatBizService {
             }
         }
 
-        // 封装请求对话
+        // 封装并保存用户请求对话
         ChatSessionEntity chatSession = new ChatSessionEntity();
         chatSession.setSessionType(ChatSessionType.USER);
         chatSession.setStatus(ChatSessionStatus.OVER);
@@ -166,33 +167,15 @@ public class ChatBizService {
         chatSession.setChatId(sendChatReq.getChatId());
         chatSession.setSessionIndex(sendChatReq.getMaxChatIndexId());
         chatSession.setSessionContent(JSON.toJSONString(sendChatReq.getChatContent()));
+        chatSessionRepository.saveAndFlush(chatSession);
 
-        // 封装上下文
+        // 添加用户对话内容
         List<ChatSessionEntity> chatSessionList = chatSessionRepository.findAllByChatId(chat.getId());
         chatSessionList.add(chatSession);
 
-        // 获取机器人id
-        AiEntity ai = aiService.getAi(app.getAiId());
-        String modelId = ai.getModelId();
-        JPA_TENANT_MODE.set(false);
-        ModelEntity model = modelService.getModel(modelId);
-        JPA_TENANT_MODE.set(true);
-
-        // 封装会话请求体
+        // 封装对话上下文
         BotChatContext botChatContext = chatService.transSessionListToBotChatContext(chatSessionList, app, ai,
-            sendChatReq.getMaxChatIndexId(), sendChatReq.getChatId());
-        if (!Strings.isEmpty(app.getBaseConfig())) {
-            botChatContext.setBaseConfig(JSON.parseObject(app.getBaseConfig(), BaseConfig.class));
-        }
-        if (ModelType.MANUAL.equals(model.getModelType())) {
-            botChatContext.setAiPort(ai.getAiPort());
-            botChatContext.setClusterConfig(JSON.parseObject(ai.getClusterConfig(), ClusterConfig.class));
-            botChatContext.setBaseConfig(JSON.parseObject(app.getBaseConfig(), BaseConfig.class));
-            botChatContext.setPrompt(app.getPrompt());
-        }
-
-        // 保存请求会话
-        chatSessionRepository.saveAndFlush(chatSession);
+            sendChatReq.getMaxChatIndexId(), sendChatReq.getChatId(), model.getCode());
 
         // 初始化当前会话
         ChatSessionEntity nowChatSession = new ChatSessionEntity();
@@ -204,10 +187,11 @@ public class ChatBizService {
         nowChatSession.setSessionContent("{}");
         chatSessionRepository.saveAndFlush(nowChatSession);
 
-        // 发送流式请求
-        Bot bot = botFactory.getBot(model.getCode());
-        bot.sendChat(botChatContext, sseEmitter);
+        // 异步提交应用开始对话
+        App application = appFactory.getApp(app.getAppType());
+        application.startAiChat(botChatContext, sseEmitter);
 
+        // 返回sseEmitter
         return sseEmitter;
     }
 

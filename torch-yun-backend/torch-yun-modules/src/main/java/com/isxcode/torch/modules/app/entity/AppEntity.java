@@ -56,6 +56,8 @@ public class AppEntity {
 
     private String defaultApp;
 
+    private String appType;
+
     private LocalDateTime checkDateTime;
 
     @CreatedDate
