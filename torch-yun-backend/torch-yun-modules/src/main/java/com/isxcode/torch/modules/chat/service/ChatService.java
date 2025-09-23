@@ -37,20 +37,22 @@ public class ChatService {
     }
 
     public BotChatContext transSessionListToBotChatContext(List<ChatSessionEntity> chatSessionList, AppEntity app,
-        AiEntity ai, Integer nowIndex, String chatId, String modelCode) {
+        AiEntity ai, Integer nowIndex, String chatId, String modelCode, String chatSessionId) {
 
         List<ChatContent> chatContents = new ArrayList<>();
         chatSessionList.forEach(session -> {
-            ChatContent chatContent = JSON.parseObject(session.getSessionContent(), ChatContent.class);
+            ChatContent chatContent = JSON.parseObject(
+                "user".equals(session.getSessionType()) ? session.getSubmitContent() : session.getSessionContent(),
+                ChatContent.class);
             chatContent.setIndex(session.getSessionIndex());
             chatContent.setRole(session.getSessionType());
             chatContents.add(chatContent);
         });
 
-
         return BotChatContext.builder().chatId(chatId).chats(chatContents).nowChatIndex(nowIndex + 1)
             .baseConfig(JSON.parseObject(app.getBaseConfig(), BaseConfig.class)).prompt(app.getPrompt())
             .authConfig(JSON.parseObject(ai.getAuthConfig(), AuthConfig.class)).modelCode(modelCode)
-            .aiPort(ai.getAiPort()).clusterConfig(JSON.parseObject(ai.getClusterConfig(), ClusterConfig.class)).build();
+            .aiPort(ai.getAiPort()).clusterConfig(JSON.parseObject(ai.getClusterConfig(), ClusterConfig.class))
+            .userAskSessionId(chatSessionId).build();
     }
 }

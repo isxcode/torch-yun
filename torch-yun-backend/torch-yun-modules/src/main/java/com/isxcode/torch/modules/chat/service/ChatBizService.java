@@ -159,33 +159,32 @@ public class ChatBizService {
             }
         }
 
-        // 封装并保存用户请求对话
-        ChatSessionEntity chatSession = new ChatSessionEntity();
-        chatSession.setSessionType(ChatSessionType.USER);
-        chatSession.setStatus(ChatSessionStatus.OVER);
-        chatSession.setAppId(sendChatReq.getAppId());
-        chatSession.setChatId(sendChatReq.getChatId());
-        chatSession.setSessionIndex(sendChatReq.getMaxChatIndexId());
-        chatSession.setSessionContent(JSON.toJSONString(sendChatReq.getChatContent()));
-        chatSessionRepository.saveAndFlush(chatSession);
-
-        // 添加用户对话内容
+        // 查询用户历史对话
         List<ChatSessionEntity> chatSessionList = chatSessionRepository.findAllByChatId(chat.getId());
-        chatSessionList.add(chatSession);
+
+        // 封装并保存用户请求对话
+        ChatSessionEntity userAskSession = new ChatSessionEntity();
+        userAskSession.setSessionType(ChatSessionType.USER);
+        userAskSession.setStatus(ChatSessionStatus.OVER);
+        userAskSession.setAppId(sendChatReq.getAppId());
+        userAskSession.setChatId(sendChatReq.getChatId());
+        userAskSession.setSessionIndex(sendChatReq.getMaxChatIndexId());
+        userAskSession.setSessionContent(JSON.toJSONString(sendChatReq.getChatContent()));
+        userAskSession = chatSessionRepository.save(userAskSession);
 
         // 封装对话上下文
         BotChatContext botChatContext = chatService.transSessionListToBotChatContext(chatSessionList, app, ai,
-            sendChatReq.getMaxChatIndexId(), sendChatReq.getChatId(), model.getCode());
+            sendChatReq.getMaxChatIndexId(), sendChatReq.getChatId(), model.getCode(), userAskSession.getId());
 
         // 初始化当前会话
-        ChatSessionEntity nowChatSession = new ChatSessionEntity();
-        nowChatSession.setSessionType(ChatSessionType.ASSISTANT);
-        nowChatSession.setStatus(ChatSessionStatus.CHATTING);
-        nowChatSession.setAppId(sendChatReq.getAppId());
-        nowChatSession.setChatId(sendChatReq.getChatId());
-        nowChatSession.setSessionIndex(sendChatReq.getMaxChatIndexId() + 1);
-        nowChatSession.setSessionContent("{}");
-        chatSessionRepository.saveAndFlush(nowChatSession);
+        ChatSessionEntity aiAnswerSession = new ChatSessionEntity();
+        aiAnswerSession.setSessionType(ChatSessionType.ASSISTANT);
+        aiAnswerSession.setStatus(ChatSessionStatus.CHATTING);
+        aiAnswerSession.setAppId(sendChatReq.getAppId());
+        aiAnswerSession.setChatId(sendChatReq.getChatId());
+        aiAnswerSession.setSessionIndex(sendChatReq.getMaxChatIndexId() + 1);
+        aiAnswerSession.setSessionContent("{}");
+        chatSessionRepository.saveAndFlush(aiAnswerSession);
 
         // 异步提交应用开始对话
         App application = appFactory.getApp(app.getAppType());
