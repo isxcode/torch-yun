@@ -40,6 +40,20 @@ public class TextApp extends App {
     @Override
     public void start(BotChatContext botChatContext, SseEmitter sseEmitter) {
 
+        String textTemplate = "" + "请使用Markdown格式回答以下问题：%s\n" + "要求：\n" + "- 必须使用规范的Markdown语法\n"
+            + "- 合理使用标题、列表、代码块等元素\n" + "- 确保内容结构清晰易读";
+
+        // 重新封装message
+        ChatSessionEntity userAskSession = chatSessionRepository.findById(botChatContext.getUserAskSessionId()).get();
+        String submitContent = String.format(textTemplate,
+            JSON.parseObject(userAskSession.getSessionContent(), ChatContent.class).getContent());
+        userAskSession
+            .setSubmitContent(JSON.toJSONString(ChatContent.builder().content(submitContent).role("user").build()));
+        chatSessionRepository.save(userAskSession);
+
+        // 添加用户提问
+        botChatContext.getChats().add(ChatContent.builder().content(submitContent).role("user").build());
+
         // 找到对应的ai体
         Bot bot = botFactory.getBot(botChatContext.getModelCode());
         ChatResponse chatResponse = bot.sendChat(botChatContext, sseEmitter);

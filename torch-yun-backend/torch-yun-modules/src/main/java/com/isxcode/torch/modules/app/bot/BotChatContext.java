@@ -30,4 +30,6 @@ public class BotChatContext {
     private List<ChatContent> chats;
 
     private BaseConfig baseConfig;
+
+    private String userAskSessionId;
 }
