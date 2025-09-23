@@ -227,6 +227,7 @@ public class AiBizService {
             model = new ModelEntity();
             model.setCode("Qwen2.5-0.5B");
             model.setModelFile("Qwen2.5-0.5B.zip");
+            model.setModelType(ModelType.MANUAL);
         } else {
             JPA_TENANT_MODE.set(false);
             model = modelService.getModel(ai.getModelId());
