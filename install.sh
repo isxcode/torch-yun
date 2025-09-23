@@ -82,6 +82,18 @@ check_system_dependencies() {
     else
         echo "pnpm 命令检查通过"
     fi
+
+    # 检查并安装 langChain
+    check_command "python" "请安装 Python"
+    check_command "pip" "请安装 Pip"
+
+    if ! python -c "import langchain_core, langchain_openai" &>/dev/null; then
+        echo "未检测到 pnpm，正在安装..."
+        pip install langchain-openai langchain-core
+        echo "langChain 安装完成"
+    else
+        echo "langChain 命令检查通过"
+    fi
 }
 
 # 下载模型
