@@ -18,13 +18,13 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Service
 @Slf4j
-public class TextApp extends App {
+public class BashApp extends App {
 
     private final BotFactory botFactory;
 
     private final ChatSessionRepository chatSessionRepository;
 
-    public TextApp(BotFactory botFactory, ChatSessionRepository chatSessionRepository,
+    public BashApp(BotFactory botFactory, ChatSessionRepository chatSessionRepository,
         ChatSessionRepository chatSessionRepository1) {
 
         super(chatSessionRepository);
@@ -34,7 +34,7 @@ public class TextApp extends App {
 
     @Override
     public String appType() {
-        return AppType.TEXT_APP;
+        return AppType.BASH_APP;
     }
 
     @Override
@@ -52,6 +52,43 @@ public class TextApp extends App {
 
         // 添加用户提问
         botChatContext.getChats().add(ChatContent.builder().content(submitContent).role("user").build());
+
+        Integer exitCode = 0;
+        int[] runningCode = new int[] {1, 2, 3, 4, 5};
+
+        // 直到成功为止
+        while (runningCode.contain(exitCode)) {
+
+            // exitCode 1 写思路
+            if (exitCode == 1) {
+                return getExplain1();
+            }
+
+            // exitCode 2 写bash脚本
+            if (exitCode == 2) {
+                return getExplain2();
+            }
+
+            // exitCode 3 检测bash脚本
+            if (exitCode == 3) {
+                return getExplain3();
+            }
+
+            // exitCode 4 运行bash脚本
+            if (exitCode == 4) {
+                return getExplain4();
+            }
+
+            // exitCode 5 成功接收数据
+            if (exitCode == 5) {
+                return getExplain5();
+            }
+
+            // exitCode 6 markdown更好的展示结果
+            if (exitCode == 6) {
+                return getExplain5();
+            }
+        }
 
         // 找到对应的ai体
         Bot bot = botFactory.getBot(botChatContext.getModelCode());
