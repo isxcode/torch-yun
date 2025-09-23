@@ -68,7 +68,7 @@ public class WebSecurityConfig {
         http.headers().frameOptions().disable();
 
         // 配置 Session 管理策略为 STATELESS，避免 SSE 响应提交后的 SecurityContext 存储警告
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).maximumSessions(1)
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS).maximumSessions(1)
             .maxSessionsPreventsLogin(false);
 
         // 访问h2,swagger，druid界面需要的权限
