@@ -87,6 +87,8 @@ public class Qwen extends Bot {
                     throw new RuntimeException("Python脚本执行失败，退出码: " + exitCode);
                 }
 
+                sseEmitter.send(SseEmitter.event().name(ChatSseEvent.CHAT_EVENT)
+                    .data(JSON.toJSONString(SseBody.builder().chat("\n\n").build())));
                 return ChatResponse.builder().content(fullContent.toString()).build();
             }
         } catch (IOException | InterruptedException e) {
