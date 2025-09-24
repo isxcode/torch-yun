@@ -6,10 +6,12 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 
 
 @Repository
 @CacheConfig(cacheNames = {ModuleCode.CHAT})
 public interface ChatSubSessionRepository extends JpaRepository<ChatSubSessionEntity, String> {
 
+    List<ChatSubSessionEntity> queryBySessionRoleAndSessionId(String sessionRole, String sessionId);
 }

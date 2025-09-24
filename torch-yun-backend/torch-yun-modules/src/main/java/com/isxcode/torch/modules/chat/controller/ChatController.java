@@ -1,5 +1,7 @@
 package com.isxcode.torch.modules.chat.controller;
 
+import com.isxcode.torch.api.app.req.QuerySubSessionReq;
+import com.isxcode.torch.api.app.res.QuerySubSessionRes;
 import com.isxcode.torch.api.chat.req.*;
 import com.isxcode.torch.api.chat.res.*;
 import com.isxcode.torch.api.main.constants.ModuleCode;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Tag(name = "对话模块")
 @RequestMapping(ModuleCode.CHAT)
@@ -71,5 +74,13 @@ public class ChatController {
     public void stopChat(@Valid @RequestBody StopChatReq stopChatReq) {
 
         chatBizService.stopChat(stopChatReq);
+    }
+
+    @Operation(summary = "查询子聊天记录历史")
+    @PostMapping("/querySubSession")
+    @SuccessResponse("查询成功")
+    public List<QuerySubSessionRes> querySubSession(@Valid @RequestBody QuerySubSessionReq querySubSessionReq) {
+
+        return chatBizService.querySubSession(querySubSessionReq);
     }
 }
