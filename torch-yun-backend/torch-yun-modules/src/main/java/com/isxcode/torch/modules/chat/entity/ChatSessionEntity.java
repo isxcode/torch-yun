@@ -42,7 +42,7 @@ public class ChatSessionEntity {
 
     private String sessionContent;
 
-    private String submitContent;
+    private String subSessionId;
 
     @CreatedDate
     private LocalDateTime createDateTime;

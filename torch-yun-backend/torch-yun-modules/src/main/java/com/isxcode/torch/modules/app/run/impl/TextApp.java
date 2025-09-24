@@ -42,16 +42,8 @@ public class TextApp extends App {
 
         String textTemplate = "%s";
 
-        // 重新封装message
-        ChatSessionEntity userAskSession = chatSessionRepository.findById(botChatContext.getUserAskSessionId()).get();
-        String submitContent = String.format(textTemplate,
-            JSON.parseObject(userAskSession.getSessionContent(), ChatContent.class).getContent());
-        userAskSession
-            .setSubmitContent(JSON.toJSONString(ChatContent.builder().content(submitContent).role("user").build()));
-        chatSessionRepository.save(userAskSession);
-
         // 添加用户提问
-        botChatContext.getChats().add(ChatContent.builder().content(submitContent).role("user").build());
+        // botChatContext.getChats().add(ChatContent.builder().content(submitContent).role("user").build());
 
         // 找到对应的ai体
         Bot bot = botFactory.getBot(botChatContext.getModelCode());

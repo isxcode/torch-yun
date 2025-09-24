@@ -41,9 +41,7 @@ public class ChatService {
 
         List<ChatContent> chatContents = new ArrayList<>();
         chatSessionList.forEach(session -> {
-            ChatContent chatContent = JSON.parseObject(
-                "user".equals(session.getSessionType()) ? session.getSubmitContent() : session.getSessionContent(),
-                ChatContent.class);
+            ChatContent chatContent = JSON.parseObject(session.getSessionContent(), ChatContent.class);
             chatContent.setIndex(session.getSessionIndex());
             chatContent.setRole(session.getSessionType());
             chatContents.add(chatContent);
