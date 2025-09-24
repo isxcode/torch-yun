@@ -9,12 +9,16 @@ import com.isxcode.torch.modules.app.bot.Bot;
 import com.isxcode.torch.modules.app.bot.BotChatContext;
 import com.isxcode.torch.modules.app.bot.BotFactory;
 import com.isxcode.torch.modules.app.run.App;
+import com.isxcode.torch.modules.app.run.RunCode;
 import com.isxcode.torch.modules.chat.entity.ChatSessionEntity;
 import com.isxcode.torch.modules.chat.repository.ChatSessionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
 
@@ -44,51 +48,49 @@ public class BashApp extends App {
     public void start(BotChatContext botChatContext, SseEmitter sseEmitter) {
 
         Integer runCode = 1;
-        List<Integer> runningCode = Arrays.asList(1, 2, 3, 4);
+        List<Integer> runningCode = Arrays.asList(1, 2, 3, 4, 5);
 
         Bot bot = botFactory.getBot(botChatContext.getModelCode());
 
+        // 封装首次请求
+        ChatSessionEntity userAskSession = chatSessionRepository.findById(botChatContext.getUserAskSessionId()).get();
+        ChatContent firstChatContent = JSON.parseObject(userAskSession.getSessionContent(), ChatContent.class);
         ChatResponse[] chatResponseHolder = new ChatResponse[1];
+        chatResponseHolder[0] = ChatResponse.builder().content(firstChatContent.getContent()).build();
 
         // 直到成功为止
         while (runningCode.contains(runCode)) {
 
-            // exitCode 1 写思路
+            // 让ai写一个简单的思路
             if (runCode == 1) {
                 runCode = chatWay1(botChatContext, bot, sseEmitter, chatResponseHolder);
                 continue;
             }
 
-            // exitCode 2 写bash脚本
+            // 让ai写出bash脚本
             if (runCode == 2) {
                 runCode = chatWay2(botChatContext, bot, sseEmitter, chatResponseHolder);
                 continue;
             }
 
-            // // exitCode 3 检测bash脚本
-            // if (runCode == 3) {
-            // runCode = chatWay3(botChatContext, bot, sseEmitter, chatResponse);
-            // continue;
-            // }
-            //
-            // // exitCode 4 运行bash脚本
-            // if (runCode == 4) {
-            // runCode = chatWay4(botChatContext, bot, sseEmitter, chatResponse);
-            // }
+            // 让计算引擎执行bash脚本并让ai分析结果
+            if (runCode == 3) {
+                runCode = chatWay3(botChatContext, bot, sseEmitter, chatResponseHolder);
+                continue;
+            }
 
-            // // exitCode 5 成功接收数据
-            // if (exitCode == 5) {
-            // return getExplain5();
-            // }
-            //
-            // // exitCode 6 markdown更好的展示结果
-            // if (exitCode == 6) {
-            // return getExplain5();
-            // }
+            // 让ai判断执行结果
+            if (runCode == 4) {
+                runCode = chatWay4(botChatContext, bot, sseEmitter, chatResponseHolder);
+            }
+
+            // 让ai优化一下结果内容，以好的形式展示
+            if (runCode == 5) {
+                runCode = chatWay5(botChatContext, bot, sseEmitter, chatResponseHolder);
+            }
         }
 
         // 找到对应的ai体
-
 
         // 获取当前会话实体
         ChatSessionEntity nowChatSession = chatSessionRepository
@@ -101,56 +103,142 @@ public class BashApp extends App {
         chatSessionRepository.saveAndFlush(nowChatSession);
     }
 
+    public static String executeBashCommand(String command) {
+
+        StringBuilder output = new StringBuilder();
+
+        try {
+            Process process = Runtime.getRuntime().exec(new String[] {"bash", "-c", command});
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                output.append(line).append("\n");
+            }
+
+            // 读取错误流
+            BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+
+            while ((line = errorReader.readLine()) != null) {
+                System.err.println("错误: " + line);
+            }
+
+            int exitCode = process.waitFor();
+
+        } catch (IOException | InterruptedException e) {
+            return e.getMessage();
+        }
+
+        return output.toString();
+    }
+
     public Integer chatWay1(BotChatContext botChatContext, Bot bot, SseEmitter sseEmitter,
         ChatResponse[] chatResponseHolder) {
 
+        if (chatResponseHolder[0].getContent().contains("runCode")) {
+            chatResponseHolder[0].setContent("");
+        }
 
-        String content = "帮我写个脚本，获取服务器的内存，";
-        String textTemplate = "%s，返回思路即可，且思路内容精简清晰，只返回一个思路即可";
-        String format = String.format(textTemplate, content);
+        // 对话模版
+        String chatTemplate = "请分析以下任务需求，制定一个清晰的解决方案思路。\n" + "任务需求：%s\n\n" + "请按照以下要求提供思路：\n" + "1. 理解任务的核心目标\n"
+            + "2. 分析可能的技术实现路径\n" + "3. 只考虑一个解决方案\n" + "4. 给出简洁、可执行的步骤规划\n" + "\n请提供简洁但完整的思路，确保后续可以基于此生成有效的Bash脚本。";
 
-        // 添加用户提问
-        botChatContext.getChats().add(ChatContent.builder().content(format).role("user").build());
+        // 封装用户对话
+        String chatContent = String.format(chatTemplate, chatResponseHolder[0].getContent());
+        botChatContext.getChats().add(ChatContent.builder().content(chatContent).role("user").build());
 
-        // 提交给ai分析
+        // 提交给ai分析，并保存到chats
         chatResponseHolder[0] = bot.sendChat(botChatContext, sseEmitter);
-
+        botChatContext.getChats()
+            .add(ChatContent.builder().content(chatResponseHolder[0].getContent()).role("assistant").build());
         return 2;
     }
 
     public Integer chatWay2(BotChatContext botChatContext, Bot bot, SseEmitter sseEmitter,
         ChatResponse[] chatResponseHolder) {
 
-        // 获取之前的结果
+        // 对话模版
+        String chatTemplate =
+            "基于上一个解决方案思路，请生成一个完整、可执行且安全的Bash脚本：\n\n" + "脚本要求：\n" + "1. 必须是完整可执行的Bash脚本\n" + "2. 确保脚本的安全性，避免危险操作\n"
+                + "3. 添加适当的注释说明关键步骤\n" + "4. 考虑跨平台兼容性（如可能）\n\n" + "请直接返回脚本内容，不要包含任何markdown格式或额外的解释文字。";
+
+        // 封装用户对话
+        String chatContent = String.format(chatTemplate, chatResponseHolder[0].getContent());
+        botChatContext.getChats().add(ChatContent.builder().content(chatContent).role("user").build());
+
+        // 提交给ai分析，并保存到chats
+        chatResponseHolder[0] = bot.sendChat(botChatContext, sseEmitter);
         botChatContext.getChats()
             .add(ChatContent.builder().content(chatResponseHolder[0].getContent()).role("assistant").build());
-
-        // 封装新的提交
-        String content = "帮我写个脚本，获取服务器的内存，";
-        String textTemplate = "%s，根据上述思路，返回可执行的Bash脚本即可，只返回脚本内容，不要以markdown的形式内容返回";
-        String format = String.format(textTemplate, content);
-
-        // 添加新的提交
-        botChatContext.getChats().add(ChatContent.builder().content(format).role("user").build());
-
-        // 开始对话
-        chatResponseHolder[0] = bot.sendChat(botChatContext, sseEmitter);
-        return 0;
+        return 3;
     }
 
-    public Integer chatWay3(BotChatContext botChatContext, Bot bot, SseEmitter sseEmitter, ChatResponse chatResponse) {
+    public Integer chatWay3(BotChatContext botChatContext, Bot bot, SseEmitter sseEmitter,
+        ChatResponse[] chatResponseHolder) {
 
-        // chatResponse = bot.sendChat(botChatContext, sseEmitter);
+        // 对话模版
+        String chatTemplate = "Bash脚本执行结果如下：\n" + "```\n%s\n```\n\n" + "请分析这个执行结果：\n" + "1. 脚本是否成功执行？\n"
+            + "2. 输出结果是否符合预期？\n" + "3. 是否存在错误或警告信息？\n\n" + "请提供简洁的分析报告，如问题诊断。";
 
-        chatResponse.setContent("3");
+        // 提交给计算引擎计算
+        String scriptBack = executeBashCommand(chatResponseHolder[0].getContent());
+        String chatContent = String.format(chatTemplate, scriptBack);
+
+        // 添加新的提交
+        botChatContext.getChats().add(ChatContent.builder().content(chatContent).role("user").build());
+
+        // 提交给ai分析，并保存到chats
+        chatResponseHolder[0] = bot.sendChat(botChatContext, sseEmitter);
+        botChatContext.getChats()
+            .add(ChatContent.builder().content(chatResponseHolder[0].getContent()).role("assistant").build());
         return 4;
     }
 
-    public Integer chatWay4(BotChatContext botChatContext, Bot bot, SseEmitter sseEmitter, ChatResponse chatResponse) {
+    public Integer chatWay4(BotChatContext botChatContext, Bot bot, SseEmitter sseEmitter,
+        ChatResponse[] chatResponseHolder) {
 
-        // chatResponse = bot.sendChat(botChatContext, sseEmitter);
+        // 对话模版
+        String chatTemplate = "基于前一个的完整对话历史（如执行结果分析内容），请评估当前状态并决定下一步行动。\n\n" + "请严格按照以下JSON格式返回决策结果，不要包含其他内容：\n" + "{\n"
+            + "  \"runCode\": 数字,\n" + "  \"reason\": \"决策理由的简要说明\",\n" + "  \"suggestion\": \"具体的改进建议或下一步行动说明\"\n"
+            + "}\n\n" + "runCode取值说明：\n" + "1 - 需求理解不清晰，需要重新分析需求\n" + "2 - 脚本需要优化或重写\n" + "5 - 任务已完成，结果符合预期\n\n"
+            + "请基于实际情况做出最合理的决策。";
 
-        chatResponse.setContent("4");
+        // 添加新的提交
+        botChatContext.getChats().add(ChatContent.builder().content(chatTemplate).role("user").build());
+
+        // 提交给ai分析
+        chatResponseHolder[0] = bot.sendChat(botChatContext, sseEmitter);
+
+        // 返回ai的code
+        RunCode runCode;
+        try {
+            runCode = JSON.parseObject(chatResponseHolder[0].getContent(), RunCode.class);
+        } catch (Exception e) {
+            botChatContext.getChats()
+                .add(ChatContent.builder().content(chatResponseHolder[0].getContent()).role("assistant").build());
+            return 4;
+        }
+
+        botChatContext.getChats()
+            .add(ChatContent.builder().content(chatResponseHolder[0].getContent()).role("assistant").build());
+        return runCode.getRunCode();
+    }
+
+    public Integer chatWay5(BotChatContext botChatContext, Bot bot, SseEmitter sseEmitter,
+        ChatResponse[] chatResponseHolder) {
+
+        // 对话模版
+        String chatTemplate = "请将整个任务执行过程（从需求分析到最终结果）整理成一份完整的报告。\n\n" + "报告要求：\n" + "1. 使用清晰的Markdown格式\n"
+            + "2. 附上Bash脚本输出的结果\n" + "3. 确保报告易于理解和阅读\n\n" + "请提供完整的总结报告。";
+
+        // 添加新的提交
+        botChatContext.getChats().add(ChatContent.builder().content(chatTemplate).role("user").build());
+
+        // 提交给ai分析，并保存到chats
+        chatResponseHolder[0] = bot.sendChat(botChatContext, sseEmitter);
+        botChatContext.getChats()
+            .add(ChatContent.builder().content(chatResponseHolder[0].getContent()).role("assistant").build());
         return 0;
     }
 }
