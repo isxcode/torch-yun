@@ -18,29 +18,29 @@ import static com.isxcode.torch.common.config.CommonConfig.TENANT_ID;
 
 @Data
 @Entity
-@SQLDelete(sql = "UPDATE TY_CHAT_SESSION SET deleted = 1 WHERE id = ? and version_number = ?")
+@SQLDelete(sql = "UPDATE TY_CHAT_SUB_SESSION SET deleted = 1 WHERE id = ? and version_number = ?")
 @Where(clause = "deleted = 0 ${TENANT_FILTER} ")
-@Table(name = "TY_CHAT_SESSION")
+@Table(name = "TY_CHAT_SUB_SESSION")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 @EntityListeners(AuditingEntityListener.class)
-public class ChatSessionEntity {
+public class ChatSubSessionEntity {
 
     @Id
     @GeneratedValue(generator = "sy-id-generator")
     @GenericGenerator(name = "sy-id-generator", strategy = "com.isxcode.torch.config.GeneratedValueConfig")
     private String id;
 
-    private String chatId;
-
-    private String appId;
-
     private Integer sessionIndex;
+
+    private String sessionId;
 
     private String status;
 
     private String sessionType;
 
     private String sessionContent;
+
+    private String sessionRole;
 
     @CreatedDate
     private LocalDateTime createDateTime;

@@ -130,8 +130,8 @@ public class ChatBizService {
 
     public SseEmitter sendChat(SendChatReq sendChatReq) {
 
-        // 创建 SSE 连接，设置超时时间为 30 分钟
-        SseEmitter sseEmitter = new SseEmitter(30 * 60 * 1000L);
+        // 创建 SSE 连接，设置超时时间为 60 分钟
+        SseEmitter sseEmitter = new SseEmitter(60 * 60 * 1000L);
 
         // 判断应用和对话和ai是否存在
         AppEntity app = appService.getApp(sendChatReq.getAppId());
@@ -162,9 +162,6 @@ public class ChatBizService {
         // 查询用户历史对话
         List<ChatSessionEntity> chatSessionList = chatSessionRepository.findAllByChatId(chat.getId());
 
-        // 封装所有子对话内容
-
-
         // 封装并保存用户请求对话
         ChatSessionEntity userAskSession = new ChatSessionEntity();
         userAskSession.setSessionType(ChatSessionType.USER);
@@ -175,10 +172,6 @@ public class ChatBizService {
         userAskSession.setSessionContent(JSON.toJSONString(sendChatReq.getChatContent()));
         userAskSession = chatSessionRepository.save(userAskSession);
 
-        // 封装对话上下文
-        BotChatContext botChatContext = chatService.transSessionListToBotChatContext(chatSessionList, app, ai,
-            sendChatReq.getMaxChatIndexId(), sendChatReq.getChatId(), model.getCode(), userAskSession.getId());
-
         // 初始化当前会话
         ChatSessionEntity aiAnswerSession = new ChatSessionEntity();
         aiAnswerSession.setSessionType(ChatSessionType.ASSISTANT);
@@ -187,7 +180,12 @@ public class ChatBizService {
         aiAnswerSession.setChatId(sendChatReq.getChatId());
         aiAnswerSession.setSessionIndex(sendChatReq.getMaxChatIndexId() + 1);
         aiAnswerSession.setSessionContent("{}");
-        chatSessionRepository.saveAndFlush(aiAnswerSession);
+        aiAnswerSession = chatSessionRepository.saveAndFlush(aiAnswerSession);
+
+        // 封装对话上下文
+        BotChatContext botChatContext = chatService.transSessionListToBotChatContext(chatSessionList, app, ai,
+            sendChatReq.getMaxChatIndexId(), sendChatReq.getChatId(), model.getCode(), userAskSession.getId(),
+            aiAnswerSession.getId(), USER_ID.get(), TENANT_ID.get());
 
         // 异步提交应用开始对话
         App application = appFactory.getApp(app.getAppType());

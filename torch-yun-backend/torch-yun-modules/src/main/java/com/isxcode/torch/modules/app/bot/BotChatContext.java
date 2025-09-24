@@ -32,4 +32,10 @@ public class BotChatContext {
     private BaseConfig baseConfig;
 
     private String userAskSessionId;
+
+    private String aiSessionId;
+
+    private String userId;
+
+    private String tenantId;
 }
