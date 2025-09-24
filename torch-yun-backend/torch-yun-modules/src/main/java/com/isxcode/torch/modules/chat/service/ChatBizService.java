@@ -2,6 +2,8 @@ package com.isxcode.torch.modules.chat.service;
 
 import com.alibaba.fastjson.JSON;
 import com.isxcode.torch.api.app.constants.DefaultAppStatus;
+import com.isxcode.torch.api.app.req.QuerySubSessionReq;
+import com.isxcode.torch.api.app.res.QuerySubSessionRes;
 import com.isxcode.torch.api.chat.ao.ChatAo;
 import com.isxcode.torch.api.chat.constants.ChatSessionStatus;
 import com.isxcode.torch.api.chat.constants.ChatSessionType;
@@ -20,9 +22,11 @@ import com.isxcode.torch.modules.app.run.AppFactory;
 import com.isxcode.torch.modules.app.service.AppService;
 import com.isxcode.torch.modules.chat.entity.ChatEntity;
 import com.isxcode.torch.modules.chat.entity.ChatSessionEntity;
+import com.isxcode.torch.modules.chat.entity.ChatSubSessionEntity;
 import com.isxcode.torch.modules.chat.mapper.ChatMapper;
 import com.isxcode.torch.modules.chat.repository.ChatRepository;
 import com.isxcode.torch.modules.chat.repository.ChatSessionRepository;
+import com.isxcode.torch.modules.chat.repository.ChatSubSessionRepository;
 import com.isxcode.torch.modules.model.entity.ModelEntity;
 import com.isxcode.torch.modules.model.service.ModelService;
 import lombok.RequiredArgsConstructor;
@@ -62,6 +66,8 @@ public class ChatBizService {
     private final ChatMapper chatMapper;
 
     private final AppRepository appRepository;
+
+    private final ChatSubSessionRepository chatSubSessionRepository;
 
     public static final Map<String, Thread> CHAT_THREAD_MAP = new HashMap<>();
 
@@ -258,5 +264,22 @@ public class ChatBizService {
             chatSessionEntity.setStatus(ChatSessionStatus.OVER);
             chatSessionRepository.save(chatSessionEntity);
         }
+    }
+
+    public List<QuerySubSessionRes> querySubSession(QuerySubSessionReq querySubSessionReq) {
+
+        // 查询所有机器人的回答
+        List<ChatSubSessionEntity> sessionList =
+            chatSubSessionRepository.queryBySessionRoleAndSessionId("assistant", querySubSessionReq.getChatSessionId());
+
+        // 转换一下
+        List<QuerySubSessionRes> chats = new ArrayList<>();
+
+        // 返回机器人的思考记录
+        sessionList.forEach(e -> chats.add(QuerySubSessionRes.builder()
+            .chatContent(JSON.parseObject(e.getSessionContent(), ChatContent.class).getContent())
+            .sessionType(e.getSessionType()).build()));
+
+        return chats;
     }
 }
