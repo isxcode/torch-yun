@@ -10,6 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import static com.isxcode.torch.common.config.CommonConfig.TENANT_ID;
+import static com.isxcode.torch.common.config.CommonConfig.USER_ID;
+
 @Slf4j
 @RequiredArgsConstructor
 public abstract class App {
@@ -31,6 +34,9 @@ public abstract class App {
      */
     @Async
     public void startAiChat(BotChatContext botChatContext, SseEmitter sseEmitter) {
+
+        USER_ID.set(botChatContext.getUserId());
+        TENANT_ID.set(botChatContext.getTenantId());
 
         try {
             // 对话开始事件
