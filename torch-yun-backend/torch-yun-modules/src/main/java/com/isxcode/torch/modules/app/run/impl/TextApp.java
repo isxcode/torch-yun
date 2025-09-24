@@ -24,12 +24,11 @@ public class TextApp extends App {
 
     private final ChatSessionRepository chatSessionRepository;
 
-    public TextApp(BotFactory botFactory, ChatSessionRepository chatSessionRepository,
-        ChatSessionRepository chatSessionRepository1) {
+    public TextApp(BotFactory botFactory, ChatSessionRepository chatSessionRepository) {
 
         super(chatSessionRepository);
         this.botFactory = botFactory;
-        this.chatSessionRepository = chatSessionRepository1;
+        this.chatSessionRepository = chatSessionRepository;
     }
 
     @Override
@@ -39,6 +38,11 @@ public class TextApp extends App {
 
     @Override
     public void start(BotChatContext botChatContext, SseEmitter sseEmitter) {
+
+        ChatSessionEntity userAskSession = chatSessionRepository.findById(botChatContext.getUserAskSessionId()).get();
+        ChatContent firstChatContent = JSON.parseObject(userAskSession.getSessionContent(), ChatContent.class);
+        ChatContent userChat = ChatContent.builder().content(firstChatContent.getContent()).role("user").build();
+        botChatContext.getChats().add(userChat);
 
         // 找到对应的ai体
         Bot bot = botFactory.getBot(botChatContext.getModelCode());
