@@ -40,18 +40,12 @@ public class TextApp extends App {
     @Override
     public void start(BotChatContext botChatContext, SseEmitter sseEmitter) {
 
-        String textTemplate = "%s";
-
-        // 添加用户提问
-        // botChatContext.getChats().add(ChatContent.builder().content(submitContent).role("user").build());
-
         // 找到对应的ai体
         Bot bot = botFactory.getBot(botChatContext.getModelCode());
         ChatResponse chatResponse = bot.sendChat(botChatContext, sseEmitter);
 
         // 获取当前会话实体
-        ChatSessionEntity nowChatSession = chatSessionRepository
-            .findBySessionIndexAndChatId(botChatContext.getNowChatIndex(), botChatContext.getChatId()).get();
+        ChatSessionEntity nowChatSession = chatSessionRepository.findById(botChatContext.getAiSessionId()).get();
 
         // 保存聊天对话状态和内容
         ChatContent chatContent = ChatContent.builder().content(chatResponse.getContent()).build();
