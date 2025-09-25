@@ -5,7 +5,6 @@ import javax.transaction.Transactional;
 
 import com.alibaba.fastjson.JSON;
 import com.isxcode.torch.api.app.constants.AppStatus;
-import com.isxcode.torch.api.app.constants.AppType;
 import com.isxcode.torch.api.app.constants.DefaultAppStatus;
 import com.isxcode.torch.api.app.dto.BaseConfig;
 import com.isxcode.torch.api.app.req.*;
@@ -61,7 +60,6 @@ public class AppBizService {
             .enableSearch(false).temperature(0.8f).build();
         appEntity.setPrompt("");
         appEntity.setBaseConfig(JSON.toJSONString(baseConfig));
-        appEntity.setAppType(AppType.TEXT_APP);
 
         appEntity = appRepository.save(appEntity);
 

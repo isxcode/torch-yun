@@ -19,6 +19,7 @@ import com.isxcode.torch.api.ai.res.PageAiRes;
 import javax.transaction.Transactional;
 
 import com.isxcode.torch.api.app.constants.AppStatus;
+import com.isxcode.torch.api.app.constants.AppType;
 import com.isxcode.torch.api.app.constants.DefaultAppStatus;
 import com.isxcode.torch.api.app.dto.BaseConfig;
 import com.isxcode.torch.api.cluster.constants.ClusterNodeStatus;
@@ -135,6 +136,7 @@ public class AiBizService {
         appEntity.setCheckDateTime(LocalDateTime.now());
         appEntity.setLogoId("");
         appEntity.setRemark("默认自建");
+        appEntity.setAppType(AppType.TEXT_APP);
 
         // 应用添加默认配置
         BaseConfig baseConfig = BaseConfig.builder().topK(50).topP(0.9).maxTokens(512).repetitionPenalty(1.2f)
