@@ -1,0 +1,42 @@
+-- 添加应用类型
+ALTER TABLE TY_APP
+ADD COLUMN APP_TYPE VARCHAR(100) DEFAULT 'TEXT_APP';
+
+COMMENT ON COLUMN TY_APP.APP_TYPE IS '应用类型';
+
+-- 子聊天对话表
+CREATE TABLE IF NOT EXISTS TY_CHAT_SUB_SESSION (
+    id VARCHAR(200) NOT NULL UNIQUE PRIMARY KEY,
+    session_index INTEGER NOT NULL,
+    status VARCHAR(200) NOT NULL,
+    session_type VARCHAR(200) NOT NULL,
+    session_id VARCHAR(200) NOT NULL,
+    session_content BYTEA NOT NULL,
+    session_role VARCHAR(200) NOT NULL,
+    create_by VARCHAR(200) NOT NULL,
+    create_date_time TIMESTAMP NOT NULL,
+    last_modified_by VARCHAR(200) NOT NULL,
+    last_modified_date_time TIMESTAMP NOT NULL,
+    deleted INTEGER DEFAULT 0 NOT NULL,
+    version_number INTEGER NOT NULL,
+    tenant_id VARCHAR(200) NOT NULL
+);
+
+-- 添加表注释
+COMMENT ON TABLE TY_CHAT_SUB_SESSION IS '子聊天对话表';
+
+-- 添加列注释
+COMMENT ON COLUMN TY_CHAT_SUB_SESSION.id IS '子对话id';
+COMMENT ON COLUMN TY_CHAT_SUB_SESSION.session_index IS '会话顺序';
+COMMENT ON COLUMN TY_CHAT_SUB_SESSION.status IS '会话状态';
+COMMENT ON COLUMN TY_CHAT_SUB_SESSION.session_type IS '会话类型';
+COMMENT ON COLUMN TY_CHAT_SUB_SESSION.session_id IS '父级会话id';
+COMMENT ON COLUMN TY_CHAT_SUB_SESSION.session_content IS '对话内容';
+COMMENT ON COLUMN TY_CHAT_SUB_SESSION.session_role IS '对话角色';
+COMMENT ON COLUMN TY_CHAT_SUB_SESSION.create_by IS '创建人';
+COMMENT ON COLUMN TY_CHAT_SUB_SESSION.create_date_time IS '创建时间';
+COMMENT ON COLUMN TY_CHAT_SUB_SESSION.last_modified_by IS '更新人';
+COMMENT ON COLUMN TY_CHAT_SUB_SESSION.last_modified_date_time IS '更新时间';
+COMMENT ON COLUMN TY_CHAT_SUB_SESSION.deleted IS '逻辑删除';
+COMMENT ON COLUMN TY_CHAT_SUB_SESSION.version_number IS '版本号';
+COMMENT ON COLUMN TY_CHAT_SUB_SESSION.tenant_id IS '租户id';
