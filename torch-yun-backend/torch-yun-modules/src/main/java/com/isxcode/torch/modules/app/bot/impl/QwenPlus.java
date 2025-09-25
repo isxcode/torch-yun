@@ -6,14 +6,14 @@ import com.alibaba.dashscope.aigc.generation.models.QwenParam;
 import com.alibaba.dashscope.common.Message;
 import com.alibaba.dashscope.exception.InputRequiredException;
 import com.alibaba.dashscope.exception.NoApiKeyException;
+import com.isxcode.torch.api.app.dto.ChatResponse;
 import com.isxcode.torch.api.app.dto.SseBody;
 import com.isxcode.torch.api.chat.constants.ChatSseEvent;
+import com.isxcode.torch.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.torch.modules.app.bot.Bot;
 import io.reactivex.Flowable;
 import com.alibaba.fastjson.JSON;
 import com.isxcode.torch.api.app.dto.BaseConfig;
-import com.isxcode.torch.api.chat.constants.ChatSessionStatus;
-import com.isxcode.torch.api.chat.dto.ChatContent;
 import com.isxcode.torch.api.model.constant.ModelCode;
 import com.isxcode.torch.modules.app.bot.BotChatContext;
 import com.isxcode.torch.modules.chat.entity.ChatSessionEntity;
@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class QwenPlus extends Bot {
     }
 
     @Override
-    public void chat(BotChatContext botChatContext, SseEmitter sseEmitter) {
+    public ChatResponse chat(BotChatContext botChatContext, SseEmitter sseEmitter) {
 
         // 获取基础配置
         BaseConfig baseConfig =
@@ -116,30 +117,11 @@ public class QwenPlus extends Bot {
                 }
             });
 
-            // 保存聊天对话状态和内容
-            ChatContent chatContent = ChatContent.builder().content(fullContent.toString()).build();
-            nowChatSession.setSessionContent(JSON.toJSONString(chatContent));
-            nowChatSession.setStatus(ChatSessionStatus.OVER);
-            chatSessionRepository.saveAndFlush(nowChatSession);
-
-            // 发送完成事件
-            try {
-                sseEmitter.send(SseEmitter.event().name(ChatSseEvent.END_EVENT)
-                    .data(JSON.toJSONString(SseBody.builder().msg("对话结束").build())));
-                sseEmitter.complete();
-            } catch (Exception e) {
-                log.error("发送完成事件失败", e);
-            }
-
-        } catch (NoApiKeyException | InputRequiredException e) {
-
-            log.error(e.getMessage(), e);
-            try {
-                sseEmitter.send(SseEmitter.event().name(ChatSseEvent.ERROR_EVENT)
-                    .data(JSON.toJSONString(SseBody.builder().msg(e.getMessage()).build())));
-                sseEmitter.completeWithError(e);
-            } catch (Exception ignored) {
-            }
+            sseEmitter.send(SseEmitter.event().name(ChatSseEvent.CHAT_EVENT)
+                .data(JSON.toJSONString(SseBody.builder().chat("\n\n").build())));
+            return ChatResponse.builder().content(fullContent.toString()).build();
+        } catch (NoApiKeyException | InputRequiredException | IOException e) {
+            throw new IsxAppException("对话异常");
         }
     }
 

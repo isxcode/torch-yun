@@ -8,9 +8,13 @@ import javax.validation.constraints.NotEmpty;
 @Data
 public class AddAppReq {
 
-    @Schema(title = "ai名称", example = "ai")
-    @NotEmpty(message = "ai名称不能为空")
+    @Schema(title = "应用名称", example = "ai")
+    @NotEmpty(message = "应用名称不能为空")
     private String name;
+
+    @Schema(title = "应用类型", example = "")
+    @NotEmpty(message = "应用类型不能为空")
+    private String appType;
 
     @Schema(title = "logo Id", example = "logo id")
     @NotEmpty(message = "logo Id不能为空")

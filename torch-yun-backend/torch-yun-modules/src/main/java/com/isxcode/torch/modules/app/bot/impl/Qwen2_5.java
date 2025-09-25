@@ -4,10 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.isxcode.torch.api.agent.constants.AgentUrl;
 import com.isxcode.torch.api.agent.req.ChatAgentAiReq;
 import com.isxcode.torch.api.agent.res.ChatAgentAiRes;
+import com.isxcode.torch.api.app.dto.ChatResponse;
 import com.isxcode.torch.api.app.dto.SseBody;
-import com.isxcode.torch.api.chat.constants.ChatSessionStatus;
 import com.isxcode.torch.api.chat.constants.ChatSseEvent;
-import com.isxcode.torch.api.chat.dto.ChatContent;
 import com.isxcode.torch.api.cluster.constants.ClusterNodeStatus;
 import com.isxcode.torch.api.cluster.dto.ScpFileEngineNodeDto;
 import com.isxcode.torch.api.model.constant.ModelCode;
@@ -18,7 +17,6 @@ import com.isxcode.torch.common.utils.http.HttpUrlUtils;
 import com.isxcode.torch.common.utils.http.HttpUtils;
 import com.isxcode.torch.modules.app.bot.Bot;
 import com.isxcode.torch.modules.app.bot.BotChatContext;
-import com.isxcode.torch.modules.chat.entity.ChatSessionEntity;
 import com.isxcode.torch.modules.chat.repository.ChatSessionRepository;
 import com.isxcode.torch.modules.cluster.entity.ClusterNodeEntity;
 import com.isxcode.torch.modules.cluster.mapper.ClusterNodeMapper;
@@ -57,13 +55,13 @@ public class Qwen2_5 extends Bot {
     }
 
     @Override
-    public void chat(BotChatContext botChatContext, SseEmitter sseEmitter) {
+    public ChatResponse chat(BotChatContext botChatContext, SseEmitter sseEmitter) {
 
         // 随机一个集群id
         List<ClusterNodeEntity> allEngineNodes = clusterNodeRepository
             .findAllByClusterIdAndStatus(botChatContext.getClusterConfig().getClusterId(), ClusterNodeStatus.RUNNING);
         if (allEngineNodes.isEmpty()) {
-            throw new IsxAppException("申请资源失败 : 集群不存在可用节点，请切换一个集群  \n");
+            throw new IsxAppException("申请资源失败 : 集群不存在可用节点，请切换一个集群 \n");
         }
         ClusterNodeEntity engineNode = allEngineNodes.get(new Random().nextInt(allEngineNodes.size()));
 
@@ -100,31 +98,13 @@ public class Qwen2_5 extends Bot {
             sseEmitter.send(SseEmitter.event().name(ChatSseEvent.CHAT_EVENT)
                 .data(JSON.toJSONString(SseBody.builder().chat(content).build())));
 
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            try {
-                sseEmitter.send(SseEmitter.event().name(ChatSseEvent.ERROR_EVENT)
-                    .data(JSON.toJSONString(SseBody.builder().msg(e.getMessage()).build())));
-                sseEmitter.completeWithError(e);
-            } catch (Exception ignored) {
-            }
-        }
+            sseEmitter.send(SseEmitter.event().name(ChatSseEvent.CHAT_EVENT)
+                .data(JSON.toJSONString(SseBody.builder().chat("\n\n").build())));
 
-        // 提交当前会话
-        ChatSessionEntity nowChatSession = chatSessionRepository
-            .findBySessionIndexAndChatId(botChatContext.getNowChatIndex(), botChatContext.getChatId()).get();
-        nowChatSession.setStatus(ChatSessionStatus.OVER);
-        ChatContent build = ChatContent.builder().content(content).build();
-        nowChatSession.setSessionContent(JSON.toJSONString(build));
-        chatSessionRepository.saveAndFlush(nowChatSession);
+            return ChatResponse.builder().content(content).build();
 
-        // 发送完成事件
-        try {
-            sseEmitter.send(SseEmitter.event().name(ChatSseEvent.END_EVENT)
-                .data(JSON.toJSONString(SseBody.builder().msg("对话结束").build())));
-            sseEmitter.complete();
         } catch (Exception e) {
-            log.error("发送完成事件失败", e);
+            throw new IsxAppException("对话异常");
         }
     }
 

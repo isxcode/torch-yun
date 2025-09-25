@@ -1,19 +1,6 @@
-package com.isxcode.torch.modules.app.entity;
-
-import static com.isxcode.torch.common.config.CommonConfig.TENANT_ID;
+package com.isxcode.torch.modules.chat.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import java.time.LocalDateTime;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.PrePersist;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.Version;
-
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.SQLDelete;
@@ -24,41 +11,36 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import javax.persistence.*;
+import java.time.LocalDateTime;
+
+import static com.isxcode.torch.common.config.CommonConfig.TENANT_ID;
+
 @Data
 @Entity
-@SQLDelete(sql = "UPDATE TY_APP SET deleted = 1 WHERE id = ? and version_number = ?")
+@SQLDelete(sql = "UPDATE TY_CHAT_SUB_SESSION SET deleted = 1 WHERE id = ? and version_number = ?")
 @Where(clause = "deleted = 0 ${TENANT_FILTER} ")
-@Table(name = "TY_APP")
+@Table(name = "TY_CHAT_SUB_SESSION")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 @EntityListeners(AuditingEntityListener.class)
-public class AppEntity {
+public class ChatSubSessionEntity {
 
     @Id
     @GeneratedValue(generator = "sy-id-generator")
     @GenericGenerator(name = "sy-id-generator", strategy = "com.isxcode.torch.config.GeneratedValueConfig")
     private String id;
 
-    private String name;
+    private Integer sessionIndex;
 
-    private String logoId;
-
-    private String aiId;
-
-    private String remark;
-
-    private String baseConfig;
-
-    private String resources;
+    private String sessionId;
 
     private String status;
 
-    private String prompt;
+    private String sessionType;
 
-    private String defaultApp;
+    private String sessionContent;
 
-    private String appType;
-
-    private LocalDateTime checkDateTime;
+    private String sessionRole;
 
     @CreatedDate
     private LocalDateTime createDateTime;

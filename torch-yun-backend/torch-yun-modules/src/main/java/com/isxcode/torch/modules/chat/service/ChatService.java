@@ -2,6 +2,8 @@ package com.isxcode.torch.modules.chat.service;
 
 import com.alibaba.fastjson2.JSON;
 import com.isxcode.torch.api.ai.dto.AuthConfig;
+import com.isxcode.torch.api.ai.dto.ClusterConfig;
+import com.isxcode.torch.api.app.dto.BaseConfig;
 import com.isxcode.torch.api.chat.dto.ChatContent;
 import com.isxcode.torch.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.torch.modules.ai.entity.AiEntity;
@@ -35,7 +37,8 @@ public class ChatService {
     }
 
     public BotChatContext transSessionListToBotChatContext(List<ChatSessionEntity> chatSessionList, AppEntity app,
-        AiEntity aiEntity, Integer nowIndex, String chatId) {
+        AiEntity ai, Integer nowIndex, String chatId, String modelCode, String chatSessionId, String aiSessionId,
+        String userId, String tenantId) {
 
         List<ChatContent> chatContents = new ArrayList<>();
         chatSessionList.forEach(session -> {
@@ -46,6 +49,10 @@ public class ChatService {
         });
 
         return BotChatContext.builder().chatId(chatId).chats(chatContents).nowChatIndex(nowIndex + 1)
-            .prompt(app.getPrompt()).authConfig(JSON.parseObject(aiEntity.getAuthConfig(), AuthConfig.class)).build();
+            .baseConfig(JSON.parseObject(app.getBaseConfig(), BaseConfig.class)).prompt(app.getPrompt())
+            .authConfig(JSON.parseObject(ai.getAuthConfig(), AuthConfig.class)).modelCode(modelCode)
+            .aiPort(ai.getAiPort()).clusterConfig(JSON.parseObject(ai.getClusterConfig(), ClusterConfig.class))
+            .aiSessionId(aiSessionId).tenantId(tenantId).userId(userId).userAskSessionId(chatSessionId).build();
     }
+
 }

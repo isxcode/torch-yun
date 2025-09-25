@@ -19,6 +19,8 @@ public class BotChatContext {
 
     private String aiPort;
 
+    private String modelCode;
+
     private AuthConfig authConfig;
 
     private Integer nowChatIndex;
@@ -28,4 +30,12 @@ public class BotChatContext {
     private List<ChatContent> chats;
 
     private BaseConfig baseConfig;
+
+    private String userAskSessionId;
+
+    private String aiSessionId;
+
+    private String userId;
+
+    private String tenantId;
 }
