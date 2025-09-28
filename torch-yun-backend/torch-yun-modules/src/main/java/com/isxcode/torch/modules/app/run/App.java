@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.isxcode.torch.api.app.dto.SseBody;
 import com.isxcode.torch.api.chat.constants.ChatSseEvent;
 import com.isxcode.torch.api.chat.dto.ChatContent;
+import com.isxcode.torch.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.torch.modules.app.bot.BotChatContext;
 import com.isxcode.torch.modules.chat.entity.ChatSubSessionEntity;
 import com.isxcode.torch.modules.chat.repository.ChatSessionRepository;
@@ -56,8 +57,15 @@ public abstract class App {
                 .data(JSON.toJSONString(SseBody.builder().msg("对话结束").build())));
             sseEmitter.complete();
 
-        } catch (Exception e) {
+        } catch (IsxAppException e2) {
 
+            try {
+                sseEmitter.send(SseEmitter.event().name(ChatSseEvent.ERROR_EVENT)
+                    .data(JSON.toJSONString(SseBody.builder().msg(e2.getMsg()).build())));
+                sseEmitter.completeWithError(e2);
+            } catch (Exception ignored) {
+            }
+        } catch (Exception e) {
             log.error(e.getMessage(), e);
             try {
                 sseEmitter.send(SseEmitter.event().name(ChatSseEvent.ERROR_EVENT)

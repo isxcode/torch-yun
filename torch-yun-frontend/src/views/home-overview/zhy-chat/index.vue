@@ -192,6 +192,29 @@ defineExpose({
                 img {
                     width: 100%;
                 }
+                details {
+                    padding: 4px 8px;
+                    box-sizing: border-box;
+                    border: 1px solid #b2b2b2;
+                    border-radius: 5px;
+                    margin-bottom: 12px;
+                    summary {
+                        font-size: 14px;
+                        font-weight: bold;
+                        padding: 4px 0;
+                        border-bottom: 1px solid#b2b2b2;
+                        color: getCssVar('color', 'primary');
+                        cursor: pointer;
+                        user-select: none;
+                        margin-bottom: 8px;
+                        &::marker {
+                            color: getCssVar('color', 'primary');
+                        }
+                        &:hover {
+                            
+                        }
+                    }
+                }
             }
         }
         .stop-think {
