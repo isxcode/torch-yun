@@ -27,6 +27,8 @@ public class PageAppRes {
 
     private String defaultApp;
 
+    private String appType;
+
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime createDateTime;
 

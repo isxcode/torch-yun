@@ -82,4 +82,9 @@ public class IsxAppProperties {
      * 开发文件下载地址.
      */
     private String openFilePath = "";
+
+    /**
+     * 访问地址.
+     */
+    private String aiPicPrefix = "";
 }

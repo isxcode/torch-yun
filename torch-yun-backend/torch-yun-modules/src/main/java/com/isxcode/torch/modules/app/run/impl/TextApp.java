@@ -11,6 +11,7 @@ import com.isxcode.torch.modules.app.bot.BotFactory;
 import com.isxcode.torch.modules.app.run.App;
 import com.isxcode.torch.modules.chat.entity.ChatSessionEntity;
 import com.isxcode.torch.modules.chat.repository.ChatSessionRepository;
+import com.isxcode.torch.modules.chat.repository.ChatSubSessionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -24,9 +25,10 @@ public class TextApp extends App {
 
     private final ChatSessionRepository chatSessionRepository;
 
-    public TextApp(BotFactory botFactory, ChatSessionRepository chatSessionRepository) {
+    public TextApp(BotFactory botFactory, ChatSessionRepository chatSessionRepository,
+        ChatSubSessionRepository chatSubSessionRepository) {
 
-        super(chatSessionRepository);
+        super(chatSessionRepository, chatSubSessionRepository);
         this.botFactory = botFactory;
         this.chatSessionRepository = chatSessionRepository;
     }
