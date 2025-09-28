@@ -59,6 +59,25 @@ export const colConfigs: colConfig[] = [
         showOverflowTooltip: true
     },
     {
+        prop: 'appType',
+        title: '应用类型',
+        minWidth: 130,
+        showOverflowTooltip: true,
+        formatter: (data: any): string => {
+            const options = {
+                TEXT_APP: '普通对话应用',
+                PYTHON_APP: 'Python应用',
+                BASH_APP: '脚本应用',
+                NODE_JS_APP: 'NodeJs应用',
+                REPORT_APP: '报表应用',
+                VIEW_APP: '视图应用',
+                LOG_APP: '日志分析应用',
+                IMAGE_APP: '股票分析应用',
+            }
+            return data.row.appType ? options[data.row.appType] : '-'
+        }
+    },
+    {
         prop: 'status',
         title: '状态',
         minWidth: 100,
