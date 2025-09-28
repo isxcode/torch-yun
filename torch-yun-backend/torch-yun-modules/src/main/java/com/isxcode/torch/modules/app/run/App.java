@@ -3,8 +3,11 @@ package com.isxcode.torch.modules.app.run;
 import com.alibaba.fastjson.JSON;
 import com.isxcode.torch.api.app.dto.SseBody;
 import com.isxcode.torch.api.chat.constants.ChatSseEvent;
+import com.isxcode.torch.api.chat.dto.ChatContent;
 import com.isxcode.torch.modules.app.bot.BotChatContext;
+import com.isxcode.torch.modules.chat.entity.ChatSubSessionEntity;
 import com.isxcode.torch.modules.chat.repository.ChatSessionRepository;
+import com.isxcode.torch.modules.chat.repository.ChatSubSessionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -18,6 +21,8 @@ import static com.isxcode.torch.common.config.CommonConfig.USER_ID;
 public abstract class App {
 
     private final ChatSessionRepository chatSessionRepository;
+
+    private final ChatSubSessionRepository chatSubSessionRepository;
 
     /**
      * 应用类型.
@@ -66,5 +71,41 @@ public abstract class App {
         sseEmitter.onCompletion(() -> log.debug("SSE 聊天连接关闭"));
         sseEmitter.onTimeout(() -> log.error("流式聊天 SSE 连接超时"));
         sseEmitter.onError((ex) -> log.error("流式聊天 SSE 连接错误", ex));
+    }
+
+    public void saveUserChatContent(String content, BotChatContext botChatContext, String sessionTye,
+        Integer[] subSessionIndexHolder) {
+
+        ChatContent userChat = ChatContent.builder().content(content).role("user").build();
+        botChatContext.getChats().add(userChat);
+
+        // 把对话保存到subSession中
+        ChatSubSessionEntity userChatSubSession = new ChatSubSessionEntity();
+        userChatSubSession.setSessionContent(JSON.toJSONString(userChat));
+        userChatSubSession.setSessionId(botChatContext.getAiSessionId());
+        userChatSubSession.setSessionRole("user");
+        userChatSubSession.setStatus("OVER");
+        userChatSubSession.setSessionType(sessionTye);
+        userChatSubSession.setSessionIndex(subSessionIndexHolder[0]);
+        subSessionIndexHolder[0] = subSessionIndexHolder[0] + 1;
+        chatSubSessionRepository.save(userChatSubSession);
+    }
+
+    public void saveAiChatContent(String content, BotChatContext botChatContext, String sessionTye,
+        Integer[] subSessionIndexHolder) {
+
+        ChatContent aiChat = ChatContent.builder().content(content).role("assistant").build();
+        botChatContext.getChats().add(aiChat);
+
+        // 把对话保存到subSession中
+        ChatSubSessionEntity aiChatSubSession = new ChatSubSessionEntity();
+        aiChatSubSession.setSessionContent(content);
+        aiChatSubSession.setSessionId(botChatContext.getAiSessionId());
+        aiChatSubSession.setSessionRole("assistant");
+        aiChatSubSession.setStatus("OVER");
+        aiChatSubSession.setSessionType(sessionTye);
+        aiChatSubSession.setSessionIndex(subSessionIndexHolder[0]);
+        subSessionIndexHolder[0] = subSessionIndexHolder[0] + 1;
+        chatSubSessionRepository.save(aiChatSubSession);
     }
 }
