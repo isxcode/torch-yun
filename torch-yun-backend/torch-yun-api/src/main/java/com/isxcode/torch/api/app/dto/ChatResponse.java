@@ -12,4 +12,8 @@ import lombok.NoArgsConstructor;
 public class ChatResponse {
 
     private String content;
+
+    private String picName;
+
+    private String script;
 }

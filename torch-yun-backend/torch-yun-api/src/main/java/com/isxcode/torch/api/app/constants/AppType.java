@@ -36,4 +36,9 @@ public interface AppType {
      * 日志分析应用.
      */
     String LOG_APP = "LOG_APP";
+
+    /**
+     * 图片生成应用.
+     */
+    String IMAGE_APP = "IMAGE_APP";
 }
