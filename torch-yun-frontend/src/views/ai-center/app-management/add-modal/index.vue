@@ -18,6 +18,16 @@
                     />
                 </el-select>
             </el-form-item>
+            <el-form-item label="应用类型" prop="appType">
+                <el-select v-model="formData.appType" placeholder="请选择">
+                    <el-option
+                        v-for="item in appTypeList"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id"
+                    />
+                </el-select>
+            </el-form-item>
             <el-form-item label="备注">
                 <el-input v-model="formData.remark" show-word-limit type="textarea" maxlength="200"
                     :autosize="{ minRows: 4, maxRows: 4 }" placeholder="请输入" />
@@ -38,12 +48,23 @@ interface FormParams {
     aiId: string
     remark: string
     id?: string
+    appType: string
 }
 
 const form = ref<FormInstance>()
 const callback = ref<any>()
 const renderSence = ref('new')
 const aiIdList = ref<any[]>([])
+const appTypeList = ref<any[]>([
+    { name: '普通对话应用', id: 'TEXT_APP' },
+    { name: 'Python应用', id: 'PYTHON_APP' },
+    { name: '脚本应用', id: 'BASH_APP' },
+    { name: 'NodeJs应用', id: 'NODE_JS_APP' },
+    { name: '报表应用', id: 'REPORT_APP' },
+    { name: '视图应用', id: 'VIEW_APP' },
+    { name: '日志分析应用', id: 'LOG_APP' },
+    { name: '股票分析应用', id: 'IMAGE_APP' }
+])
 const modelConfig = reactive({
     title: '添加',
     visible: false,
@@ -68,11 +89,13 @@ const formData = reactive<FormParams>({
     logoId: '',
     aiId: '',
     remark: '',
+    appType: '',
     id: ''
 })
 const rules = reactive<FormRules>({
     name: [{ required: true, message: '请输入名称', trigger: ['change', 'blur']}],
     aiId: [{ required: true, message: '请选择智能体', trigger: ['change', 'blur']}],
+    appType: [{ required: true, message: '请选择应用类型', trigger: ['change', 'blur']}],
 })
 
 function showModal(cb: () => void, data: any): void {
@@ -91,6 +114,7 @@ function showModal(cb: () => void, data: any): void {
         formData.name = ''
         formData.logoId = 'demo'
         formData.aiId = ''
+        formData.appType = ''
         formData.remark = ''
     }
     nextTick(() => {
