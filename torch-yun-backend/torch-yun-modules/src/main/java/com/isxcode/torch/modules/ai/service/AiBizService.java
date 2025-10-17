@@ -287,8 +287,13 @@ public class AiBizService {
             BaseResponse<?> baseResponse = HttpUtils.doPost(
                 httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), AgentUrl.STOP_AI_URL),
                 stopAgentAiReq, BaseResponse.class);
+
+            // 停止失败
             if (!String.valueOf(HttpStatus.OK.value()).equals(baseResponse.getCode())) {
-                throw new IsxAppException(baseResponse.getMsg());
+                ai.setAiLog(
+                    ai.getAiLog() + "\n" + LocalDateTime.now() + WorkLog.ERROR_INFO + " " + baseResponse.getMsg());
+                aiRepository.save(ai);
+                return;
             }
         }
 
