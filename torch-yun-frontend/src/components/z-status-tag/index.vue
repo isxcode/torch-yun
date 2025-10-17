@@ -56,7 +56,8 @@ const status = ref<any>({
     CHECK_SUCCESS: '检测成功',
     ENABLE: '启用',
 
-    COLLECTING: '采集中'
+    COLLECTING: '采集中',
+    DEPLOY_FAIL: '失败'
 })
 
 const props = withDefaults(defineProps<{
@@ -126,6 +127,7 @@ const vmStatus = computed<{ status: ColonyInfo['status'], name: string }>(() => 
     &.is-offline,
     &.is-unpublished,
     &.is-deleted,
+    &.is-deploy_fail,
     &.is-stop {
         color: #FA541C;
 
