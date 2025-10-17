@@ -76,13 +76,13 @@ public class TorchYunAgentBizService {
         String stopAiCommand = "kill -9 " + stopAgentAiReq.getPid();
 
         // 执行命令
-        Process stopAi = RuntimeUtil.exec(stopAiCommand);
         try {
+            Process stopAi = RuntimeUtil.exec(stopAiCommand);
             if (stopAi.waitFor() != 0) {
                 throw new IsxAppException(RuntimeUtil.getErrorResult(stopAi));
             }
         } catch (InterruptedException e) {
-            throw new IsxAppException(e.getMessage());
+            log.error(e.getMessage(), e);
         }
     }
 
