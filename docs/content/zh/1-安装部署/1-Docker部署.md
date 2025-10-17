@@ -117,3 +117,17 @@ docker rmi registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun:latest-amd64
 # 拉取最新镜像
 docker pull registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun:latest-amd64
 ```
+
+### Docker arthas调试
+
+```bash
+# 下载arthas
+cd /data/zhishuyun/data
+wget https://arthas.aliyun.com/download/latest_version?mirror=aliyun -O arthas.zip
+unzip arthas.zip
+
+# 进入容器启动arthas
+docker exec -it zhishuyun bash
+cd /var/lib/zhishuyun
+java -jar arthas-boot.jar
+```
