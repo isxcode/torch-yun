@@ -79,9 +79,12 @@ public class TorchYunAgentBizService {
         try {
             Process stopAi = RuntimeUtil.exec(stopAiCommand);
             if (stopAi.waitFor() != 0) {
-                throw new IsxAppException(RuntimeUtil.getErrorResult(stopAi));
+                String errorResult = RuntimeUtil.getErrorResult(stopAi);
+                throw new IsxAppException(errorResult);
             }
-        } catch (InterruptedException e) {
+        } catch (IsxAppException ex) {
+            throw ex;
+        } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
     }

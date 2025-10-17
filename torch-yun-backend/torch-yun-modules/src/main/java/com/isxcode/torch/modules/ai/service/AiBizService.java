@@ -241,7 +241,7 @@ public class AiBizService {
         if (ModelType.API.equals(model.getModelType())) {
             ai.setStatus(AiStatus.ENABLE);
         }
-        aiRepository.save(ai);
+        aiRepository.saveAndFlush(ai);
 
         // 本地部署需要启动服务、
         if (ModelType.MANUAL.equals(model.getModelType())) {

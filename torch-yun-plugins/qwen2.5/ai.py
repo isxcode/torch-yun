@@ -44,12 +44,12 @@ class Message(BaseModel):
     content: str
 
 class ChatRequest(BaseModel):
-    prompt: str | None = Field("我是Qwen2", description="可选，全局 system 提示，会自动拼接到 messages 第一条")
+    prompt: Union[str, None]  = Field("我是Qwen2", description="可选，全局 system 提示，会自动拼接到 messages 第一条")
     messages: list[Message]
 
     # 生成控制参数
     maxTokens: int = Field(512, description="限制生成文本的最大长度")
-    seed: int | None = Field(42, description="随机数种子，控制生成可重复性")
+    seed: Union[int, None] = Field(42, description="随机数种子，控制生成可重复性")
     topK: int = Field(50, description="限制候选词汇数量")
     topP: float = Field(0.9, description="限制候选词累计概率范围")
     temperature: float = Field(0.8, description="调整概率分布平滑程度")
