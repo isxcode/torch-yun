@@ -14,7 +14,7 @@ COPY ./torch-yun-backend/torch-yun-main/src/main/resources/application-docker.ym
 
 RUN apt-get update
 RUN apt-get install -y build-essential python-dev libsasl2-dev libsasl2-modules-gssapi-mit libsasl2-modules pip
-RUN pip install langchain-openai langchain-core
+RUN pip install langchain-openai langchain-core akshare mplfinance pandas matplotlib
 
 EXPOSE 8080
 

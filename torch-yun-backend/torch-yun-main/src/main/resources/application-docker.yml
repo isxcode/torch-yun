@@ -35,3 +35,4 @@ isx-app:
   resources-path: /var/lib/zhishuyun # 资源文件，例如许可证、驱动、头像等资源路径
   use-ssl: false # 是否开启ssl
   docker-mode: true # 是否采用docker部署模式
+  open-file-path: /var/lib/zhishuyun/open # 默认开放路径

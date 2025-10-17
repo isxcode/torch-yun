@@ -12,6 +12,7 @@ import com.isxcode.torch.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.torch.common.utils.http.HttpUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.mapstruct.ap.internal.util.Strings;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -80,6 +81,9 @@ public class TorchYunAgentBizService {
             Process stopAi = RuntimeUtil.exec(stopAiCommand);
             if (stopAi.waitFor() != 0) {
                 String errorResult = RuntimeUtil.getErrorResult(stopAi);
+                if (Strings.isEmpty(errorResult)) {
+                    return;
+                }
                 throw new IsxAppException(errorResult);
             }
         } catch (IsxAppException ex) {
