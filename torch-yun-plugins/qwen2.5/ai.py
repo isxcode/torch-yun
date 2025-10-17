@@ -9,6 +9,7 @@ from transformers import (
 )
 import torch
 import os
+from typing import Union, List
 
 app = FastAPI()
 
