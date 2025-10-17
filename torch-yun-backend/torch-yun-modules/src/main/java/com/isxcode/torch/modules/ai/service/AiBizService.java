@@ -236,6 +236,13 @@ public class AiBizService {
             JPA_TENANT_MODE.set(true);
         }
 
+        // 修改状态
+        ai.setStatus(AiStatus.DEPLOYING);
+        if (ModelType.API.equals(model.getModelType())) {
+            ai.setStatus(AiStatus.ENABLE);
+        }
+        aiRepository.save(ai);
+
         // 本地部署需要启动服务、
         if (ModelType.MANUAL.equals(model.getModelType())) {
             // 封装请求体
@@ -244,13 +251,6 @@ public class AiBizService {
                 .modelFileId(model.getModelFile()).build();
             deployAiService.deployAi(deployAiContext);
         }
-
-        // 修改状态
-        ai.setStatus(AiStatus.DEPLOYING);
-        if (ModelType.API.equals(model.getModelType())) {
-            ai.setStatus(AiStatus.ENABLE);
-        }
-        aiRepository.save(ai);
     }
 
     public void stopAi(StopAiReq stopAiReq) {
