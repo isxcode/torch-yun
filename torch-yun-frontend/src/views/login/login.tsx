@@ -23,6 +23,12 @@ export default defineComponent({
         authStore.setTenantId(res.data?.tenantId)
         authStore.setRole(res.data?.role)
 
+        authStore.setChatInfo({
+          chatId: null,
+          isTalking: false,
+          appInfo: null
+        })
+
         ElMessage.success(res.msg)
 
         nextTick(() => {
