@@ -55,6 +55,8 @@ const props = defineProps<{
 
 const loadingTimer = ref<any>()
 const loadingPoint = ref<string>('.')
+const stopScrollBottom = ref<Boolean>(false)
+const lastScrollTop = ref<number>(0)
 
 /**
  * 使用 marked 解析 Markdown
@@ -82,7 +84,7 @@ const hasLoadingMessage = computed(() => {
 })
 
 watch(() => props.talkMsgList, (v: any) => {
-    if (v) {
+    if (v && !stopScrollBottom.value) {
         refrashScrollEvent()
     }
 }, {
@@ -103,6 +105,24 @@ function stopThink() {
     emit('stopThink')
 }
 
+function stopScroll() {
+    const currentScrollTop = elScrollbarRef.value.wrapRef.scrollTop;
+    // 判断滚动方向
+    if (currentScrollTop > lastScrollTop.value) {
+        // console.log('向下滚动');
+    } else {
+        stopScrollBottom.value = true
+        // console.log('向上滚动');
+    }
+    // 更新 lastScrollTop 为当前 scrollTop 值，以便下次比较
+    lastScrollTop.value = currentScrollTop
+}
+
+function startScroll() {
+    stopScrollBottom.value = false
+    refrashScrollEvent()
+}
+
 onMounted(() => {
     if (loadingTimer.value) {
         clearInterval(loadingTimer.value)
@@ -116,18 +136,31 @@ onMounted(() => {
         }
     }, 1000)
 
+    nextTick(() => {
+        if (elScrollbarRef.value && elScrollbarRef.value.wrapRef) {
+            elScrollbarRef.value.wrapRef.addEventListener('scroll', stopScroll)
+        }
+
+        stopScrollBottom.value = false
+    })
+
     hljs.highlightAll()
 })
 
 onUnmounted(() => {
-  if (loadingTimer.value) {
-    clearInterval(loadingTimer.value)
-  }
-  loadingTimer.value = null
+    if (loadingTimer.value) {
+        clearInterval(loadingTimer.value)
+    }
+    loadingTimer.value = null
+
+    if (elScrollbarRef.value && elScrollbarRef.value.wrapRef) {
+        elScrollbarRef.value.wrapRef.removeEventListener('scroll', stopScroll)
+    }
 })
 
 defineExpose({
-    refrashScrollEvent
+    refrashScrollEvent,
+    startScroll
 })
 </script>
 
@@ -168,6 +201,7 @@ defineExpose({
                 box-sizing: border-box;
                 display: inline-block;
                 border-radius: 8px;
+                max-width: 100%;
                 &.chat-message-item__loading {
                     padding: 16px 16px;
                     background-color: #f8f9fa;
