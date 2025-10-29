@@ -19,6 +19,7 @@
                 </div>
             </div>
             <ZhyChat
+                ref="chatRef"
                 :isTalking="isTalking"
                 :requestLoading="requestLoading"
                 :talkMsgList="talkMsgList"
@@ -84,6 +85,7 @@ const requestLoading = ref<boolean>(false)  // 发送消息-加载状态
 const isTalking = ref<boolean>(false)       // 是否已经开启了对话
 const talkMsgList = ref<any[]>([])          // 当前对话的记录
 const isComposing = ref<boolean>(false)     // 输入法是否正在输入
+const chatRef = ref<any>(null)
 
 // SSE 相关状态
 const sseClient = ref<SSEClient | null>(null)  // SSE 客户端实例
@@ -240,6 +242,7 @@ async function sendQuestionEvent() {
     const wasAlreadyTalking = isTalking.value
     const userMessage = talkMessage.value
 
+    chatRef.value && chatRef.value.startScroll()
     isTalking.value = true
     talkMsgList.value.push({
         type: 'user',
@@ -520,6 +523,7 @@ onUnmounted(() => {
             margin-top: 12px;
             .el-button {
                 border-radius: 20px;
+                padding: 7px;
             }
         }
 
