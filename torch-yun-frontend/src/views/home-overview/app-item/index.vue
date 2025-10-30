@@ -165,6 +165,9 @@ defineExpose({
         }
         .el-input {
             width: 260px;
+            .el-input__wrapper {
+                border-radius: 20px;
+            }
         }
     }
     .ai-app-item {
@@ -174,7 +177,7 @@ defineExpose({
             flex-wrap: wrap;
             max-height: calc(50vh - 28px);
             overflow: auto;
-            padding: 0 20px;
+            padding: 0 4px;
             box-sizing: border-box;
             .app-item {
                 height: 60px;
@@ -189,6 +192,7 @@ defineExpose({
                 box-sizing: border-box;
                 cursor: pointer;
                 transition: all 0.15s linear;
+                background-image: linear-gradient(to bottom, #c6d6f5, #e9effc);
                 .app-name {
                     font-size: 12px;
                     margin-left: 8px;

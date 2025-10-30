@@ -16,25 +16,16 @@ import com.alibaba.fastjson.JSON;
 import com.isxcode.torch.api.app.dto.BaseConfig;
 import com.isxcode.torch.api.model.constant.ModelCode;
 import com.isxcode.torch.modules.app.bot.BotChatContext;
-import com.isxcode.torch.modules.chat.entity.ChatSessionEntity;
-import com.isxcode.torch.modules.chat.repository.ChatSessionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @Slf4j
 public class QwenPlus extends Bot {
-
-    private final ChatSessionRepository chatSessionRepository;
-
-    public QwenPlus(ChatSessionRepository chatSessionRepository) {
-        this.chatSessionRepository = chatSessionRepository;
-    }
 
     @Override
     public ChatResponse chat(BotChatContext botChatContext, SseEmitter sseEmitter) {
@@ -88,10 +79,6 @@ public class QwenPlus extends Bot {
             // 启用流式响应
             modelBuild = modelBuild.incrementalOutput(true);
 
-            // 获取当前会话实体
-            ChatSessionEntity nowChatSession = chatSessionRepository
-                .findBySessionIndexAndChatId(botChatContext.getNowChatIndex(), botChatContext.getChatId()).get();
-
             StringBuilder fullContent = new StringBuilder();
 
             // 调用流式API
@@ -117,10 +104,14 @@ public class QwenPlus extends Bot {
                 }
             });
 
-            sseEmitter.send(SseEmitter.event().name(ChatSseEvent.CHAT_EVENT)
-                .data(JSON.toJSONString(SseBody.builder().chat("\n\n").build())));
+            try {
+                sseEmitter.send(SseEmitter.event().name(ChatSseEvent.CHAT_EVENT)
+                    .data(JSON.toJSONString(SseBody.builder().chat("\n\n").build())));
+            } catch (Exception e) {
+                log.error("发送SSE事件失败", e);
+            }
             return ChatResponse.builder().content(fullContent.toString()).build();
-        } catch (NoApiKeyException | InputRequiredException | IOException e) {
+        } catch (NoApiKeyException | InputRequiredException e) {
             throw new IsxAppException("对话异常");
         }
     }
