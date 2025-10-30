@@ -101,11 +101,10 @@ public class Qwen2_5 extends Bot {
             sseEmitter.send(SseEmitter.event().name(ChatSseEvent.CHAT_EVENT)
                 .data(JSON.toJSONString(SseBody.builder().chat("\n\n").build())));
 
-            return ChatResponse.builder().content(content).build();
-
         } catch (Exception e) {
-            throw new IsxAppException("对话异常");
+            log.error(e.getMessage(), e);
         }
+        return ChatResponse.builder().content(content).build();
     }
 
     @Override
