@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # =============================================================================
-# 至数云依赖安装脚本
+# 至数云依赖下载脚本
 # =============================================================================
 
 set -e  # 遇到错误立即退出
@@ -39,55 +39,55 @@ create_dir() {
     fi
 }
 
-# 安装文件
+# 下载文件
 download_file() {
     local url=$1
     local output_path=$2
     local description=$3
 
     if [[ -f "$output_path" ]]; then
-        echo "$description 已存在，跳过安装"
+        echo "$description 已存在，跳过下载"
         return 0
     fi
 
-    echo "开始安装 $description..."
+    echo "开始下载 $description..."
     if curl -ssL "$url" -o "$output_path"; then
       if head -n 1 "$output_path" | grep -q "<?xml"; then
         if grep -q "<Error>" "$output_path" && grep -q "<Code>NoSuchKey</Code>" "$output_path"; then
             rm -rf "$output_path"
-            echo "安装失败，请联系管理员: ispong@outlook.com" >&2
+            echo "下载失败，请联系管理员: ispong@outlook.com" >&2
             exit 1
         fi
       fi
-      echo "$description 安装成功"
+      echo "$description 下载成功"
     fi
 }
 
 # =============================================================================
-# 安装函数
+# 下载函数
 # =============================================================================
 
-# 安装模型
+# 下载模型
 download_model() {
-    echo "安装 模型 ${MODEL_FILE}..."
+    echo "下载 模型 ${MODEL_FILE}..."
 
     # 创建必要目录
     create_dir "$TMP_DIR"
 
-    # 安装 Spark
+    # 下载 Spark
     local model_url="${OSS_DOWNLOAD_URL}/${MODEL_FILE}"
     local model_path="${TMP_DIR}/${MODEL_FILE}"
     download_file "$model_url" "$model_path" "大模型文件 ${MODEL_FILE} 二进制文件，请耐心等待"
 }
 
-# 安装项目依赖
+# 下载项目依赖
 install_project_dependencies() {
-    echo "安装项目依赖..."
+    echo "下载项目依赖..."
 
     # 创建项目依赖目录
     create_dir "$LIBS_DIR"
 
-    # 安装项目 JAR 依赖
+    # 下载项目 JAR 依赖
     for jar in "${PROJECT_JARS[@]}"; do
         local jar_url="${OSS_DOWNLOAD_URL}/${jar}"
         local jar_path="${LIBS_DIR}/${jar}"
@@ -96,16 +96,16 @@ install_project_dependencies() {
 }
 
 # =============================================================================
-# 主要安装流程
+# 主要下载流程
 # =============================================================================
 
 main() {
-    echo "开始安装至数云项目依赖..."
+    echo "开始下载至数云项目依赖..."
 
     # 1. 下载模型
     download_model
 
-    echo "项目依赖安装完成！"
+    echo "项目依赖下载完成！"
 }
 
 # =============================================================================
