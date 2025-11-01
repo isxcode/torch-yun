@@ -64,8 +64,8 @@ definePageMeta({
 
 const currentDoc = ref<NavItem | null>(null);
 useHead({
-  // title: "至轻云" + currentDoc.value?.title,
-  title: "至轻云",
+  // title: "至数云" + currentDoc.value?.title,
+  title: "至数云",
 });
 
 const { params } = useRoute();

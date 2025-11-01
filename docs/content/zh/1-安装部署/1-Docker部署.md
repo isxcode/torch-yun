@@ -2,7 +2,7 @@
 title: "Docker部署"
 ---
 
-## 使用Docker部署至轻云
+## 使用Docker部署至数云
 
 ### 镜像选择
 
