@@ -1,7 +1,7 @@
 # 至数云-超轻量级人工智能应用平台
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/isxcode/zhishuyun)](https://hub.docker.com/r/isxcode/zhishuyun)
-[![build](https://github.com/isxcode/torch-yun/actions/workflows/build-app.yml/badge.svg?branch=main)](https://github.com/isxcode/torch-yun/actions/workflows/build-app.yml)
+[![build](https://github.com/isxcode/torch-yun/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/isxcode/torch-yun/actions/workflows/build.yml)
 [![GitHub Repo stars](https://img.shields.io/github/stars/isxcode/torch-yun)](https://github.com/isxcode/torch-yun)
 [![GitHub forks](https://img.shields.io/github/forks/isxcode/torch-yun)](https://github.com/isxcode/torch-yun/fork)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fisxcode%2Ftorch-yun.svg?type=shield&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fisxcode%2Ftorch-yun?ref=badge_shield&issueType=license)
