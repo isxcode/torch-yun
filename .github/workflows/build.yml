@@ -160,7 +160,8 @@ jobs:
 
       - name: Clear file
         run: |
-          sudo rm -rf /home/runner/work/torch-yun/torch-yun/resources/tmp/*.zip
+          sudo rm -rf /home/runner/work/torch-yun/torch-yun/torch-yun-dist/build/distributions/zhishuyun-agent.tar.gz
+          sudo rm -rf /home/runner/work/torch-yun/torch-yun/torch-yun-dist/build/zhishuyun-agent
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
