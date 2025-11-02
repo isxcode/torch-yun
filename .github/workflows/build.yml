@@ -148,7 +148,7 @@ jobs:
         id: download-cache
         with:
           path: |
-            /home/runner/work/torch-yun/torch-yun/resources/tmp
+            /home/runner/work/torch-yun/torch-yun/resources/tmp/Qwen2.5-0.5B.zip
           key: ${{ runner.os }}-file-${{ hashFiles('/home/runner/work/torch-yun/torch-yun/download.sh') }}
 
       - name: Download dependencies
