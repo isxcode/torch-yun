@@ -149,7 +149,7 @@ jobs:
         id: download-cache
         with:
           path: |
-            /home/runner/work/torch-yun/torch-yun/resources/tmp/Qwen2.5-0.5B.zip
+            /home/runner/work/torch-yun/torch-yun/resources/tmp
           key: ${{ runner.os }}-file-${{ hashFiles('/home/runner/work/torch-yun/torch-yun/download.sh') }}
 
       - name: Download dependencies
@@ -163,6 +163,8 @@ jobs:
         run: |
           sudo rm -rf /home/runner/work/torch-yun/torch-yun/torch-yun-dist/build/distributions/zhishuyun-agent.tar.gz
           sudo rm -rf /home/runner/work/torch-yun/torch-yun/torch-yun-dist/build/zhishuyun-agent
+          sudo rm -rf /home/runner/work/torch-yun/torch-yun/torch-yun-dist/zhishuyun-agent
+          sudo rm -rf /home/runner/work/torch-yun/torch-yun/torch-yun-agent/build/libs/zhishuyun-agent.jar
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
