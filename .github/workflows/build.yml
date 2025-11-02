@@ -148,7 +148,7 @@ jobs:
         id: download-cache
         with:
           path: |
-            /home/runner/work/torch-yun/torch-yun/resources
+            /home/runner/work/torch-yun/torch-yun/resources/tmp
           key: ${{ runner.os }}-file-${{ hashFiles('/home/runner/work/torch-yun/torch-yun/download.sh') }}
 
       - name: Download dependencies
