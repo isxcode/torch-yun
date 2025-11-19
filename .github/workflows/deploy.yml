@@ -1,4 +1,4 @@
-name: deploy zhishuyun
+name: deploy
 
 on:
   workflow_dispatch:
@@ -73,7 +73,7 @@ jobs:
           timeout: 1800s
           script: |
             tar -vzxf /tmp/zhishuyun.tar.gz -C /opt/
-            rm -rf /tmp/zhiliuyun.tar.gz
+            rm -rf /tmp/zhishuyun.tar.gz
             bash /opt/zhishuyun/bin/stop.sh
             if [ -d "/opt/zhishuyun/resources_back" ]; then
               rm -rf /opt/zhishuyun/resources
@@ -82,6 +82,8 @@ jobs:
             rm -rf /opt/zhishuyun/conf/application-local.yml
             cp /root/application-local.yml /opt/zhishuyun/conf/application-local.yml
             cp -r /opt/zhishuyun/resources /opt/zhishuyun/resources_bak/resources_$(date +'%Y-%m-%d-%H-%M-%S')_bak
+            rm -rf tomcat.8080.*
+            rm -rf tomcat-docbase.8080.*
             bash /opt/zhishuyun/bin/start.sh --print-log=false
             sleep 120
             until curl -s https://zhishuyun-demo.isxcode.com/tools/open/health | grep "UP"; do

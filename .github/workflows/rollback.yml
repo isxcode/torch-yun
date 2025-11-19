@@ -1,4 +1,4 @@
-name: deploy back
+name: rollback
 
 on:
   schedule:
@@ -39,6 +39,8 @@ jobs:
               mkdir -p /opt/zhishuyun/resources_back
               cp -r /opt/zhishuyun/resources/* /opt/zhishuyun/resources_back/
             fi
+            rm -rf tomcat.8080.*
+            rm -rf tomcat-docbase.8080.*
             bash /opt/zhishuyun/bin/start.sh --print-log=false
             sleep 120
             until curl -s https://zhishuyun-demo.isxcode.com/tools/open/health | grep "UP"; do
