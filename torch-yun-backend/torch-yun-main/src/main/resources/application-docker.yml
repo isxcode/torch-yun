@@ -36,3 +36,4 @@ isx-app:
   use-ssl: false # 是否开启ssl
   docker-mode: true # 是否采用docker部署模式
   open-file-path: /var/lib/zhishuyun/open # 默认开放路径
+  ai-file-prefix: http://localhost:8080/tools/open/file/ # ai返回图片地址前缀

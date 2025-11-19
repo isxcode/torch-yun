@@ -86,5 +86,5 @@ public class IsxAppProperties {
     /**
      * 访问地址.
      */
-    private String aiPicPrefix = "http://localhost:8080/tools/open/file/";
+    private String aiFilePrefix = "http://localhost:8080/tools/open/file/";
 }
