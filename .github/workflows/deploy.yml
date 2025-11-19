@@ -82,6 +82,8 @@ jobs:
             rm -rf /opt/zhishuyun/conf/application-local.yml
             cp /root/application-local.yml /opt/zhishuyun/conf/application-local.yml
             cp -r /opt/zhishuyun/resources /opt/zhishuyun/resources_bak/resources_$(date +'%Y-%m-%d-%H-%M-%S')_bak
+            rm -rf tomcat.8080.*
+            rm -rf tomcat-docbase.8080.*
             bash /opt/zhishuyun/bin/start.sh --print-log=false
             sleep 120
             until curl -s https://zhishuyun-demo.isxcode.com/tools/open/health | grep "UP"; do
