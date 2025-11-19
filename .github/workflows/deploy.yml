@@ -1,4 +1,4 @@
-name: deploy zhishuyun
+name: deploy
 
 on:
   workflow_dispatch:
@@ -73,7 +73,7 @@ jobs:
           timeout: 1800s
           script: |
             tar -vzxf /tmp/zhishuyun.tar.gz -C /opt/
-            rm -rf /tmp/zhiliuyun.tar.gz
+            rm -rf /tmp/zhishuyun.tar.gz
             bash /opt/zhishuyun/bin/stop.sh
             if [ -d "/opt/zhishuyun/resources_back" ]; then
               rm -rf /opt/zhishuyun/resources
