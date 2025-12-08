@@ -202,9 +202,7 @@ jobs:
 
       - name: Unzip zhishuyun tar
         run: |
-          tar -vzxf zhishuyun.tar.gz -C /tmp
-          mkdir -p /home/runner/work/torch-yun/torch-yun/resources
-          mv /tmp/zhishuyun/resources/jdbc /home/runner/work/torch-yun/torch-yun/resources/ 
+          tar -vzxf zhishuyun.tar.gz -C /tmp 
           mkdir -p /home/runner/work/torch-yun/torch-yun/torch-yun-backend/torch-yun-main/build/libs
           mv /tmp/zhishuyun/lib/zhishuyun.jar /home/runner/work/torch-yun/torch-yun/torch-yun-backend/torch-yun-main/build/libs 
 
@@ -295,8 +293,6 @@ jobs:
       - name: Unzip zhishuyun tar
         run: |
           tar -vzxf zhishuyun.tar.gz -C /tmp
-          mkdir -p /home/runner/work/torch-yun/torch-yun/resources
-          mv /tmp/zhishuyun/resources/jdbc /home/runner/work/torch-yun/torch-yun/resources/ 
           mkdir -p /home/runner/work/torch-yun/torch-yun/torch-yun-backend/torch-yun-main/build/libs
           mv /tmp/zhishuyun/lib/zhishuyun.jar /home/runner/work/torch-yun/torch-yun/torch-yun-backend/torch-yun-main/build/libs 
 
