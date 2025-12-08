@@ -264,8 +264,6 @@ jobs:
             tar -vzxf /tmp/zhishuyun.tar.gz -C /opt/
             rm -rf /tmp/zhishuyun.tar.gz
             mkdir -p /data/zhishuyun/${{ inputs.branch_number }}
-            cp -r /opt/zhishuyun/resources/jdbc /data/zhishuyun/${{ inputs.branch_number }}/
-            rm -rf /opt/zhishuyun/resources
             rm -rf /tmp/tomcat.8080.*
             rm -rf /tmp/tomcat-docbase.8080.*
             cd /data/zhishuyun/${{ inputs.branch_number }}
