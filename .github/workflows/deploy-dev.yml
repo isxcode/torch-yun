@@ -17,6 +17,10 @@ on:
         required: true
         type: string
         default: 'GH-xxx'
+      reset_db:
+        description: 'reset db'
+        type: boolean
+        default: false
       dev_server_ip:
         description: 'dev server ip'
         type: string
