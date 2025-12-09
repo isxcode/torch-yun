@@ -62,8 +62,7 @@ jobs:
             yum install java-1.8.0-openjdk-devel java-1.8.0-openjdk -y
             yum install -y yum-utils
             yum-config-manager --add-repo https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
-            yum makecache timer
-            yum install -y docker-ce-19.03.14-3.el8 docker-ce-cli-19.03.14-3.el8 containerd.io
+            yum install -y docker-ce docker-ce-cli containerd.io
             mkdir -p /data/docker
             mkdir -p /etc/docker
             echo "{" > /etc/docker/daemon.json
@@ -73,12 +72,20 @@ jobs:
             echo "  \"data-root\":\"/data/docker\"" >> /etc/docker/daemon.json
             echo "}" >> /etc/docker/daemon.json
             systemctl start docker
+
+      - name: Install env2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ inputs.dev_server_ip }}
+          username: ${{ inputs.dev_server_username }}
+          password: ${{ inputs.dev_server_password }}
+          script_stop: true
+          timeout: 3600s
+          script: |
             wget -q -O /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/CentOS-vault-8.5.2111.repo
             yum clean all && yum makecache
             yum remove -y python3
-            yum install -y python39 
-            python3 --version
-            pip3 --version
+            yum install -y python39
             pip3 install torch 'transformers[torch]' fastapi uvicorn
 
       - name: Start agent
