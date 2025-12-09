@@ -3,13 +3,13 @@ name: deploy
 on:
   workflow_dispatch:
     inputs:
-      admin_github_token:
-        description: '管理员密钥'
+      github_access_token:
+        description: 'github access token'
         required: true
         type: string
 
 env:
-  ADMIN_GITHUB_TOKEN: ${{ inputs.admin_github_token }}
+  ADMIN_GITHUB_TOKEN: ${{ inputs.github_access_token }}
 
 jobs:
 
@@ -32,36 +32,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ env.ADMIN_GITHUB_TOKEN }}
-          repository: "isxcode/torch-yun"
+          repository: "isxcode/torch-yun-vip"
           ref: 'main'
-
-      - name: Download zhishuyun
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          script_stop: true
-          timeout: 1800s
-          script: |
-            rm -rf /tmp/zhishuyun.tar.gz
-            cp /data/file/zhishuyun.tar.gz /tmp/zhishuyun.tar.gz
-
-  deploy:
-    needs: download
-    runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
-      packages: write
-      id-token: write
-
-    steps:
-
-      - name: Set timezone to Asia/Shanghai
-        run: |
-          sudo timedatectl set-timezone Asia/Shanghai
-          date
 
       - name: Deploy zhishuyun
         uses: appleboy/ssh-action@v1.0.3
@@ -72,9 +44,11 @@ jobs:
           script_stop: true
           timeout: 1800s
           script: |
+            rm -rf /tmp/zhishuyun.tar.gz
+            jps | grep zhishuyun.jar | awk '{print $1}' | xargs -r kill -9
+            cp /data/file/zhishuyun.tar.gz /tmp/zhishuyun.tar.gz
             tar -vzxf /tmp/zhishuyun.tar.gz -C /opt/
             rm -rf /tmp/zhishuyun.tar.gz
-            bash /opt/zhishuyun/bin/stop.sh
             if [ -d "/opt/zhishuyun/resources_back" ]; then
               rm -rf /opt/zhishuyun/resources
               mv /opt/zhishuyun/resources_back /opt/zhishuyun/resources
@@ -82,8 +56,8 @@ jobs:
             rm -rf /opt/zhishuyun/conf/application-local.yml
             cp /root/application-local.yml /opt/zhishuyun/conf/application-local.yml
             cp -r /opt/zhishuyun/resources /opt/zhishuyun/resources_bak/resources_$(date +'%Y-%m-%d-%H-%M-%S')_bak
-            rm -rf tomcat.8080.*
-            rm -rf tomcat-docbase.8080.*
+            rm -rf /tmp/tomcat.8080.*
+            rm -rf /tmp/tomcat-docbase.8080.*
             bash /opt/zhishuyun/bin/start.sh --print-log=false
             sleep 120
             until curl -s https://zhishuyun-demo.isxcode.com/tools/open/health | grep "UP"; do

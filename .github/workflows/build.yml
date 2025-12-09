@@ -3,7 +3,7 @@ name: build
 on:
   workflow_dispatch:
     inputs:
-      admin_github_token:
+      github_access_token:
         description: 'github access token'
         required: true
         type: string
@@ -24,7 +24,7 @@ on:
         default: 'main'
 
 env:
-  ADMIN_GITHUB_TOKEN: ${{ inputs.admin_github_token }}
+  ADMIN_GITHUB_TOKEN: ${{ inputs.github_access_token }}
   PYTHON_VERSION: '3.13'
 
 jobs:
@@ -148,8 +148,7 @@ jobs:
         uses: actions/cache@v4
         id: download-cache
         with:
-          path: |
-            /home/runner/work/torch-yun/torch-yun/resources/tmp/Qwen2.5-0.5B.zip
+          path: /home/runner/work/torch-yun/torch-yun/resources
           key: ${{ runner.os }}-file-${{ hashFiles('/home/runner/work/torch-yun/torch-yun/download.sh') }}
 
       - name: Download dependencies
@@ -159,12 +158,53 @@ jobs:
       - name: Build with gradle
         run: gradle install package
 
-      - name: Clear file
+      - name: Upload zhishuyun tar
+        uses: actions/upload-artifact@v4
+        with:
+          name: zhishuyun
+          path: ./torch-yun-dist/build/distributions/zhishuyun.tar.gz
+
+      - name: Upload zhishuyun agent tar
+        uses: actions/upload-artifact@v4
+        with:
+          name: zhishuyun-agent
+          path: ./torch-yun-dist/build/distributions/zhishuyun-agent.tar.gz
+
+  # 上传到docker hub
+  upload-docker-hub:
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+
+    steps:
+
+      - name: Set timezone to Asia/Shanghai
         run: |
-          sudo rm -rf /home/runner/work/torch-yun/torch-yun/torch-yun-dist/build/distributions/zhishuyun-agent.tar.gz
-          sudo rm -rf /home/runner/work/torch-yun/torch-yun/torch-yun-dist/build/zhishuyun-agent
-          sudo rm -rf /home/runner/work/torch-yun/torch-yun/torch-yun-dist/zhishuyun-agent
-          sudo rm -rf /home/runner/work/torch-yun/torch-yun/torch-yun-agent/build/libs/zhishuyun-agent.jar
+          sudo timedatectl set-timezone Asia/Shanghai
+
+      - name: Checkout torch-yun
+        uses: actions/checkout@v4
+        with:
+          token: ${{ env.ADMIN_GITHUB_TOKEN }}
+          repository: ${{ inputs.repository_account }}/torch-yun
+          ref: ${{ inputs.branch_number }}
+
+      - name: Download zhishuyun tar
+        uses: actions/download-artifact@v4
+        with:
+          name: zhishuyun
+          path: ./
+
+      - name: Unzip zhishuyun tar
+        run: |
+          tar -vzxf zhishuyun.tar.gz -C /tmp 
+          mkdir -p /home/runner/work/torch-yun/torch-yun/torch-yun-backend/torch-yun-main/build/libs
+          mv /tmp/zhishuyun/lib/zhishuyun.jar /home/runner/work/torch-yun/torch-yun/torch-yun-backend/torch-yun-main/build/libs 
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -186,14 +226,8 @@ jobs:
           tags: isxcode/zhishuyun:${{ inputs.version_number }}
           push: true
 
-      - name: Upload zhishuyun tar
-        uses: actions/upload-artifact@v4
-        with:
-          name: zhishuyun
-          path: ./torch-yun-dist/build/distributions/zhishuyun.tar.gz
-
-  # 上传阿里服务器使用单独任务，原因：上传失败后，可以使用github重跑任务，不需要重新打包
-  upload-oss:
+  # 上传到服务器
+  upload-server:
     needs: build
 
     runs-on: ubuntu-latest
@@ -215,7 +249,7 @@ jobs:
           name: zhishuyun
           path: ./
 
-      - name: Upload Package to Ali oss
+      - name: Upload package to Ali server
         uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.HOST }}
@@ -226,8 +260,8 @@ jobs:
           source: "zhishuyun.tar.gz"
           target: /data/file/
 
-  # 上传阿里镜像仓库使用单独任务，原因：上传失败后，可以使用github重跑任务，不需要重新打包
-  upload-ali:
+  # 上传阿里镜像仓库
+  upload-ali-hub:
     needs: build
 
     runs-on: ubuntu-latest
@@ -243,25 +277,102 @@ jobs:
         run: |
           sudo timedatectl set-timezone Asia/Shanghai
 
+      - name: Checkout torch-yun
+        uses: actions/checkout@v4
+        with:
+          token: ${{ env.ADMIN_GITHUB_TOKEN }}
+          repository: ${{ inputs.repository_account }}/torch-yun
+          ref: ${{ inputs.branch_number }}
+
+      - name: Download zhishuyun tar
+        uses: actions/download-artifact@v4
+        with:
+          name: zhishuyun
+          path: ./
+
+      - name: Unzip zhishuyun tar
+        run: |
+          tar -vzxf zhishuyun.tar.gz -C /tmp
+          mkdir -p /home/runner/work/torch-yun/torch-yun/torch-yun-backend/torch-yun-main/build/libs
+          mv /tmp/zhishuyun/lib/zhishuyun.jar /home/runner/work/torch-yun/torch-yun/torch-yun-backend/torch-yun-main/build/libs 
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Login to Docker Hub
+      - name: Login to Ali Docker Hub
         uses: docker/login-action@v3
         with:
           registry: registry.cn-shanghai.aliyuncs.com
           username: ispong
           password: ${{ secrets.ALI_DOCKERHUB_TOKEN }}
 
-      - name: Pull docker images
+      - name: Build and Push Amd64
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/amd64
+          tags: registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun:${{ inputs.version_number }}-amd64
+          push: true
+
+      - name: Build and Push Arm64
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/arm64
+          tags: registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun:${{ inputs.version_number }}-arm64
+          push: true
+
+  # 上传到代理镜像到阿里云
+  upload-agent-ali-hub:
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+
+    steps:
+
+      - name: Set timezone to Asia/Shanghai
         run: |
-          docker pull --platform=linux/amd64 isxcode/zhishuyun
-          docker tag isxcode/zhishuyun registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun:latest-amd64
-          docker push registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun:latest-amd64
-          docker rmi isxcode/zhishuyun
-          docker pull --platform=linux/arm64 isxcode/zhishuyun
-          docker tag isxcode/zhishuyun registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun:latest-arm64
-          docker push registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun:latest-arm64
+          sudo timedatectl set-timezone Asia/Shanghai
+
+      - name: Download zhishuyun agent tar
+        uses: actions/download-artifact@v4
+        with:
+          name: zhishuyun-agent
+          path: ./
+
+      - name: Create dockerfile
+        run: |
+          echo "FROM alpine:latest" > Dockerfile
+          echo "" >> Dockerfile
+          echo "COPY zhishuyun-agent.tar.gz /tmp/zhishuyun-agent.tar.gz" >> Dockerfile
+          echo "" >> Dockerfile
+          echo 'ENTRYPOINT ["tail", "-f", "/dev/null"]' >> Dockerfile
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Ali Docker Hub
+        uses: docker/login-action@v3
+        with:
+          registry: registry.cn-shanghai.aliyuncs.com
+          username: ispong
+          password: ${{ secrets.ALI_DOCKERHUB_TOKEN }}
+
+      - name: Build and Push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/amd64
+          tags: registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun-agent:${{ inputs.version_number }}
+          push: true

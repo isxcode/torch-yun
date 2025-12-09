@@ -1,0 +1,115 @@
+name: deploy env
+
+on:
+  workflow_dispatch:
+    inputs:
+      dev_server_ip:
+        description: 'dev server ip'
+        required: true
+        type: string
+      dev_internal_server_ip:
+        description: 'dev internal server ip'
+        required: true
+        type: string
+      dev_server_username:
+        description: 'dev server username'
+        required: true
+        type: string
+        default: root
+      dev_server_password:
+        description: 'dev server password'
+        required: true
+        type: string
+        default: Isxcode123..
+      ali:
+        description: buy address
+        default: https://ecs-buy.aliyun.com/ecs
+        type: string
+
+env:
+  ADMIN_GITHUB_TOKEN: ${{ inputs.github_access_token }}
+
+jobs:
+
+  install-env:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+
+    steps:
+
+      - name: Set timezone to Asia/Shanghai
+        run: |
+          sudo timedatectl set-timezone Asia/Shanghai
+          date    
+
+      - name: Install env
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ inputs.dev_server_ip }}
+          username: ${{ inputs.dev_server_username }}
+          password: ${{ inputs.dev_server_password }}
+          script_stop: true
+          timeout: 3600s
+          script: |
+            sed -i '$d' /etc/hosts
+            sed -i '$d' /etc/hosts
+            echo "${{ inputs.dev_internal_server_ip }}  zhiyao-server" | tee -a /etc/hosts
+            hostnamectl set-hostname zhiyao-server
+            yum install java-1.8.0-openjdk-devel java-1.8.0-openjdk -y
+            yum install -y yum-utils
+            yum-config-manager --add-repo https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+            yum install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+            mkdir -p /data/docker
+            mkdir -p /etc/docker
+            echo "{" > /etc/docker/daemon.json
+            echo "  \"registry-mirrors\":[" >> /etc/docker/daemon.json
+            echo "    \"https://3fe1zqfu.mirror.aliyuncs.com\"" >> /etc/docker/daemon.json
+            echo "  ]," >> /etc/docker/daemon.json
+            echo "  \"data-root\":\"/data/docker\"" >> /etc/docker/daemon.json
+            echo "}" >> /etc/docker/daemon.json
+            systemctl enable docker
+            systemctl start docker
+            wget -q -O /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/CentOS-vault-8.5.2111.repo
+            yum clean all && yum makecache
+            yum remove -y python3
+            yum install -y python39 
+            python3 --version
+            pip3 --version
+            pip3 install torch 'transformers[torch]' fastapi uvicorn
+
+      - name: Start agent
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ inputs.dev_server_ip }}
+          username: ${{ inputs.dev_server_username }}
+          password: ${{ inputs.dev_server_password }}
+          script_stop: true
+          timeout: 3600s
+          script: |
+            docker pull registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun-agent:latest
+            docker run -itd --name=zhishuyun-agent-download registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun-agent:latest
+            docker cp zhishuyun-agent-download:/tmp/zhishuyun-agent.tar.gz /tmp
+            docker stop zhishuyun-agent-download
+            docker rm zhishuyun-agent-download
+            docker rmi registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun-agent:latest
+            tar -zxf /tmp/zhishuyun-agent.tar.gz -C /root
+            cd /root/zhishuyun-agent
+            source /etc/profile
+            nohup java -jar -Xmx2048m lib/zhishuyun-agent.jar --spring.config.additional-location=conf/ > /dev/null 2>&1 &
+            echo $! >zhishuyun-agent.pid
+
+      - name: Update demo hosts
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          script_stop: true
+          timeout: 3600s
+          script: |
+            sed -i '$d' /etc/hosts
+            echo "${{ inputs.dev_server_ip }}    zhiyao-server" | tee -a /etc/hosts
