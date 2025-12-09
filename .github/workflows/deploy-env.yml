@@ -82,7 +82,6 @@ jobs:
           script_stop: true
           timeout: 3600s
           script: |
-            wget -O /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/CentOS-vault-8.5.2111.repo
             yum remove -y python3
             yum install -y python39
             pip3 install torch 'transformers[torch]' fastapi uvicorn
