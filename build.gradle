@@ -102,7 +102,6 @@ tasks.register('start', Exec) {
 tasks.register('website', Exec) {
     commandLine 'sh', '-c', '''
       cd docs
-      rm -rf node_modules
       pnpm install --force
       pnpm run dev
      '''
@@ -111,7 +110,6 @@ tasks.register('website', Exec) {
 tasks.register('frontend', Exec) {
     commandLine 'sh', '-c', '''
       cd torch-yun-frontend
-      rm -rf node_modules
       pnpm install --force
       pnpm run dev --host
     '''
