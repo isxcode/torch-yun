@@ -50,6 +50,11 @@ ali-sms = { module = "com.aliyun:dysmsapi20170525", version.ref = "ali-sms" }
 groovy-all = { module = "org.apache.groovy:groovy-all", version.ref = "groovy-all" }
 kafka-clients = { module = "org.apache.kafka:kafka-clients", version.ref = "kafka-clients" }
 calcite-core = { module = "org.apache.calcite:calcite-core", version.ref = "calcite-core" }
+spring-web = { module = "org.springframework.boot:spring-boot-starter-web" }
+spring-aop = { module = "org.springframework.boot:spring-boot-starter-aop" }
+spring-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
+spring-configuration-processor = { module = "org.springframework.boot:spring-boot-configuration-processor" }
+spring-test = { module = "org.springframework.boot:spring-boot-starter-test" }
 
 [bundles]
 poi = ["poi-ooxml", "xmlbeans", "pull-parser"]
