@@ -1,0 +1,10 @@
+[versions]
+fastjson_version= "2.0.16"
+
+[libraries]
+fastjson = { module = "com.alibaba:fastjson", version.ref = "fastjson_version" }
+
+[bundles]
+
+[plugins]
+
