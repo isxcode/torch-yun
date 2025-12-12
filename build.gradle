@@ -52,7 +52,7 @@ allprojects {
         compileOnly "org.projectlombok:lombok:${LOMBOK_VERSION}"
         annotationProcessor "org.projectlombok:lombok:${LOMBOK_VERSION}"
 
-        implementation "com.alibaba:fastjson:${FASTJSON_VERSION}"
+        libs.fastjson
 
         implementation "org.junit.jupiter:junit-jupiter:${JUPITER_VERSION}"
         testImplementation "org.junit.jupiter:junit-jupiter-api:${JUPITER_VERSION}"
