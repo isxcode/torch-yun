@@ -13,19 +13,17 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-mail'
 
-    implementation "org.apache.calcite:calcite-core:${CALCITE_VERSION}"
+    implementation libs.calcite.core
 
-    implementation "org.apache.kafka:kafka-clients:${KAFKA_VERSION}"
+    implementation libs.kafka.clients
 
     implementation fileTree(dir: rootDir.getAbsolutePath() + '/resources/libs', include: ['prql-java-0.5.2.jar'])
 
-    implementation "org.apache.groovy:groovy-all:${GROOVY_VERSION}"
+    implementation libs.groovy.all
 
-    implementation "com.aliyun:dysmsapi20170525:${ALI_SMS_VERSION}"
+    implementation libs.ali.sms
 
-    implementation 'org.apache.poi:poi-ooxml:5.2.5'
-    implementation 'org.apache.xmlbeans:xmlbeans:5.2.0'
-    implementation 'pull-parser:pull-parser:2.1.10'
+    implementation libs.bundles.poi
 
     implementation 'commons-dbutils:commons-dbutils:1.7'
 

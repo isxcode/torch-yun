@@ -1,9 +1,9 @@
 plugins {
     id 'java'
     id 'checkstyle'
-    id 'org.springframework.boot' version "${SPRING_VERSION}"
-    id 'io.spring.dependency-management' version "${SPRING_MANAGER_VERSION}"
-    id "com.diffplug.spotless" version "${SPOTLESS_VERSION}"
+    alias(libs.plugins.springboot)
+    alias(libs.plugins.springboot.dependency)
+    alias(libs.plugins.spotless)
 }
 
 def version_number = new File(rootDir.getAbsolutePath(), 'torch-yun-backend/torch-yun-main/src/main/resources/VERSION').readLines()[0].trim()
@@ -47,20 +47,19 @@ allprojects {
 
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-        implementation "org.springdoc:springdoc-openapi-ui:${OPENAPI_VERSION}"
+        compileOnly libs.lombok
+        annotationProcessor libs.lombok
 
-        compileOnly "org.projectlombok:lombok:${LOMBOK_VERSION}"
-        annotationProcessor "org.projectlombok:lombok:${LOMBOK_VERSION}"
+        implementation libs.fastjson
+        implementation libs.swagger
 
-        libs.fastjson
+        implementation libs.junit.jupiter
+        testImplementation libs.junit.jupiter.api
 
-        implementation "org.junit.jupiter:junit-jupiter:${JUPITER_VERSION}"
-        testImplementation "org.junit.jupiter:junit-jupiter-api:${JUPITER_VERSION}"
-
-        implementation "org.mapstruct:mapstruct:${MAPSTRUCT_VERSION}"
-        implementation "org.mapstruct:mapstruct-processor:${MAPSTRUCT_VERSION}"
-        annotationProcessor "org.mapstruct:mapstruct-processor:${MAPSTRUCT_VERSION}"
-        testAnnotationProcessor "org.mapstruct:mapstruct-processor:${MAPSTRUCT_VERSION}"
+        implementation libs.mapstruct.main
+        implementation libs.mapstruct.processor
+        annotationProcessor libs.mapstruct.processor
+        testAnnotationProcessor libs.mapstruct.processor
     }
 
     configurations {

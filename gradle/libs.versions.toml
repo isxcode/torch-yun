@@ -1,10 +1,60 @@
 [versions]
-fastjson_version= "2.0.16"
+springboot = "2.7.9"
+spring-framework = "5.3.25"
+springboot-dependency = "1.0.15.RELEASE"
+spotless = "6.11.0"
+fastjson = "2.0.16"
+swagger = "1.7.0"
+lombok = "1.18.24"
+junit = "5.9.1"
+mapstruct = "1.5.3.Final"
+jwt = "0.11.5"
+jsch = "0.2.15"
+hutool = "5.8.40"
+jgrapht = "1.4.0"
+jasypt = "3.0.5"
+druid = "1.2.16"
+flyway = "9.16.3"
+poi = "5.2.5"
+xmlbeans = "5.2.0"
+pull-parser = "2.1.10"
+ali-sms = "3.0.0"
+groovy-all = "4.0.15"
+kafka-clients = "3.9.1"
+calcite-core = "1.32.0"
 
 [libraries]
-fastjson = { module = "com.alibaba:fastjson", version.ref = "fastjson_version" }
+fastjson = { module = "com.alibaba:fastjson", version.ref = "fastjson" }
+swagger = { module = "org.springdoc:springdoc-openapi-ui", version.ref = "swagger" }
+lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
+mapstruct-main = { module = "org.mapstruct:mapstruct", version.ref = "mapstruct" }
+mapstruct-processor = { module = "org.mapstruct:mapstruct-processor", version.ref = "mapstruct" }
+spring-tx = { module = "org.springframework:spring-tx", version.ref = "spring-framework" }
+spring-orm = { module = "org.springframework:spring-orm", version.ref = "spring-framework" }
+jjwt-api = { module = "io.jsonwebtoken:jjwt-api", version.ref = "jwt" }
+jjwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson", version.ref = "jwt" }
+jjwt-impl = { module = "io.jsonwebtoken:jjwt-impl", version.ref = "jwt" }
+jsch = { module = "com.github.mwiede:jsch", version.ref = "jsch" }
+hutool = { module = "cn.hutool:hutool-all", version.ref = "hutool" }
+jgrapht = { module = "org.jgrapht:jgrapht-core", version.ref = "jgrapht" }
+jasypt = { module = "com.github.ulisesbocchio:jasypt-spring-boot-starter", version.ref = "jasypt" }
+druid = { module = "com.alibaba:druid-spring-boot-starter", version.ref = "druid" }
+flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flyway" }
+flyway-mysql = { module = "org.flywaydb:flyway-mysql", version.ref = "flyway" }
+poi-ooxml = { module = "org.apache.poi:poi-ooxml", version.ref = "poi" }
+xmlbeans = { module = "org.apache.xmlbeans:xmlbeans", version.ref = "xmlbeans" }
+pull-parser = { module = "pull-parser:pull-parser", version.ref = "pull-parser" }
+ali-sms = { module = "com.aliyun:dysmsapi20170525", version.ref = "ali-sms" }
+groovy-all = { module = "org.apache.groovy:groovy-all", version.ref = "groovy-all" }
+kafka-clients = { module = "org.apache.kafka:kafka-clients", version.ref = "kafka-clients" }
+calcite-core = { module = "org.apache.calcite:calcite-core", version.ref = "calcite-core" }
 
 [bundles]
+poi = ["poi-ooxml", "xmlbeans", "pull-parser"]
 
 [plugins]
-
+springboot = { id = "org.springframework.boot", version.ref = "springboot" }
+springboot-dependency = { id = "io.spring.dependency-management", version.ref = "springboot-dependency" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
