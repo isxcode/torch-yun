@@ -43,6 +43,9 @@ spring-security-test = { module = "org.springframework.security:spring-security-
 spring-mail = { module = "org.springframework.boot:spring-boot-starter-mail" }
 spring-cache = { module = "org.springframework.boot:spring-boot-starter-cache" }
 spring-thymeleaf = { module = "org.springframework.boot:spring-boot-starter-thymeleaf" }
+postgresql = { module = "org.postgresql:postgresql" }
+mysql = { module = "com.mysql:mysql-connector-j" }
+h2 = { module = "com.h2database:h2" }
 fastjson = { module = "com.alibaba:fastjson", version.ref = "fastjson" }
 swagger = { module = "org.springdoc:springdoc-openapi-ui", version.ref = "swagger" }
 lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
@@ -67,9 +70,6 @@ ali-sms = { module = "com.aliyun:dysmsapi20170525", version.ref = "ali-sms" }
 groovy-all = { module = "org.apache.groovy:groovy-all", version.ref = "groovy-all" }
 kafka-clients = { module = "org.apache.kafka:kafka-clients", version.ref = "kafka-clients" }
 calcite-core = { module = "org.apache.calcite:calcite-core", version.ref = "calcite-core" }
-postgresql = { module = "org.postgresql:postgresql" }
-mysql = { module = "com.mysql:mysql-connector-j" }
-h2 = { module = "com.h2database:h2" }
 truelicense = { module = "global.namespace.truelicense:truelicense-v4", version.ref = "truelicense" }
 lucene-core = { module = "org.apache.lucene:lucene-core", version.ref = "lucene" }
 lucene-queryparser = { module = "org.apache.lucene:lucene-queryparser", version.ref = "lucene" }
