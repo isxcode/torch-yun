@@ -1,31 +1,16 @@
 dependencies {
-
-    api(project(':torch-yun-backend:torch-yun-common'))
     api(project(':torch-yun-backend:torch-yun-security'))
-
-    api 'org.springframework.boot:spring-boot-starter-cache'
-
-    runtimeOnly 'com.mysql:mysql-connector-j'
-
-    runtimeOnly 'com.h2database:h2'
-
-    runtimeOnly 'org.postgresql:postgresql'
-
-    implementation 'org.springframework.boot:spring-boot-starter-mail'
-
+    api libs.spring.cache
+    runtimeOnly libs.mysql
+    runtimeOnly libs.h2
+    runtimeOnly libs.postgresql
+    implementation libs.spring.mail
     implementation libs.calcite.core
-
     implementation libs.kafka.clients
-
-    implementation fileTree(dir: rootDir.getAbsolutePath() + '/resources/libs', include: ['prql-java-0.5.2.jar'])
-
     implementation libs.groovy.all
-
     implementation libs.ali.sms
-
     implementation libs.bundles.poi
-
-    implementation 'commons-dbutils:commons-dbutils:1.7'
-
-    implementation 'com.alibaba:dashscope-sdk-java:2.18.3'
+    implementation libs.commons.dbutils
+    implementation libs.dashscope
+    implementation fileTree(dir: rootDir.getAbsolutePath() + '/resources/libs', include: ['prql-java-0.5.2.jar'])
 }

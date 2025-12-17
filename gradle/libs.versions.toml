@@ -22,6 +22,11 @@ ali-sms = "3.0.0"
 groovy-all = "4.0.15"
 kafka-clients = "3.9.1"
 calcite-core = "1.32.0"
+truelicense = "4.0.3"
+lucene = "8.11.2"
+lucene-analyzers = "3.6.2"
+commons-dbutils = "1.7"
+dashscope = "2.18.3"
 
 [libraries]
 fastjson = { module = "com.alibaba:fastjson", version.ref = "fastjson" }
@@ -55,9 +60,28 @@ spring-aop = { module = "org.springframework.boot:spring-boot-starter-aop" }
 spring-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
 spring-configuration-processor = { module = "org.springframework.boot:spring-boot-configuration-processor" }
 spring-test = { module = "org.springframework.boot:spring-boot-starter-test" }
+spring-quartz = { module = "org.springframework.boot:spring-boot-starter-quartz" }
+spring-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
+spring-security = { module = "org.springframework.boot:spring-boot-starter-security" }
+spring-security-test = { module = "org.springframework.security:spring-security-test" }
+spring-mail = { module = "org.springframework.boot:spring-boot-starter-mail" }
+spring-cache = { module = "org.springframework.boot:spring-boot-starter-cache" }
+spring-thymeleaf = { module = "org.springframework.boot:spring-boot-starter-thymeleaf" }
+postgresql = { module = "org.postgresql:postgresql" }
+mysql = { module = "com.mysql:mysql-connector-j" }
+h2 = { module = "com.h2database:h2" }
+truelicense = { module = "global.namespace.truelicense:truelicense-v4", version.ref = "truelicense" }
+lucene-core = { module = "org.apache.lucene:lucene-core", version.ref = "lucene" }
+lucene-queryparser = { module = "org.apache.lucene:lucene-queryparser", version.ref = "lucene" }
+lucene-highlighter = { module = "org.apache.lucene:lucene-highlighter", version.ref = "lucene" }
+lucene-analyzers-common = { module = "org.apache.lucene:lucene-analyzers-common", version.ref = "lucene" }
+lucene-analyzers = { module = "org.apache.lucene:lucene-analyzers", version.ref = "lucene-analyzers" }
+commons-dbutils = { module = "commons-dbutils:commons-dbutils", version.ref = "commons-dbutils" }
+dashscope = { module = "com.alibaba:dashscope-sdk-java", version.ref = "dashscope" }
 
 [bundles]
 poi = ["poi-ooxml", "xmlbeans", "pull-parser"]
+lucene = ["lucene-core", "lucene-queryparser", "lucene-highlighter", "lucene-analyzers-common", "lucene-analyzers"]
 
 [plugins]
 springboot = { id = "org.springframework.boot", version.ref = "springboot" }
