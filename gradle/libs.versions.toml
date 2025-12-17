@@ -29,6 +29,20 @@ commons-dbutils = "1.7"
 dashscope = "2.18.3"
 
 [libraries]
+spring-tx = { module = "org.springframework:spring-tx", version.ref = "spring-framework" }
+spring-orm = { module = "org.springframework:spring-orm", version.ref = "spring-framework" }
+spring-web = { module = "org.springframework.boot:spring-boot-starter-web" }
+spring-aop = { module = "org.springframework.boot:spring-boot-starter-aop" }
+spring-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
+spring-configuration-processor = { module = "org.springframework.boot:spring-boot-configuration-processor" }
+spring-test = { module = "org.springframework.boot:spring-boot-starter-test" }
+spring-quartz = { module = "org.springframework.boot:spring-boot-starter-quartz" }
+spring-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
+spring-security = { module = "org.springframework.boot:spring-boot-starter-security" }
+spring-security-test = { module = "org.springframework.security:spring-security-test" }
+spring-mail = { module = "org.springframework.boot:spring-boot-starter-mail" }
+spring-cache = { module = "org.springframework.boot:spring-boot-starter-cache" }
+spring-thymeleaf = { module = "org.springframework.boot:spring-boot-starter-thymeleaf" }
 fastjson = { module = "com.alibaba:fastjson", version.ref = "fastjson" }
 swagger = { module = "org.springdoc:springdoc-openapi-ui", version.ref = "swagger" }
 lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
@@ -36,8 +50,6 @@ junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "jun
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
 mapstruct-main = { module = "org.mapstruct:mapstruct", version.ref = "mapstruct" }
 mapstruct-processor = { module = "org.mapstruct:mapstruct-processor", version.ref = "mapstruct" }
-spring-tx = { module = "org.springframework:spring-tx", version.ref = "spring-framework" }
-spring-orm = { module = "org.springframework:spring-orm", version.ref = "spring-framework" }
 jjwt-api = { module = "io.jsonwebtoken:jjwt-api", version.ref = "jwt" }
 jjwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson", version.ref = "jwt" }
 jjwt-impl = { module = "io.jsonwebtoken:jjwt-impl", version.ref = "jwt" }
@@ -55,18 +67,6 @@ ali-sms = { module = "com.aliyun:dysmsapi20170525", version.ref = "ali-sms" }
 groovy-all = { module = "org.apache.groovy:groovy-all", version.ref = "groovy-all" }
 kafka-clients = { module = "org.apache.kafka:kafka-clients", version.ref = "kafka-clients" }
 calcite-core = { module = "org.apache.calcite:calcite-core", version.ref = "calcite-core" }
-spring-web = { module = "org.springframework.boot:spring-boot-starter-web" }
-spring-aop = { module = "org.springframework.boot:spring-boot-starter-aop" }
-spring-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
-spring-configuration-processor = { module = "org.springframework.boot:spring-boot-configuration-processor" }
-spring-test = { module = "org.springframework.boot:spring-boot-starter-test" }
-spring-quartz = { module = "org.springframework.boot:spring-boot-starter-quartz" }
-spring-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
-spring-security = { module = "org.springframework.boot:spring-boot-starter-security" }
-spring-security-test = { module = "org.springframework.security:spring-security-test" }
-spring-mail = { module = "org.springframework.boot:spring-boot-starter-mail" }
-spring-cache = { module = "org.springframework.boot:spring-boot-starter-cache" }
-spring-thymeleaf = { module = "org.springframework.boot:spring-boot-starter-thymeleaf" }
 postgresql = { module = "org.postgresql:postgresql" }
 mysql = { module = "com.mysql:mysql-connector-j" }
 h2 = { module = "com.h2database:h2" }
