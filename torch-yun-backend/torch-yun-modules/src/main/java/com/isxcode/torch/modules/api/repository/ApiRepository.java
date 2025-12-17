@@ -2,7 +2,7 @@ package com.isxcode.torch.modules.api.repository;
 
 import java.util.Optional;
 
-import com.isxcode.torch.api.main.constants.ModuleVipCode;
+import com.isxcode.torch.api.main.constants.ModuleCode;
 import com.isxcode.torch.modules.api.entity.ApiEntity;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.data.domain.Page;
@@ -13,7 +13,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@CacheConfig(cacheNames = {ModuleVipCode.VIP_API})
+@CacheConfig(cacheNames = {ModuleCode.VIP_API})
 public interface ApiRepository extends JpaRepository<ApiEntity, String> {
 
     Optional<ApiEntity> findByPathAndApiType(String path, String tenantId);
