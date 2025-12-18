@@ -134,4 +134,9 @@ public interface ModuleCode {
      * 元数据模块
      */
     String VIP_META = "/vip/meta";
+
+    /**
+     * 模型广场.
+     */
+    String MODEL_PLAZA = "/model/plaza";
 }
