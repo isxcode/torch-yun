@@ -45,6 +45,13 @@ export const menuListData: Array<Menu> = [
     authType: [ 'ROLE_TENANT_MEMBER', 'ROLE_TENANT_ADMIN' ],
     children: [
       {
+        code: 'model-plaza',
+        name: '模型广场',
+        icon: 'Shop',
+        authType: [ 'ROLE_TENANT_MEMBER', 'ROLE_TENANT_ADMIN' ],
+        childPage: []
+      },
+      {
         code: 'model-management',
         name: '模型仓库',
         icon: 'Connection',
