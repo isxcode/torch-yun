@@ -19,18 +19,7 @@
                     </template>
                     <template #options="scopeSlot">
                         <div class="btn-group btn-group-msg">
-                            <!-- <span>检测</span> -->
-                            <span v-if="scopeSlot.row.modelType !== 'API' && scopeSlot.row.tenantId !== 'zhishuyun'" @click="editEvent(scopeSlot.row)">编辑</span>
-                            <!-- <el-dropdown trigger="click">
-                                <span class="click-show-more">更多</span>
-                                <template #dropdown>
-                                    <el-dropdown-menu>
-                                        <el-dropdown-item>编辑</el-dropdown-item>
-                                        <el-dropdown-item>删除</el-dropdown-item>
-                                        <el-dropdown-item>备注</el-dropdown-item>
-                                    </el-dropdown-menu>
-                                </template>
-                            </el-dropdown> -->
+                            <span v-if="scopeSlot.row.tenantId !== 'zhishuyun'" @click="editEvent(scopeSlot.row)">编辑</span>
                         </div>
                     </template>
                 </BlockTable>
