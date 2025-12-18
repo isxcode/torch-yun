@@ -40,6 +40,8 @@ public class AiEntity {
 
     private String name;
 
+    private String aiType;
+
     private String status;
 
     private String modelId;

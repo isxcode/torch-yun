@@ -7,6 +7,7 @@ import com.isxcode.torch.api.agent.req.GetAgentAiLogReq;
 import com.isxcode.torch.api.agent.res.CheckAgentAiRes;
 import com.isxcode.torch.api.agent.res.GetAgentAiLogRes;
 import com.isxcode.torch.api.ai.constant.AiStatus;
+import com.isxcode.torch.api.ai.constant.AiType;
 import com.isxcode.torch.api.ai.dto.ClusterConfig;
 import com.isxcode.torch.api.ai.req.*;
 import com.isxcode.torch.api.ai.res.CheckAiRes;
@@ -15,8 +16,13 @@ import com.isxcode.torch.api.ai.res.PageAiRes;
 
 import javax.transaction.Transactional;
 
+import com.isxcode.torch.api.app.constants.AppStatus;
+import com.isxcode.torch.api.app.constants.AppType;
+import com.isxcode.torch.api.app.constants.DefaultAppStatus;
+import com.isxcode.torch.api.app.dto.BaseConfig;
 import com.isxcode.torch.api.cluster.constants.ClusterNodeStatus;
 import com.isxcode.torch.api.cluster.dto.ScpFileEngineNodeDto;
+import com.isxcode.torch.api.model.constant.ModelType;
 import com.isxcode.torch.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.torch.backend.api.base.pojos.BaseResponse;
 import com.isxcode.torch.common.utils.aes.AesUtils;
@@ -26,17 +32,22 @@ import com.isxcode.torch.modules.ai.entity.AiEntity;
 import com.isxcode.torch.modules.ai.mapper.AiMapper;
 import com.isxcode.torch.modules.ai.repository.AiRepository;
 import com.isxcode.torch.modules.ai.run.DeployAiService;
+import com.isxcode.torch.modules.app.entity.AppEntity;
 import com.isxcode.torch.modules.app.repository.AppRepository;
 import com.isxcode.torch.modules.cluster.entity.ClusterNodeEntity;
 import com.isxcode.torch.modules.cluster.mapper.ClusterNodeMapper;
 import com.isxcode.torch.modules.cluster.repository.ClusterNodeRepository;
 import com.isxcode.torch.modules.cluster.service.ClusterService;
+import com.isxcode.torch.modules.model.entity.ModelEntity;
+import com.isxcode.torch.modules.model.plaza.entity.ModelPlazaEntity;
+import com.isxcode.torch.modules.model.plaza.service.ModelPlazaService;
 import com.isxcode.torch.modules.model.service.ModelService;
 import com.isxcode.torch.modules.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.ap.internal.util.Strings;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
@@ -45,6 +56,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 
@@ -68,6 +80,8 @@ public class AiBizService {
 
     private final AppRepository appRepository;
 
+    private final ModelPlazaService modelPlazaService;
+
     private final DeployAiService deployAiService;
 
     private final HttpUrlUtils httpUrlUtils;
@@ -80,64 +94,57 @@ public class AiBizService {
 
     public void addAi(AddAiReq addAiReq) {
 
-        // // 检测数据源名称重复
-        // Optional<AiEntity> aiEntityByName = aiRepository.findByName(addAiReq.getName());
-        // if (aiEntityByName.isPresent()) {
-        // throw new IsxAppException("Ai名称重复");
-        // }
-        //
-        // // 封装智能体对象
-        // AiEntity aiEntity = aiMapper.addAiReqToAiEntity(addAiReq);
-        //
-        // // 通过模型id判断当前所需参数
-        // JPA_TENANT_MODE.set(false);
-        // ModelEntity model = modelService.getModel(addAiReq.getModelId());
-        // JPA_TENANT_MODE.set(true);
-        //
-        // // 自动创建对应的应用
-        // AppEntity appEntity = new AppEntity();
-        // if (ModelType.API.equals(model.getModelType())) {
-        // if (addAiReq.getAuthConfig() == null) {
-        // throw new IsxAppException("验证信息缺失");
-        // }
-        // aiEntity.setAuthConfig(JSON.toJSONString(addAiReq.getAuthConfig()));
-        // aiEntity.setStatus(AiStatus.ENABLE);
-        // appEntity.setStatus(AiStatus.ENABLE);
-        // } else if (ModelType.MANUAL.equals(model.getModelType())) {
-        // if (addAiReq.getClusterConfig() == null) {
-        // throw new IsxAppException("集群配置缺失");
-        // }
-        // aiEntity.setClusterConfig(JSON.toJSONString(addAiReq.getClusterConfig()));
-        // aiEntity.setStatus(AiStatus.DISABLE);
-        // appEntity.setStatus(AppStatus.INIT);
-        // } else {
-        // throw new IsxAppException("当前模型不支持");
-        // }
-        //
-        // aiEntity.setCheckDateTime(LocalDateTime.now());
-        // aiEntity = aiRepository.save(aiEntity);
-        // appEntity.setName(addAiReq.getName());
-        // appEntity.setAiId(aiEntity.getId());
-        // appEntity.setCheckDateTime(LocalDateTime.now());
-        // appEntity.setLogoId("");
-        // appEntity.setRemark("默认自建");
-        // appEntity.setAppType(AppType.TEXT_APP);
-        //
-        // // 应用添加默认配置
-        // BaseConfig baseConfig =
-        // BaseConfig.builder().topK(50).topP(0.9).maxTokens(512).repetitionPenalty(1.2f)
-        // .enableSearch(false).temperature(0.8f).build();
-        // appEntity.setBaseConfig(JSON.toJSONString(baseConfig));
-        // appEntity.setPrompt("");
-        //
-        // // 判断是否需要制定默认app应用
-        // List<AppEntity> allApp = appRepository.findAll();
-        // if (allApp.isEmpty()) {
-        // appEntity.setDefaultApp(DefaultAppStatus.ENABLE);
-        // } else {
-        // appEntity.setDefaultApp(DefaultAppStatus.DISABLE);
-        // }
-        // appRepository.save(appEntity);
+        // 检测数据源名称重复
+        Optional<AiEntity> aiEntityByName = aiRepository.findByName(addAiReq.getName());
+        if (aiEntityByName.isPresent()) {
+            throw new IsxAppException("Ai名称重复");
+        }
+
+        // 封装智能体对象
+        AiEntity aiEntity = aiMapper.addAiReqToAiEntity(addAiReq);
+
+        // 自动创建对应的应用
+        AppEntity appEntity = new AppEntity();
+        if (AiType.LOCAL.equals(aiEntity.getAiType())) {
+            if (addAiReq.getClusterConfig() == null) {
+                throw new IsxAppException("集群配置缺失");
+            }
+            aiEntity.setClusterConfig(JSON.toJSONString(addAiReq.getClusterConfig()));
+            aiEntity.setStatus(AiStatus.DISABLE);
+            appEntity.setStatus(AppStatus.INIT);
+        } else {
+            if (addAiReq.getAuthConfig() == null) {
+                throw new IsxAppException("验证信息缺失");
+            }
+            aiEntity.setAuthConfig(JSON.toJSONString(addAiReq.getAuthConfig()));
+            aiEntity.setStatus(AiStatus.ENABLE);
+            appEntity.setStatus(AiStatus.ENABLE);
+        }
+
+        aiEntity.setCheckDateTime(LocalDateTime.now());
+        aiEntity = aiRepository.save(aiEntity);
+        appEntity.setName(addAiReq.getName());
+        appEntity.setAiId(aiEntity.getId());
+        appEntity.setCheckDateTime(LocalDateTime.now());
+        appEntity.setLogoId("");
+        appEntity.setRemark("默认自建");
+        appEntity.setAppType(AppType.TEXT_APP);
+
+        // 应用添加默认配置
+        BaseConfig baseConfig =
+            BaseConfig.builder().topK(50).topP(0.9).maxTokens(512).repetitionPenalty(1.2f)
+                .enableSearch(false).temperature(0.8f).build();
+        appEntity.setBaseConfig(JSON.toJSONString(baseConfig));
+        appEntity.setPrompt("");
+
+        // 判断是否需要制定默认app应用
+        List<AppEntity> allApp = appRepository.findAll();
+        if (allApp.isEmpty()) {
+            appEntity.setDefaultApp(DefaultAppStatus.ENABLE);
+        } else {
+            appEntity.setDefaultApp(DefaultAppStatus.DISABLE);
+        }
+        appRepository.save(appEntity);
     }
 
     public void updateAi(UpdateAiReq updateAiReq) {
@@ -179,26 +186,24 @@ public class AiBizService {
 
     public Page<PageAiRes> pageAi(PageAiReq pageAiReq) {
 
-        //// Page<AiEntity> aiEntityPage = aiRepository.searchAll(pageAiReq.getSearchKeyWord(),
-        //// PageRequest.of(pageAiReq.getPage(), pageAiReq.getPageSize()));
-        ////
-        //// Page<PageAiRes> result = aiEntityPage.map(aiMapper::aiEntityToPageAiRes);
-        //// result.forEach(aiEntity -> {
-        //// if (aiEntity.getClusterConfig() != null) {
-        //// aiEntity.setClusterName(clusterService
-        //// .getClusterName(JSON.parseObject(aiEntity.getClusterConfig(),
-        //// ClusterConfig.class).getClusterId()));
-        //// }
-        //// aiEntity.setCreateByUsername(userService.getUserName(aiEntity.getCreateBy()));
-        //// JPA_TENANT_MODE.set(false);
-        //// aiEntity.setModelName(modelService.getModelName(aiEntity.getModelId()));
-        //// JPA_TENANT_MODE.set(true);
-        ////
-        //// aiEntity.setAiType(modelService.getModelType(aiEntity.getModelId()));
-        //// });
-        //
-        // return result;
-        return null;
+        Page<AiEntity> aiEntityPage = aiRepository.searchAll(pageAiReq.getSearchKeyWord(),
+            PageRequest.of(pageAiReq.getPage(), pageAiReq.getPageSize()));
+
+        Page<PageAiRes> result = aiEntityPage.map(aiMapper::aiEntityToPageAiRes);
+        result.forEach(aiEntity -> {
+
+            if (AiType.LOCAL.equals(aiEntity.getAiType())) {
+                aiEntity.setClusterName(clusterService.getClusterName(JSON.parseObject(aiEntity.getClusterConfig(), ClusterConfig.class).getClusterId()));
+                aiEntity.setModelName(modelService.getModelName(aiEntity.getModelId()));
+            } else {
+                ModelPlazaEntity modelPlaza = modelPlazaService.getModelPlaza(aiEntity.getModelId());
+                aiEntity.setModelName(modelPlaza.getModelName());
+                aiEntity.setClusterName(modelPlaza.getOrgName());
+            }
+            aiEntity.setCreateByUsername(userService.getUserName(aiEntity.getCreateBy()));
+        });
+
+        return result;
     }
 
     public void deployAi(DeployAiReq deployAiReq) {

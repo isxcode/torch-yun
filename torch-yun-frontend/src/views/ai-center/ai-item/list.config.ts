@@ -52,7 +52,7 @@ export const colConfigs: colConfig[] = [
     },
     {
         prop: 'clusterName',
-        title: '集群',
+        title: '引擎',
         minWidth: 120,
         showOverflowTooltip: true
     },

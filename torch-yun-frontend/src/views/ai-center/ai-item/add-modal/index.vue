@@ -23,7 +23,7 @@
                     <el-option
                         v-for="item in modelIdListOptions"
                         :key="item.id"
-                        :label="item.name"
+                        :label="item.name || item.modelName"
                         :value="item.id"
                     />
                 </el-select>
@@ -53,10 +53,11 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, defineExpose, ref, nextTick, computed } from 'vue'
+import { reactive, defineExpose, ref, nextTick } from 'vue'
 import BlockModal from '@/components/block-modal/index.vue'
 import { ElMessage, FormInstance, FormRules } from 'element-plus'
 import { QueryModelList } from '@/services/model-management.service';
+import { QueryModelPlazaList } from '@/services/model-plaza.service';
 import { GetComputerGroupList } from '@/services/computer-group.service';
 
 interface ApiKey {
@@ -96,7 +97,6 @@ const typeList = ref<Option[]>([
         value: 'API'
     }
 ])
-const modelIdList = ref<any[]>([])
 const clusterIdList = ref<any[]>([])
 const modelConfig = reactive({
     title: '添加',
@@ -140,13 +140,7 @@ const rules = reactive<FormRules>({
     'clusterConfig.clusterId': [{ required: true, message: '请选择集群', trigger: ['change', 'blur']}],
 })
 
-const modelIdListOptions = computed(() => {
-    if (formData.aiType === 'local') {
-        return modelIdList.value.filter((model: any) => model.modelType === 'MANUAL')
-    } else {
-        return modelIdList.value.filter((model: any) => model.modelType === 'API')
-    }
-})
+const modelIdListOptions = ref<any[]>([])
 
 function showModal(cb: () => void, data: any): void {
     callback.value = cb
@@ -208,18 +202,34 @@ function okEvent() {
 
 function typeChangeEvent() {
     formData.modelId = ''
+    getModelListOptions()
 }
 
 function getModelListOptions() {
-    QueryModelList({
-        page: 0,
-        pageSize: 9999,
-        searchKeyWord: ''
-    }).then((res: any) => {
-        modelIdList.value = res.data.content
-    }).catch(() => {
-        modelIdList.value = []
-    })
+    if (formData.aiType === 'local') {
+        // 本地部署：调用模型仓库接口
+        QueryModelList({
+            page: 0,
+            pageSize: 9999,
+            searchKeyWord: ''
+        }).then((res: any) => {
+            modelIdListOptions.value = res.data.content
+        }).catch(() => {
+            modelIdListOptions.value = []
+        })
+    } else {
+        // 远程接入：调用模型广场接口，查询在线模型
+        QueryModelPlazaList({
+            page: 0,
+            pageSize: 9999,
+            searchKeyWord: '',
+            isOnline: 'ENABLE'
+        }).then((res: any) => {
+            modelIdListOptions.value = res.data.content
+        }).catch(() => {
+            modelIdListOptions.value = []
+        })
+    }
 }
 
 function getClusterIdListOptions() {
