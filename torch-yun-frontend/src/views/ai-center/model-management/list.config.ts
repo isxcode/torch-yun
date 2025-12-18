@@ -41,40 +41,20 @@ export const colConfigs: colConfig[] = [
     {
         prop: 'name',
         title: '名称',
-        minWidth: 140,
-        showOverflowTooltip: true
-    },
-    {
-        prop: 'code',
-        title: '编码',
-        minWidth: 130,
-        showOverflowTooltip: true
-    },
-    {
-        prop: 'modelLabel',
-        title: '标签',
-        minWidth: 80,
-        showOverflowTooltip: true
-    },
-    {
-        prop: 'modelType',
-        title: '类型',
         minWidth: 100,
-        formatter: (data: any): string => {
-            const modelType = data.row.modelType;
-            switch (modelType) {
-                case 'API':
-                    return '远程模型';
-                case 'MANUAL':
-                    return '本地模型';
-                case 'LOCAL':
-                    return '本地模型';
-                case 'BUILD':
-                    return '构建模型';
-                default:
-                    return modelType || '';
-            }
-        }
+        showOverflowTooltip: true
+    },
+    {
+        prop: 'orgName',
+        title: '组织名称',
+        minWidth: 100,
+        showOverflowTooltip: true
+    },
+    {
+        prop: 'modelName',
+        title: '模型名称',
+        minWidth: 100,
+        showOverflowTooltip: true
     },
     {
         prop: 'modelFileName',
@@ -85,7 +65,7 @@ export const colConfigs: colConfig[] = [
     {
         prop: 'status',
         title: '状态',
-        minWidth: 100,
+        minWidth: 80,
         customSlot: 'statusTag'
     },
     {
@@ -96,7 +76,8 @@ export const colConfigs: colConfig[] = [
     {
         prop: 'remark',
         title: '备注',
-        minWidth: 140
+        minWidth: 140,
+        showOverflowTooltip: true
     },
     {
         title: '操作',
