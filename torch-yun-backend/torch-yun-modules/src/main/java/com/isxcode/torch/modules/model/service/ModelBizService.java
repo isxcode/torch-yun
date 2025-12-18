@@ -3,7 +3,6 @@ package com.isxcode.torch.modules.model.service;
 import com.isxcode.torch.api.datasource.req.*;
 import com.isxcode.torch.api.datasource.res.*;
 import com.isxcode.torch.api.model.constant.ModelStatus;
-import com.isxcode.torch.api.model.constant.ModelType;
 import com.isxcode.torch.api.model.req.AddModelReq;
 import com.isxcode.torch.api.model.req.PageModelReq;
 import com.isxcode.torch.api.model.req.UpdateModelReq;
@@ -19,9 +18,18 @@ import com.isxcode.torch.modules.model.repository.ModelRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.ap.internal.util.Strings;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
 
 import static com.isxcode.torch.common.config.CommonConfig.JPA_TENANT_MODE;
 
@@ -38,6 +46,8 @@ public class ModelBizService {
     private final ModelService modelService;
 
     private final FileService fileService;
+
+    private final ResourceLoader resourceLoader;
 
     public Page<PageModelRes> pageModel(PageModelReq pageModelReq) {
 
@@ -68,19 +78,26 @@ public class ModelBizService {
         ModelEntity modelEntity = modelMapper.addModelReqToModelEntity(addModelReq);
 
         // 手动创建的仓库
-        modelEntity.setModelType(ModelType.MANUAL);
         modelEntity.setStatus(ModelStatus.ENABLE);
+
+        // 如果脚本为空，则添加默认脚本
+        if (addModelReq.getDeployScript().isEmpty()) {
+            Resource resource = resourceLoader.getResource("classpath:deployScript.py");
+            try (InputStream inputStream = resource.getInputStream();
+                BufferedReader reader =
+                    new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+                String content = reader.lines().collect(Collectors.joining("\n"));
+                modelEntity.setDeployScript(content);
+            } catch (IOException e) {
+                throw new IsxAppException("安装包部署异常");
+            }
+        }
 
         // 持久化
         modelRepository.save(modelEntity);
     }
 
     public void updateModel(UpdateModelReq updateModelReq) {
-
-        // 系统模型不可编辑
-        if ("Qwen2.5-0.5B".equals(updateModelReq.getId())) {
-            throw new IsxAppException("系统模型无法编辑");
-        }
 
         // 判断模型是否存在
         ModelEntity model = modelService.getModel(updateModelReq.getId());

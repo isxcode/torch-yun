@@ -37,7 +37,7 @@ public class ChatService {
     }
 
     public BotChatContext transSessionListToBotChatContext(List<ChatSessionEntity> chatSessionList, AppEntity app,
-        AiEntity ai, Integer nowIndex, String chatId, String modelCode, String chatSessionId, String aiSessionId,
+        AiEntity ai, Integer nowIndex, String chatId, String modelPlazaId, String chatSessionId, String aiSessionId,
         String userId, String tenantId) {
 
         List<ChatContent> chatContents = new ArrayList<>();
@@ -50,7 +50,7 @@ public class ChatService {
 
         return BotChatContext.builder().chatId(chatId).chats(chatContents).nowChatIndex(nowIndex + 1)
             .baseConfig(JSON.parseObject(app.getBaseConfig(), BaseConfig.class)).prompt(app.getPrompt())
-            .authConfig(JSON.parseObject(ai.getAuthConfig(), AuthConfig.class)).modelCode(modelCode)
+            .authConfig(JSON.parseObject(ai.getAuthConfig(), AuthConfig.class)).modelPlazaId(modelPlazaId)
             .aiPort(ai.getAiPort()).clusterConfig(JSON.parseObject(ai.getClusterConfig(), ClusterConfig.class))
             .aiSessionId(aiSessionId).tenantId(tenantId).userId(userId).userAskSessionId(chatSessionId).build();
     }

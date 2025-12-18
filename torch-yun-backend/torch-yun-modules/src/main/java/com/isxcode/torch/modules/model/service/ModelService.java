@@ -26,10 +26,4 @@ public class ModelService {
         ModelEntity model = modelRepository.findById(modelId).orElse(null);
         return model == null ? modelId : model.getName();
     }
-
-    public String getModelType(String modelId) {
-
-        ModelEntity model = modelRepository.findById(modelId).orElse(null);
-        return model == null ? modelId : model.getModelType();
-    }
 }
