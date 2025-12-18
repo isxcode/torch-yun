@@ -190,7 +190,7 @@ public class ChatBizService {
 
         // 封装对话上下文
         BotChatContext botChatContext = chatService.transSessionListToBotChatContext(chatSessionList, app, ai,
-            sendChatReq.getMaxChatIndexId(), sendChatReq.getChatId(), model.getCode(), userAskSession.getId(),
+            sendChatReq.getMaxChatIndexId(), sendChatReq.getChatId(), model.getModelPlazaId(), userAskSession.getId(),
             aiAnswerSession.getId(), USER_ID.get(), TENANT_ID.get());
 
         // 异步提交应用开始对话
