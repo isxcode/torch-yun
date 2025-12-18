@@ -40,9 +40,9 @@ import { ElMessage } from 'element-plus'
 
 interface FormParams {
     name: string
-    code: string
-    modelLabel: string
+    modelPlazaId: string
     modelFile: string
+    deployScript: string
     remark: string
     id?: string
 }

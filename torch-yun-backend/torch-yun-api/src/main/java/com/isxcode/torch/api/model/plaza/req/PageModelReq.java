@@ -8,4 +8,7 @@ import lombok.EqualsAndHashCode;
 @Data
 public class PageModelReq extends BasePageRequest {
 
+    private String orgName;
+
+    private String isOnline;
 }

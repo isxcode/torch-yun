@@ -27,7 +27,8 @@ public class ModePlazaBizService {
     public Page<PageModelRes> pageModel(PageModelReq pageModelReq) {
 
         Page<ModelPlazaEntity> modelPlazaPage = modelPlazaRepository.searchAll(pageModelReq.getSearchKeyWord(),
-            PageRequest.of(pageModelReq.getPage(), pageModelReq.getPageSize()));
+            PageRequest.of(pageModelReq.getPage(), pageModelReq.getPageSize()), pageModelReq.getOrgName(),
+            pageModelReq.getIsOnline());
 
         return modelPlazaPage.map(modelPlazaMapper::modelPlazaEntityToPageModelRes);
     }

@@ -27,6 +27,8 @@ public class PageModelRes {
 
     private String status;
 
+    private String deployScript;
+
     private String remark;
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)

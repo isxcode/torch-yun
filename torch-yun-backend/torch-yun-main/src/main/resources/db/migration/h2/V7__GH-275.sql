@@ -103,7 +103,7 @@ alter table TY_MODEL
 
 -- 添加python启动脚本
 alter table TY_MODEL
-    add DEPLOY_SCRIPT varchar2(2000) not null default '';
+    add DEPLOY_SCRIPT text not null default '';
 
 comment on column TY_MODEL.DEPLOY_SCRIPT is '部署脚本';
 

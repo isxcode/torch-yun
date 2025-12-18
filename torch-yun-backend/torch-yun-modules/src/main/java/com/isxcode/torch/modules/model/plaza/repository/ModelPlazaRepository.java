@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 @CacheConfig(cacheNames = {ModuleCode.MODEL_PLAZA})
 public interface ModelPlazaRepository extends JpaRepository<ModelPlazaEntity, String> {
 
-    @Query("SELECT M FROM ModelPlazaEntity M WHERE M.orgName LIKE %:keyword% OR M.modelName LIKE %:keyword% OR M.remark LIKE %:keyword% order by M.createDateTime desc ")
-    Page<ModelPlazaEntity> searchAll(@Param("keyword") String searchKeyWord, Pageable pageable);
+    @Query("SELECT M FROM ModelPlazaEntity M WHERE (M.isOnline = :isOnline or :isOnline is null ) and (M.orgName = :orgName or :orgName is null) and (M.modelName LIKE %:keyword% OR M.remark LIKE %:keyword%) order by M.createDateTime desc ")
+    Page<ModelPlazaEntity> searchAll(@Param("keyword") String searchKeyWord, Pageable pageable,
+        @Param("orgName") String orgName, @Param("isOnline") String isOnline);
 }
