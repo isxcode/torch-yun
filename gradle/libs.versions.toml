@@ -1,0 +1,89 @@
+[versions]
+springboot = "2.7.9"
+spring-framework = "5.3.25"
+springboot-dependency = "1.0.15.RELEASE"
+spotless = "6.11.0"
+fastjson = "2.0.16"
+swagger = "1.7.0"
+lombok = "1.18.24"
+junit = "5.9.1"
+mapstruct = "1.5.3.Final"
+jwt = "0.11.5"
+jsch = "0.2.15"
+hutool = "5.8.40"
+jgrapht = "1.4.0"
+jasypt = "3.0.5"
+druid = "1.2.16"
+flyway = "9.16.3"
+poi = "5.2.5"
+xmlbeans = "5.2.0"
+pull-parser = "2.1.10"
+ali-sms = "3.0.0"
+groovy-all = "4.0.15"
+kafka-clients = "3.9.1"
+calcite-core = "1.32.0"
+truelicense = "4.0.3"
+lucene = "8.11.2"
+lucene-analyzers = "3.6.2"
+commons-dbutils = "1.7"
+dashscope = "2.18.3"
+
+[libraries]
+spring-tx = { module = "org.springframework:spring-tx", version.ref = "spring-framework" }
+spring-orm = { module = "org.springframework:spring-orm", version.ref = "spring-framework" }
+spring-web = { module = "org.springframework.boot:spring-boot-starter-web" }
+spring-aop = { module = "org.springframework.boot:spring-boot-starter-aop" }
+spring-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
+spring-configuration-processor = { module = "org.springframework.boot:spring-boot-configuration-processor" }
+spring-test = { module = "org.springframework.boot:spring-boot-starter-test" }
+spring-quartz = { module = "org.springframework.boot:spring-boot-starter-quartz" }
+spring-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
+spring-security = { module = "org.springframework.boot:spring-boot-starter-security" }
+spring-security-test = { module = "org.springframework.security:spring-security-test" }
+spring-mail = { module = "org.springframework.boot:spring-boot-starter-mail" }
+spring-cache = { module = "org.springframework.boot:spring-boot-starter-cache" }
+spring-thymeleaf = { module = "org.springframework.boot:spring-boot-starter-thymeleaf" }
+postgresql = { module = "org.postgresql:postgresql" }
+mysql = { module = "com.mysql:mysql-connector-j" }
+h2 = { module = "com.h2database:h2" }
+fastjson = { module = "com.alibaba:fastjson", version.ref = "fastjson" }
+swagger = { module = "org.springdoc:springdoc-openapi-ui", version.ref = "swagger" }
+lombok = { module = "org.projectlombok:lombok", version.ref = "lombok" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
+mapstruct-main = { module = "org.mapstruct:mapstruct", version.ref = "mapstruct" }
+mapstruct-processor = { module = "org.mapstruct:mapstruct-processor", version.ref = "mapstruct" }
+jjwt-api = { module = "io.jsonwebtoken:jjwt-api", version.ref = "jwt" }
+jjwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson", version.ref = "jwt" }
+jjwt-impl = { module = "io.jsonwebtoken:jjwt-impl", version.ref = "jwt" }
+jsch = { module = "com.github.mwiede:jsch", version.ref = "jsch" }
+hutool = { module = "cn.hutool:hutool-all", version.ref = "hutool" }
+jgrapht = { module = "org.jgrapht:jgrapht-core", version.ref = "jgrapht" }
+jasypt = { module = "com.github.ulisesbocchio:jasypt-spring-boot-starter", version.ref = "jasypt" }
+druid = { module = "com.alibaba:druid-spring-boot-starter", version.ref = "druid" }
+flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flyway" }
+flyway-mysql = { module = "org.flywaydb:flyway-mysql", version.ref = "flyway" }
+poi-ooxml = { module = "org.apache.poi:poi-ooxml", version.ref = "poi" }
+xmlbeans = { module = "org.apache.xmlbeans:xmlbeans", version.ref = "xmlbeans" }
+pull-parser = { module = "pull-parser:pull-parser", version.ref = "pull-parser" }
+ali-sms = { module = "com.aliyun:dysmsapi20170525", version.ref = "ali-sms" }
+groovy-all = { module = "org.apache.groovy:groovy-all", version.ref = "groovy-all" }
+kafka-clients = { module = "org.apache.kafka:kafka-clients", version.ref = "kafka-clients" }
+calcite-core = { module = "org.apache.calcite:calcite-core", version.ref = "calcite-core" }
+truelicense = { module = "global.namespace.truelicense:truelicense-v4", version.ref = "truelicense" }
+lucene-core = { module = "org.apache.lucene:lucene-core", version.ref = "lucene" }
+lucene-queryparser = { module = "org.apache.lucene:lucene-queryparser", version.ref = "lucene" }
+lucene-highlighter = { module = "org.apache.lucene:lucene-highlighter", version.ref = "lucene" }
+lucene-analyzers-common = { module = "org.apache.lucene:lucene-analyzers-common", version.ref = "lucene" }
+lucene-analyzers = { module = "org.apache.lucene:lucene-analyzers", version.ref = "lucene-analyzers" }
+commons-dbutils = { module = "commons-dbutils:commons-dbutils", version.ref = "commons-dbutils" }
+dashscope = { module = "com.alibaba:dashscope-sdk-java", version.ref = "dashscope" }
+
+[bundles]
+poi = ["poi-ooxml", "xmlbeans", "pull-parser"]
+lucene = ["lucene-core", "lucene-queryparser", "lucene-highlighter", "lucene-analyzers-common", "lucene-analyzers"]
+
+[plugins]
+springboot = { id = "org.springframework.boot", version.ref = "springboot" }
+springboot-dependency = { id = "io.spring.dependency-management", version.ref = "springboot-dependency" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }

@@ -1,12 +1,12 @@
 plugins {
     id 'java'
     id 'checkstyle'
-    id 'org.springframework.boot' version "${SPRING_VERSION}"
-    id 'io.spring.dependency-management' version "${SPRING_MANAGER_VERSION}"
-    id "com.diffplug.spotless" version "${SPOTLESS_VERSION}"
+    alias(libs.plugins.springboot)
+    alias(libs.plugins.springboot.dependency)
+    alias(libs.plugins.spotless)
 }
 
-def version_number = new File(rootDir.getAbsolutePath(), 'torch-yun-backend/torch-yun-main/src/main/resources/VERSION').readLines()[0].trim()
+def version_number = new File(rootDir.getAbsolutePath(), 'VERSION').readLines()[0].trim()
 
 allprojects {
 
@@ -37,30 +37,21 @@ allprojects {
 
     dependencies {
 
-        implementation 'org.springframework.boot:spring-boot-starter-web'
-
-        implementation 'org.springframework.boot:spring-boot-starter-aop'
-
-        implementation 'org.springframework.boot:spring-boot-starter-validation'
-
-        annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-
-        testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
-        implementation "org.springdoc:springdoc-openapi-ui:${OPENAPI_VERSION}"
-
-        compileOnly "org.projectlombok:lombok:${LOMBOK_VERSION}"
-        annotationProcessor "org.projectlombok:lombok:${LOMBOK_VERSION}"
-
-        implementation "com.alibaba:fastjson:${FASTJSON_VERSION}"
-
-        implementation "org.junit.jupiter:junit-jupiter:${JUPITER_VERSION}"
-        testImplementation "org.junit.jupiter:junit-jupiter-api:${JUPITER_VERSION}"
-
-        implementation "org.mapstruct:mapstruct:${MAPSTRUCT_VERSION}"
-        implementation "org.mapstruct:mapstruct-processor:${MAPSTRUCT_VERSION}"
-        annotationProcessor "org.mapstruct:mapstruct-processor:${MAPSTRUCT_VERSION}"
-        testAnnotationProcessor "org.mapstruct:mapstruct-processor:${MAPSTRUCT_VERSION}"
+        implementation libs.spring.web
+        implementation libs.spring.aop
+        implementation libs.spring.validation
+        annotationProcessor libs.spring.configuration.processor
+        testImplementation libs.spring.test
+        compileOnly libs.lombok
+        annotationProcessor libs.lombok
+        implementation libs.fastjson
+        implementation libs.swagger
+        implementation libs.junit.jupiter
+        testImplementation libs.junit.jupiter.api
+        implementation libs.mapstruct.main
+        implementation libs.mapstruct.processor
+        annotationProcessor libs.mapstruct.processor
+        testAnnotationProcessor libs.mapstruct.processor
     }
 
     configurations {
@@ -85,102 +76,81 @@ allprojects {
 spotless {
     java {
         target '*/**/*.java'
-        targetExclude('*/build/**/*.java')
-        targetExclude('flink-yun-dist/**/*.java')
+        targetExclude('*/build/**/*.java', 'torch-yun-dist/**/*.java')
         eclipse().configFile(rootDir.getAbsolutePath() + '/.spotless/eclipse-java-google-style.xml')
         removeUnusedImports()
     }
 }
 
-tasks.register('format', GradleBuild) {
-
-    tasks = [":spotlessApply", ":checkstyleMain"]
+tasks.register("format") {
+    dependsOn(":spotlessApply", ":checkstyleMain")
 }
 
-tasks.register('package', GradleBuild) {
-
-    tasks = [":torch-yun-dist:make"]
+tasks.register("package") {
+    dependsOn(":torch-yun-dist:make")
 }
 
 tasks.register('start', Exec) {
-
     commandLine 'sh', '-c', '''
       rm -rf torch-yun-dist/build/distributions/zhishuyun
-      tar -vzxf torch-yun-dist/build/distributions/zhishuyun.tar.gz -C torch-yun-dist/build/distributions/
+      tar -zxf torch-yun-dist/build/distributions/zhishuyun.tar.gz -C torch-yun-dist/build/distributions/
       cd torch-yun-dist/build/distributions/zhishuyun/bin
       bash start.sh
     '''
 }
 
 tasks.register('website', Exec) {
-
     commandLine 'sh', '-c', '''
       cd docs
-      rm -rf node_modules
       pnpm install --force
       pnpm run dev
      '''
 }
 
 tasks.register('frontend', Exec) {
-
     commandLine 'sh', '-c', '''
       cd torch-yun-frontend
-      rm -rf node_modules
       pnpm install --force
       pnpm run dev --host
     '''
 }
 
-tasks.register('backend', GradleBuild) {
-
-    tasks = [":torch-yun-backend:torch-yun-main:bootRun"]
+tasks.register('backend') {
+    dependsOn(":torch-yun-backend:torch-yun-main:bootRun")
 }
 
 tasks.register('install', Exec) {
-    if (!System.properties['os.name'].toString().contains('Mac OS X')) {
-        doFirst {
-            exec {
-                commandLine 'sh', '-c', "sed -i 's/\\r\$//' download.sh && sed -i 's/\\r\$//' install.sh"
-            }
-        }
-    }
     commandLine 'sh', '-c', 'bash download.sh && bash install.sh'
 }
 
 tasks.register('docker', Exec) {
-
     commandLine 'sh', '-c', '''
       docker buildx uninstall
       docker build -t isxcode/zhishuyun:''' + version_number + ''' -f ./Dockerfile .
-     '''
+    '''
 }
 
-// ssh-copy-id root@zhishuyun.isxcode.com
 tasks.register('upload-ali-oss', Exec) {
 
     commandLine 'sh', '-c', '''
+      ssh-copy-id root@zhishuyun.isxcode.com
       scp torch-yun-dist/build/distributions/zhishuyun.tar.gz root@zhishuyun.isxcode.com:/data/file/
-     '''
+    '''
 }
 
 tasks.register('upload-docker-hub', Exec) {
 
     commandLine 'sh', '-c', '''
       docker buildx install
-      docker buildx build --platform linux/amd64,linux/arm64/v8 -t isxcode/zhishuyun:latest -f ./Dockerfile . --push
-     '''
+      docker buildx build --platform linux/amd64,linux/arm64/v8 -t isxcode/zhishuyun:''' + version_number + ''' -f ./Dockerfile . --push
+    '''
 }
 
 tasks.register('upload-ali-hub', Exec) {
 
     commandLine 'sh', '-c', '''
       docker buildx install
-      docker rmi registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun:latest-amd64
-      docker buildx build --platform linux/amd64 -t registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun:latest-amd64 -f ./Dockerfile . --load
-      docker push registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun:latest-amd64
-      docker rmi registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun:latest-arm64
-      docker buildx build --platform linux/arm64/v8 -t registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun:latest-arm64 -f ./Dockerfile . --load
-      docker push registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun:latest-arm64      
-     '''
+      docker buildx build --platform linux/amd64 -t registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun:''' + version_number + '''-amd64 -f ./Dockerfile . --push
+      docker buildx build --platform linux/arm64/v8 -t registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun:''' + version_number + '''-arm64 -f ./Dockerfile . --push
+    '''
 }

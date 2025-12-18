@@ -1,7 +1,7 @@
 package com.isxcode.torch.modules.workflow.repository;
 
 import com.isxcode.torch.api.instance.ao.WorkflowInstanceAo;
-import com.isxcode.torch.api.main.constants.ModuleVipCode;
+import com.isxcode.torch.api.main.constants.ModuleCode;
 import com.isxcode.torch.api.monitor.ao.WorkflowMonitorAo;
 import com.isxcode.torch.modules.workflow.entity.WorkflowInstanceEntity;
 import org.springframework.cache.annotation.CacheConfig;
@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-@CacheConfig(cacheNames = {ModuleVipCode.VIP_WORKFLOW_INSTANCE})
+@CacheConfig(cacheNames = {ModuleCode.VIP_WORKFLOW_INSTANCE})
 public interface WorkflowInstanceRepository extends JpaRepository<WorkflowInstanceEntity, String> {
 
     @CachePut(key = "#workflowInstanceId")

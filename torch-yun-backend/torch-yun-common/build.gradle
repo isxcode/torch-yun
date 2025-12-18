@@ -1,25 +1,15 @@
 dependencies {
-
     api(project(':torch-yun-backend:torch-yun-api'))
-
-    api 'org.springframework.boot:spring-boot-starter-data-jpa'
-
-    implementation "org.springframework:spring-tx:${SPRING_FRAMEWORK_VERSION}"
-    implementation "org.springframework:spring-orm:${SPRING_FRAMEWORK_VERSION}"
-
-    api "io.jsonwebtoken:jjwt-api:${JWT_VERSION}"
-    implementation "io.jsonwebtoken:jjwt-jackson:${JWT_VERSION}"
-    runtimeOnly "io.jsonwebtoken:jjwt-impl:${JWT_VERSION}",
-            "io.jsonwebtoken:jjwt-jackson:${JWT_VERSION}"
-
-    api "com.github.mwiede:jsch:${JSCH_VERSION}"
-
-    api "cn.hutool:hutool-all:${HUTOOL_VERSION}"
-
-    implementation "org.jgrapht:jgrapht-core:${JGRAPHT_VERSION}"
-
-    api 'org.springframework.boot:spring-boot-starter-security'
-    testImplementation 'org.springframework.security:spring-security-test'
-
-    implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
+    api libs.spring.jpa
+    api libs.spring.security
+    testImplementation libs.spring.security.test
+    implementation libs.spring.tx
+    implementation libs.spring.orm
+    api libs.jjwt.api
+    implementation libs.jjwt.jackson
+    runtimeOnly libs.jjwt.impl, libs.jjwt.jackson
+    api libs.jsch
+    api libs.hutool
+    implementation libs.jgrapht
+    implementation libs.jasypt
 }

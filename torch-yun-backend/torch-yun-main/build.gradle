@@ -1,14 +1,10 @@
 dependencies {
-
     api(project(':torch-yun-backend:torch-yun-modules'))
     api(project(':torch-yun-vip:torch-yun-backend'))
-
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-
-    implementation "com.alibaba:druid-spring-boot-starter:${DRUID_VERSION}"
-
-    implementation "org.flywaydb:flyway-core:${FLYWAY_VERSION}"
-    implementation "org.flywaydb:flyway-mysql:${FLYWAY_VERSION}"
+    implementation libs.spring.thymeleaf
+    implementation libs.druid
+    implementation libs.flyway.core
+    implementation libs.flyway.mysql
 }
 
 bootJar {
