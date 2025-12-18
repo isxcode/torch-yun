@@ -22,7 +22,6 @@ import com.isxcode.torch.api.app.constants.DefaultAppStatus;
 import com.isxcode.torch.api.app.dto.BaseConfig;
 import com.isxcode.torch.api.cluster.constants.ClusterNodeStatus;
 import com.isxcode.torch.api.cluster.dto.ScpFileEngineNodeDto;
-import com.isxcode.torch.api.model.constant.ModelType;
 import com.isxcode.torch.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.torch.backend.api.base.pojos.BaseResponse;
 import com.isxcode.torch.common.utils.aes.AesUtils;
@@ -38,7 +37,6 @@ import com.isxcode.torch.modules.cluster.entity.ClusterNodeEntity;
 import com.isxcode.torch.modules.cluster.mapper.ClusterNodeMapper;
 import com.isxcode.torch.modules.cluster.repository.ClusterNodeRepository;
 import com.isxcode.torch.modules.cluster.service.ClusterService;
-import com.isxcode.torch.modules.model.entity.ModelEntity;
 import com.isxcode.torch.modules.model.plaza.entity.ModelPlazaEntity;
 import com.isxcode.torch.modules.model.plaza.service.ModelPlazaService;
 import com.isxcode.torch.modules.model.service.ModelService;
@@ -111,6 +109,7 @@ public class AiBizService {
             }
             aiEntity.setClusterConfig(JSON.toJSONString(addAiReq.getClusterConfig()));
             aiEntity.setStatus(AiStatus.DISABLE);
+            aiEntity.setAiType(AiType.LOCAL);
             appEntity.setStatus(AppStatus.INIT);
         } else {
             if (addAiReq.getAuthConfig() == null) {
@@ -118,6 +117,7 @@ public class AiBizService {
             }
             aiEntity.setAuthConfig(JSON.toJSONString(addAiReq.getAuthConfig()));
             aiEntity.setStatus(AiStatus.ENABLE);
+            aiEntity.setAiType(AiType.API);
             appEntity.setStatus(AiStatus.ENABLE);
         }
 
@@ -131,9 +131,8 @@ public class AiBizService {
         appEntity.setAppType(AppType.TEXT_APP);
 
         // 应用添加默认配置
-        BaseConfig baseConfig =
-            BaseConfig.builder().topK(50).topP(0.9).maxTokens(512).repetitionPenalty(1.2f)
-                .enableSearch(false).temperature(0.8f).build();
+        BaseConfig baseConfig = BaseConfig.builder().topK(50).topP(0.9).maxTokens(512).repetitionPenalty(1.2f)
+            .enableSearch(false).temperature(0.8f).build();
         appEntity.setBaseConfig(JSON.toJSONString(baseConfig));
         appEntity.setPrompt("");
 
@@ -193,7 +192,8 @@ public class AiBizService {
         result.forEach(aiEntity -> {
 
             if (AiType.LOCAL.equals(aiEntity.getAiType())) {
-                aiEntity.setClusterName(clusterService.getClusterName(JSON.parseObject(aiEntity.getClusterConfig(), ClusterConfig.class).getClusterId()));
+                aiEntity.setClusterName(clusterService
+                    .getClusterName(JSON.parseObject(aiEntity.getClusterConfig(), ClusterConfig.class).getClusterId()));
                 aiEntity.setModelName(modelService.getModelName(aiEntity.getModelId()));
             } else {
                 ModelPlazaEntity modelPlaza = modelPlazaService.getModelPlaza(aiEntity.getModelId());

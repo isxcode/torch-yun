@@ -18,8 +18,18 @@
                     />
                 </el-select>
             </el-form-item>
+            <el-form-item v-if="formData.aiType === 'API'" label="组织名称" prop="orgName">
+                <el-select v-model="selectedOrgName" placeholder="请选择" filterable @change="onOrgNameChange">
+                    <el-option
+                        v-for="item in orgNameList"
+                        :key="item"
+                        :label="item"
+                        :value="item"
+                    />
+                </el-select>
+            </el-form-item>
             <el-form-item label="模型" prop="modelId">
-                <el-select v-model="formData.modelId" placeholder="请选择">
+                <el-select v-model="formData.modelId" placeholder="请选择" :disabled="formData.aiType === 'API' && !selectedOrgName">
                     <el-option
                         v-for="item in modelIdListOptions"
                         :key="item.id"
@@ -34,7 +44,7 @@
             <el-form-item v-if="formData.aiType === 'API'" label="Key" prop="authConfig.apiKey">
                 <el-input v-model="formData.authConfig.apiKey" maxlength="100" type="password" show-password placeholder="请输入" />
             </el-form-item>
-            <el-form-item v-if="formData.aiType === 'local'" label="集群" prop="clusterConfig.clusterId">
+            <el-form-item v-if="formData.aiType === 'LOCAL'" label="集群" prop="clusterConfig.clusterId">
                 <el-select v-model="formData.clusterConfig.clusterId" placeholder="请选择">
                     <el-option
                         v-for="item in clusterIdList"
@@ -90,7 +100,7 @@ const renderSence = ref('new')
 const typeList = ref<Option[]>([
     {
         label: '本地部署',
-        value: 'local'
+        value: 'LOCAL'
     },
     {
         label: '远程接入',
@@ -98,6 +108,8 @@ const typeList = ref<Option[]>([
     }
 ])
 const clusterIdList = ref<any[]>([])
+const orgNameList = ref<string[]>([])
+const selectedOrgName = ref<string>('')
 const modelConfig = reactive({
     title: '添加',
     visible: false,
@@ -121,7 +133,7 @@ const formData = reactive<FormParams>({
     name: '',
     modelId: '',
     remark: '',
-    aiType: 'API',
+    aiType: 'LOCAL',
     authConfig: {
         apiKey: '',
         endpointId: ''
@@ -134,46 +146,77 @@ const formData = reactive<FormParams>({
 const rules = reactive<FormRules>({
     name: [{ required: true, message: '请输入名称', trigger: ['change', 'blur']}],
     aiType: [{ required: true, message: '请选择类型', trigger: ['change', 'blur']}],
+    orgName: [{ required: true, message: '请选择组织名称', trigger: ['change', 'blur'], validator: validateOrgName }],
     modelId: [{ required: true, message: '请选择模型', trigger: ['change', 'blur']}],
     'authConfig.apiKey': [{ required: true, message: '请输入Key', trigger: ['change', 'blur']}],
     'authConfig.endpointId': [{ required: true, message: '请输入EndPointId', trigger: ['change', 'blur']}],
     'clusterConfig.clusterId': [{ required: true, message: '请选择集群', trigger: ['change', 'blur']}],
 })
 
+function validateOrgName(rule: any, value: any, callback: any) {
+    if (formData.aiType === 'API' && !selectedOrgName.value) {
+        callback(new Error('请选择组织名称'))
+    } else {
+        callback()
+    }
+}
+
 const modelIdListOptions = ref<any[]>([])
 
 function showModal(cb: () => void, data: any): void {
     callback.value = cb
-    getModelListOptions()
     getClusterIdListOptions()
+    // 先重置表单
+    nextTick(() => {
+        form.value?.resetFields()
+    })
     if (data) {
         modelConfig.title = '编辑'
         renderSence.value = 'edit'
-        Object.keys(formData).forEach((key: string) => {
-            if (key === 'authConfig' && !data[key]) {
-                formData[key] = {
-                    apiKey: ''
+        nextTick(() => {
+            Object.keys(formData).forEach((key: string) => {
+                if (key === 'authConfig' && !data[key]) {
+                    formData[key] = {
+                        apiKey: ''
+                    }
+                } else if (key === 'clusterConfig' && !data[key]) {
+                    formData[key] = {
+                        clusterId: ''
+                    }
+                } else {
+                    formData[key] = data[key]
                 }
-            } else if (key === 'clusterConfig' && !data[key]) {
-                formData[key] = {
-                    clusterId: ''
+            })
+            // 编辑时，根据类型初始化
+            if (data.aiType === 'API') {
+                getOrgNameList()
+                // 如果有orgName，设置并获取模型列表
+                if (data.orgName) {
+                    selectedOrgName.value = data.orgName
+                    getModelListByOrgName()
                 }
             } else {
-                formData[key] = data[key]
+                getModelListOptions()
             }
         })
     } else {
         modelConfig.title = '添加'
         renderSence.value = 'new'
-        formData.name = ''
-        formData.modelId = ''
-        formData.aiType = 'local'
-        formData.remark = ''
-        formData.authConfig = { apiKey: '' }
+        selectedOrgName.value = ''
+        orgNameList.value = []
+        modelIdListOptions.value = []
+        // 使用nextTick确保在resetFields之后设置值
+        nextTick(() => {
+            formData.name = ''
+            formData.modelId = ''
+            formData.aiType = 'LOCAL'
+            formData.remark = ''
+            formData.authConfig = { apiKey: '', endpointId: '' }
+            formData.clusterConfig = { clusterId: '' }
+            formData.id = ''
+            getModelListOptions()
+        })
     }
-    nextTick(() => {
-        form.value?.resetFields()
-    })
     modelConfig.visible = true
 }
 
@@ -202,34 +245,68 @@ function okEvent() {
 
 function typeChangeEvent() {
     formData.modelId = ''
-    getModelListOptions()
+    selectedOrgName.value = ''
+    modelIdListOptions.value = []
+    if (formData.aiType === 'LOCAL') {
+        // 本地部署：直接获取模型列表
+        getModelListOptions()
+    } else {
+        // 远程接入：先获取组织名称列表
+        getOrgNameList()
+    }
 }
 
 function getModelListOptions() {
-    if (formData.aiType === 'local') {
-        // 本地部署：调用模型仓库接口
-        QueryModelList({
-            page: 0,
-            pageSize: 9999,
-            searchKeyWord: ''
-        }).then((res: any) => {
-            modelIdListOptions.value = res.data.content
-        }).catch(() => {
-            modelIdListOptions.value = []
-        })
-    } else {
-        // 远程接入：调用模型广场接口，查询在线模型
-        QueryModelPlazaList({
-            page: 0,
-            pageSize: 9999,
-            searchKeyWord: '',
-            isOnline: 'ENABLE'
-        }).then((res: any) => {
-            modelIdListOptions.value = res.data.content
-        }).catch(() => {
-            modelIdListOptions.value = []
-        })
+    // 本地部署：调用模型仓库接口
+    QueryModelList({
+        page: 0,
+        pageSize: 9999,
+        searchKeyWord: ''
+    }).then((res: any) => {
+        modelIdListOptions.value = res.data.content
+    }).catch(() => {
+        modelIdListOptions.value = []
+    })
+}
+
+// 获取组织名称列表（查询在线模型的组织名称）
+function getOrgNameList() {
+    QueryModelPlazaList({
+        page: 0,
+        pageSize: 9999,
+        searchKeyWord: '',
+        isOnline: 'ENABLE'
+    }).then((res: any) => {
+        const orgNames = res.data.content.map((item: any) => item.orgName)
+        orgNameList.value = [...new Set(orgNames)] as string[]
+    }).catch(() => {
+        orgNameList.value = []
+    })
+}
+
+// 组织名称变化时，清空模型选择并重新获取模型列表
+function onOrgNameChange() {
+    formData.modelId = ''
+    getModelListByOrgName()
+}
+
+// 根据组织名称获取模型列表
+function getModelListByOrgName() {
+    if (!selectedOrgName.value) {
+        modelIdListOptions.value = []
+        return
     }
+    QueryModelPlazaList({
+        page: 0,
+        pageSize: 9999,
+        searchKeyWord: '',
+        orgName: selectedOrgName.value,
+        isOnline: 'ENABLE'
+    }).then((res: any) => {
+        modelIdListOptions.value = res.data.content
+    }).catch(() => {
+        modelIdListOptions.value = []
+    })
 }
 
 function getClusterIdListOptions() {
