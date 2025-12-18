@@ -107,6 +107,12 @@ alter table TY_MODEL
 
 comment on column TY_MODEL.DEPLOY_SCRIPT is '部署脚本';
 
+-- 添加智能体类型
+alter table TY_AI
+    add AI_TYPE VARCHAR(200) not null;
+
+comment on column TY_AI.AI_TYPE is 'ai类型远程还是本地的';
+
 
 
 
