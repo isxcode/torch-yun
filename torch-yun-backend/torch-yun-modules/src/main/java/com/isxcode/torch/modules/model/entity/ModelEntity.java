@@ -40,15 +40,13 @@ public class ModelEntity {
 
     private String name;
 
-    private String code;
-
-    private String modelType;
-
-    private String modelLabel;
+    private String modelPlazaId;
 
     private String modelFile;
 
     private String status;
+
+    private String deployScript;
 
     private String remark;
 

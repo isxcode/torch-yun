@@ -47,21 +47,66 @@ VALUES ('Volcengine_DeepSeek-V3.2', 'Volcengine', 'DeepSeek-V3.2', 'ENABLE', 'Na
 INSERT INTO PUBLIC.TY_MODEL_PLAZA (ID, ORG_NAME, MODEL_NAME, IS_ONLINE, LABEL, MODEL_TYPE, MODEL_PARAM, REMARK,
                                    CREATE_BY, CREATE_DATE_TIME, LAST_MODIFIED_BY, LAST_MODIFIED_DATE_TIME, DELETED,
                                    VERSION_NUMBER)
-VALUES ('Qwen_Qwen2.5-0.5B', 'Qwen', 'Qwen2.5-0.5B', 'DISABLE', 'Natural Language Processing', 'Text Generation',
+VALUES ('qwen_Qwen2.5-0.5B', 'Qwen', 'Qwen2.5-0.5B', 'DISABLE', 'Natural Language Processing', 'Text Generation',
         '0.5B',
         'Qwen2.5 is the latest series of Qwen large language models. For Qwen2.5, we release a number of base language models and instruction-tuned language models ranging from 0.5 to 72 billion parameters. ',
         'zhishuyun', '2025-12-18 16:17:19.000000', 'zhishuyun', '2025-12-18 16:17:23.000000', 0, 0);
 INSERT INTO PUBLIC.TY_MODEL_PLAZA (ID, ORG_NAME, MODEL_NAME, IS_ONLINE, LABEL, MODEL_TYPE, MODEL_PARAM, REMARK,
                                    CREATE_BY, CREATE_DATE_TIME, LAST_MODIFIED_BY, LAST_MODIFIED_DATE_TIME, DELETED,
                                    VERSION_NUMBER)
-VALUES ('Google_gemma-3-270m', 'google', 'gemma-3-270m', 'DISABLE', 'Natural Language Processing', 'Text Generation',
+VALUES ('google_gemma-3-270m', 'Google', 'gemma-3-270m', 'DISABLE', 'Natural Language Processing', 'Text Generation',
         '270M',
         'Gemma is a family of lightweight, state-of-the-art open models from Google, built from the same research and technology used to create the Gemini models. ',
         'zhishuyun', '2025-12-18 16:17:19.000000', 'zhishuyun', '2025-12-18 16:17:23.000000', 0, 0);
 INSERT INTO PUBLIC.TY_MODEL_PLAZA (ID, ORG_NAME, MODEL_NAME, IS_ONLINE, LABEL, MODEL_TYPE, MODEL_PARAM, REMARK,
                                    CREATE_BY, CREATE_DATE_TIME, LAST_MODIFIED_BY, LAST_MODIFIED_DATE_TIME, DELETED,
                                    VERSION_NUMBER)
-VALUES ('Openai_circuit-sparsity', 'openai', 'circuit-sparsity', 'DISABLE', 'Natural Language Processing',
+VALUES ('openai_circuit-sparsity', 'Openai', 'circuit-sparsity', 'DISABLE', 'Natural Language Processing',
         'Text Generation', '0.4B',
         'Weights for a sparse model from Gao et al. 2025, used for the qualitative results from the paper.',
         'zhishuyun', '2025-12-18 16:17:19.000000', 'zhishuyun', '2025-12-18 16:17:23.000000', 0, 0);
+
+-- 清空模型仓库
+DELETE
+FROM PUBLIC.TY_MODEL
+WHERE ID = 'Qwen2.5-0.5B';
+
+DELETE
+FROM PUBLIC.TY_MODEL
+WHERE ID = 'doubao';
+
+DELETE
+FROM PUBLIC.TY_MODEL
+WHERE ID = 'deepseek';
+
+DELETE
+FROM PUBLIC.TY_MODEL
+WHERE ID = 'qwen-plus';
+
+DELETE
+FROM PUBLIC.TY_MODEL
+WHERE ID = 'qwen';
+
+-- 修改模型仓库表
+alter table TY_MODEL
+    alter column CODE rename to MODEL_PLAZA_ID;
+
+comment on column TY_MODEL.MODEL_PLAZA_ID is '模型广场的模型id';
+
+-- 删除类型字段
+alter table TY_MODEL
+    drop column MODEL_TYPE;
+
+-- 删除标签字段
+alter table TY_MODEL
+    drop column MODEL_LABEL;
+
+-- 添加python启动脚本
+alter table TY_MODEL
+    add DEPLOY_SCRIPT varchar2(2000) not null default '';
+
+comment on column TY_MODEL.DEPLOY_SCRIPT is '部署脚本';
+
+
+
+
