@@ -8,30 +8,8 @@
                     placeholder="请输入"
                 />
             </el-form-item>
-            <el-form-item label="编码" prop="code">
-                <!-- <el-input
-                    v-model="formData.code"
-                    maxlength="200"
-                    placeholder="请输入"
-                /> -->
-                <el-select v-model="formData.code" placeholder="请选择">
-                    <el-option
-                        v-for="item in codeList"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                    />
-                </el-select>
-            </el-form-item>
-            <el-form-item label="标签" prop="code">
-                <el-input
-                    v-model="formData.modelLabel"
-                    maxlength="200"
-                    placeholder="请输入"
-                />
-            </el-form-item>
-            <el-form-item label="模型文件" prop="modelFile" v-if="modelType !== 'API'">
-                <el-select v-model="formData.modelFile" placeholder="请选择">
+            <el-form-item label="模型文件" prop="modelFile">
+                <el-select v-model="formData.modelFile" placeholder="请选择" filterable>
                     <el-option
                         v-for="item in fileList"
                         :key="item.id"
@@ -39,6 +17,30 @@
                         :value="item.id"
                     />
                 </el-select>
+            </el-form-item>
+            <el-form-item label="组织名称" prop="orgName">
+                <el-select v-model="selectedOrgName" placeholder="请选择" filterable @change="onOrgNameChange">
+                    <el-option
+                        v-for="item in orgNameList"
+                        :key="item"
+                        :label="item"
+                        :value="item"
+                    />
+                </el-select>
+            </el-form-item>
+            <el-form-item label="模型名称" prop="modelPlazaId">
+                <el-select v-model="formData.modelPlazaId" placeholder="请选择" filterable :disabled="!selectedOrgName">
+                    <el-option
+                        v-for="item in modelList"
+                        :key="item.id"
+                        :label="item.modelName"
+                        :value="item.id"
+                    />
+                </el-select>
+            </el-form-item>
+            <el-form-item label="部署脚本">
+                <el-input v-model="formData.deployScript" type="textarea"
+                    :autosize="{ minRows: 4, maxRows: 8 }" placeholder="请输入部署脚本（可选）" />
             </el-form-item>
             <el-form-item label="备注">
                 <el-input v-model="formData.remark" show-word-limit type="textarea" maxlength="200"
@@ -53,12 +55,13 @@ import { reactive, defineExpose, ref, nextTick } from 'vue'
 import BlockModal from '@/components/block-modal/index.vue'
 import { ElMessage, FormInstance, FormRules } from 'element-plus'
 import { GetFileCenterList } from '@/services/file-center.service'
+import { QueryModelPlazaList } from '@/services/model-plaza.service'
 
 interface FormParams {
     name: string
-    code: string
-    modelLabel: string
+    modelPlazaId: string
     modelFile: string
+    deployScript: string
     remark: string
     id?: string
 }
@@ -67,17 +70,10 @@ const form = ref<FormInstance>()
 const callback = ref<any>()
 const renderSence = ref('new')
 const fileList = ref<any[]>([])
-const codeList = ref([
-    {
-        label: 'Qwen2.5-0.5B',
-        value: 'Qwen2.5-0.5B'
-    },
-    {
-        label: 'Gemma3-270M',
-        value: 'Gemma3-270M'
-    }
-])
-const modelType = ref<string>('')
+const orgNameList = ref<string[]>([])
+const modelList = ref<any[]>([])
+const selectedOrgName = ref<string>('')
+
 const modelConfig = reactive({
     title: '添加',
     visible: false,
@@ -99,33 +95,53 @@ const modelConfig = reactive({
 })
 const formData = reactive<FormParams>({
     name: '',
-    code: '',
-    modelLabel: '',
+    modelPlazaId: '',
     modelFile: '',
+    deployScript: '',
     remark: '',
     id: ''
 })
 const rules = reactive<FormRules>({
     name: [{ required: true, message: '请输入名称', trigger: ['change', 'blur']}],
-    code: [{ required: true, message: '请输入编码', trigger: ['change', 'blur']}],
-    modelLabel: [{ required: true, message: '请输入标签', trigger: ['change', 'blur']}],
-    modelFile: [{ required: true, message: '请选择资源文件', trigger: ['change', 'blur']}]
+    orgName: [{ required: true, message: '请选择组织名称', trigger: ['change', 'blur'], validator: validateOrgName }],
+    modelPlazaId: [{ required: true, message: '请选择模型名称', trigger: ['change', 'blur']}],
+    modelFile: [{ required: true, message: '请选择模型文件', trigger: ['change', 'blur']}]
 })
+
+function validateOrgName(rule: any, value: any, callback: any) {
+    if (!selectedOrgName.value) {
+        callback(new Error('请选择组织名称'))
+    } else {
+        callback()
+    }
+}
+
+function onOrgNameChange() {
+    // 组织名称变化时，清空模型选择并重新获取模型列表
+    formData.modelPlazaId = ''
+    getModelListByOrgName()
+}
 
 function showModal(cb: () => void, data: any): void {
     callback.value = cb
     getFileListOptions()
+    getOrgNameList()
     if (data) {
         modelConfig.title = '编辑'
         renderSence.value = 'edit'
-        modelType.value = data.modelType
         Object.keys(formData).forEach((key: string) => {
-            formData[key] = data[key]
+            formData[key] = data[key] || ''
         })
+        // 编辑时，设置orgName并获取模型列表
+        if (data.orgName) {
+            selectedOrgName.value = data.orgName
+            getModelListByOrgName()
+        }
     } else {
-        modelType.value = 'MANUAL'
         modelConfig.title = '添加'
         renderSence.value = 'new'
+        selectedOrgName.value = ''
+        modelList.value = []
         Object.keys(formData).forEach((key: string) => {
             formData[key] = ''
         })
@@ -168,6 +184,40 @@ function getFileListOptions() {
         fileList.value = res.data.content
     }).catch(() => {
         fileList.value = []
+    })
+}
+
+// 获取组织名称列表（过滤离线模型，只获取在线模型的组织名称）
+function getOrgNameList() {
+    QueryModelPlazaList({
+        page: 0,
+        pageSize: 9999,
+        searchKeyWord: '',
+        isOnline: 'DISABLE'
+    }).then((res: any) => {
+        const orgNames = res.data.content.map((item: any) => item.orgName)
+        orgNameList.value = [...new Set(orgNames)] as string[]
+    }).catch(() => {
+        orgNameList.value = []
+    })
+}
+
+// 根据组织名称获取模型列表（过滤离线模型）
+function getModelListByOrgName() {
+    if (!selectedOrgName.value) {
+        modelList.value = []
+        return
+    }
+    QueryModelPlazaList({
+        page: 0,
+        pageSize: 9999,
+        searchKeyWord: '',
+        orgName: selectedOrgName.value,
+        isOnline: 'DISABLE'
+    }).then((res: any) => {
+        modelList.value = res.data.content
+    }).catch(() => {
+        modelList.value = []
     })
 }
 

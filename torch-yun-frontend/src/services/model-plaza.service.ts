@@ -4,6 +4,8 @@ export interface QueryParams {
     page: number
     pageSize: number
     searchKeyWord?: string
+    orgName?: string
+    isOnline?: string
 }
 
 export function QueryModelPlazaList(params: QueryParams): Promise<any> {
