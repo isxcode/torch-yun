@@ -12,6 +12,10 @@ public class AddModelReq {
     @NotEmpty(message = "模型名称不能为空")
     private String name;
 
+    @Schema(title = "模型id", example = "ty_123")
+    @NotEmpty(message = "模型id不能为空")
+    private String modelPlazaId;
+
     @Schema(title = "模型文件", example = "ty_123")
     @NotEmpty(message = "模型文件不能为空")
     private String modelFile;
