@@ -14,10 +14,11 @@ import com.isxcode.torch.backend.api.base.exceptions.IsxAppException;
 import com.isxcode.torch.modules.file.service.FileService;
 import com.isxcode.torch.modules.model.entity.ModelEntity;
 import com.isxcode.torch.modules.model.mapper.ModelMapper;
+import com.isxcode.torch.modules.model.plaza.entity.ModelPlazaEntity;
+import com.isxcode.torch.modules.model.plaza.service.ModelPlazaService;
 import com.isxcode.torch.modules.model.repository.ModelRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.mapstruct.ap.internal.util.Strings;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.domain.Page;
@@ -47,6 +48,8 @@ public class ModelBizService {
 
     private final FileService fileService;
 
+    private final ModelPlazaService modelPlazaService;
+
     private final ResourceLoader resourceLoader;
 
     public Page<PageModelRes> pageModel(PageModelReq pageModelReq) {
@@ -59,9 +62,10 @@ public class ModelBizService {
         // 翻译模型文件名称
         Page<PageModelRes> map = modelEntityPage.map(modelMapper::modelEntityToPageModelRes);
         map.getContent().forEach(e -> {
-            if (!Strings.isEmpty(e.getModelFile())) {
-                e.setModelFileName(fileService.getFileName(e.getModelFile()));
-            }
+            e.setModelFileName(fileService.getFileName(e.getModelFile()));
+            ModelPlazaEntity modelPlaza = modelPlazaService.getModelPlaza(e.getModelPlazaId());
+            e.setModelName(modelPlaza.getModelName());
+            e.setOrgName(modelPlaza.getOrgName());
         });
 
         return map;
