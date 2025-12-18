@@ -54,13 +54,31 @@ export const colConfigs: colConfig[] = [
         prop: 'label',
         title: '分类',
         minWidth: 80,
-        showOverflowTooltip: true
+        showOverflowTooltip: true,
+        formatter: (data: any): string => {
+            const label = data.row.label;
+            switch (label) {
+                case 'Natural Language Processing':
+                    return '自然语言处理';
+                default:
+                    return label || '';
+            }
+        }
     },
     {
         prop: 'modelType',
         title: '类型',
         minWidth: 80,
-        showOverflowTooltip: true
+        showOverflowTooltip: true,
+        formatter: (data: any): string => {
+            const modelType = data.row.modelType;
+            switch (modelType) {
+                case 'Text Generation':
+                    return '文本生成';
+                default:
+                    return modelType || '';
+            }
+        }
     },
     {
         prop: 'modelParam',

@@ -12,8 +12,8 @@
                 <BlockTable :table-config="tableConfig" @size-change="handleSizeChange"
                     @current-change="handleCurrentChange">
                     <template #statusTag="scopeSlot">
-                        <el-tag v-if="scopeSlot.row.isOnline === 'Y'" type="success">在线</el-tag>
-                        <el-tag v-else type="info">离线</el-tag>
+                        <el-tag v-if="scopeSlot.row.isOnline !== 'DISABLE'" type="success">在线模型</el-tag>
+                        <el-tag v-else type="info">离线模型</el-tag>
                     </template>
                 </BlockTable>
             </div>
