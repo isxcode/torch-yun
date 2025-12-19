@@ -46,3 +46,6 @@ gradle-repo
 # 本地python缓存不提交
 torch-yun-vip/torch-yun-plugins/**/__pycache__
 torch-yun-plugins/**/__pycache__
+
+# 后端版本号文件不提交
+torch-yun-backend/torch-yun-main/src/main/resources/VERSION

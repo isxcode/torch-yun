@@ -234,7 +234,7 @@ public class AiBizService {
             ModelEntity model = modelService.getModel(ai.getModelId());
             ModelPlazaEntity modelPlaza = modelPlazaService.getModelPlaza(model.getModelPlazaId());
 
-            if (model.getDeployScript() == null) {
+            if (Strings.isEmpty(model.getDeployScript())) {
                 model.setDeployScript(
                     modelService.getDeployScript(modelPlaza.getOrgName() + "/" + modelPlaza.getModelName()));
             }
