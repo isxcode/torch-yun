@@ -46,9 +46,6 @@ export default defineNuxtPlugin({
           moduleIntro.style.backgroundRepeat = 'no-repeat';
           moduleIntro.style.opacity = '1';
           moduleIntro.style.transition = 'none'; // 移除过渡效果，立即显示
-          
-          console.log('✓ 首页背景图从缓存快速恢复');
-          
           // 短暂延迟后恢复过渡效果
           setTimeout(() => {
             moduleIntro.style.transition = 'opacity 0.3s ease-in-out';
