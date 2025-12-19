@@ -20,18 +20,11 @@ import com.isxcode.torch.modules.model.plaza.service.ModelPlazaService;
 import com.isxcode.torch.modules.model.repository.ModelRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.stream.Collectors;
 
 import static com.isxcode.torch.common.config.CommonConfig.JPA_TENANT_MODE;
 
@@ -67,6 +60,11 @@ public class ModelBizService {
             ModelPlazaEntity modelPlaza = modelPlazaService.getModelPlaza(e.getModelPlazaId());
             e.setModelName(modelPlaza.getModelName());
             e.setOrgName(modelPlaza.getOrgName());
+            if (e.getDeployScript() == null) {
+                // 如果脚本为空，则返回默认脚本
+                e.setDeployScript(
+                    modelService.getDeployScript(modelPlaza.getOrgName() + "/" + modelPlaza.getModelName()));
+            }
         });
 
         return map;
@@ -84,12 +82,6 @@ public class ModelBizService {
 
         // 手动创建的仓库
         modelEntity.setStatus(ModelStatus.ENABLE);
-
-        // 如果脚本为空，则添加默认脚本
-        if (addModelReq.getDeployScript().isEmpty()) {
-            ModelPlazaEntity modelPlaza = modelPlazaService.getModelPlaza(addModelReq.getModelPlazaId());
-            modelEntity.setDeployScript(getDeployScript(modelPlaza.getOrgName() + "/" + modelPlaza.getModelName()));
-        }
 
         // 持久化
         modelRepository.save(modelEntity);
@@ -119,25 +111,5 @@ public class ModelBizService {
         // 判断模型是否存在
         ModelEntity model = modelService.getModel(deleteModelReq.getId());
         modelRepository.delete(model);
-    }
-
-    public String getDeployScript(String modelCode) {
-
-        String aiPyPath = "";
-        if ("Qwen/Qwen2.5-0.5B".equals(modelCode)) {
-            aiPyPath = "qwen2.5";
-        } else if ("Google/gemma-3-270m".equals(modelCode)) {
-            aiPyPath = "gemma3";
-        } else {
-            aiPyPath = "basic";
-        }
-
-        Resource resource = resourceLoader.getResource("classpath:ai/" + aiPyPath + "/ai.py");
-        try (InputStream inputStream = resource.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
-            return reader.lines().collect(Collectors.joining("\n"));
-        } catch (IOException e) {
-            throw new IsxAppException("安装包部署异常");
-        }
     }
 }

@@ -234,6 +234,11 @@ public class AiBizService {
             ModelEntity model = modelService.getModel(ai.getModelId());
             ModelPlazaEntity modelPlaza = modelPlazaService.getModelPlaza(model.getModelPlazaId());
 
+            if (model.getDeployScript() == null) {
+                model.setDeployScript(
+                    modelService.getDeployScript(modelPlaza.getOrgName() + "/" + modelPlaza.getModelName()));
+            }
+
             // 封装请求体
             DeployAiContext deployAiContext = DeployAiContext.builder().aiId(ai.getId())
                 .clusterConfig(JSON.parseObject(ai.getClusterConfig(), ClusterConfig.class))
@@ -336,22 +341,17 @@ public class AiBizService {
 
     public CheckAiRes checkAi(CheckAiReq checkAiReq) {
 
-        // // 判断ai是否存在
-        // AiEntity ai = aiService.getAi(checkAiReq.getId());
-        //
-        // JPA_TENANT_MODE.set(false);
-        // ModelEntity model = modelService.getModel(ai.getModelId());
-        // JPA_TENANT_MODE.set(true);
-        //
-        // // 根据智能体类型选择不同的检测方式
-        // if (AiType.API.equals(model.getModelType())) {
-        // // API类型智能体检测
-        // return checkApiAi(ai);
-        // } else {
-        // // 本地部署智能体检测
-        // return checkLocalAi(ai);
-        // }
-        return null;
+        // 判断ai是否存在
+        AiEntity ai = aiService.getAi(checkAiReq.getId());
+
+        // 根据智能体类型选择不同的检测方式
+        if (AiType.API.equals(ai.getAiType())) {
+            // API类型智能体检测
+            return checkApiAi(ai);
+        } else {
+            // 本地部署智能体检测
+            return checkLocalAi(ai);
+        }
     }
 
     private CheckAiRes checkApiAi(AiEntity ai) {

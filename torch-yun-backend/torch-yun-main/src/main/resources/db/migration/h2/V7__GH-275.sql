@@ -113,6 +113,17 @@ alter table TY_AI
 
 comment on column TY_AI.AI_TYPE is 'ai类型远程还是本地的';
 
+-- 添加默认资源文件
+INSERT INTO PUBLIC.TY_FILE (ID, FILE_NAME, FILE_SIZE, FILE_TYPE, CREATE_BY, CREATE_DATE_TIME, LAST_MODIFIED_BY,
+                            LAST_MODIFIED_DATE_TIME, VERSION_NUMBER, DELETED, TENANT_ID, REMARK)
+VALUES ('Qwen2.5-0.5B.zip', 'Qwen2.5-0.5B.zip', '751.17 MB', 'MODEL_FILE', 'zhishuyun', '2025-12-19 14:35:17.447000',
+        'zhishuyun', '2025-12-19 14:35:17.447000', 0, 0, 'zhishuyun', '系统默认模型文件');
 
+-- 添加默认模型
+INSERT INTO PUBLIC.TY_MODEL (ID, NAME, MODEL_PLAZA_ID, MODEL_FILE, STATUS, REMARK, CREATE_BY, CREATE_DATE_TIME,
+                             LAST_MODIFIED_BY, LAST_MODIFIED_DATE_TIME, VERSION_NUMBER, DELETED, TENANT_ID,
+                             DEPLOY_SCRIPT)
+VALUES ('Qwen2.5-0.5B', 'Qwen2.5-0.5B', 'qwen_Qwen2.5-0.5B', 'Qwen2.5-0.5B.zip', 'ENABLE', '系统默认模型', 'zhishuyun',
+        '2025-12-19 15:36:55.516000', 'zhishuyun', '2025-12-19 15:36:55.516000', 0, 0, 'zhishuyun', '');
 
 
