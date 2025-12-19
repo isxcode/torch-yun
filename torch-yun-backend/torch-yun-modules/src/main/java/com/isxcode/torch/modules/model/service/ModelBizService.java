@@ -86,7 +86,7 @@ public class ModelBizService {
 
         // 如果脚本为空，则添加默认脚本
         if (addModelReq.getDeployScript().isEmpty()) {
-            Resource resource = resourceLoader.getResource("classpath:deployScript.py");
+            Resource resource = resourceLoader.getResource("classpath:ai/qwen2.5/ai.py");
             try (InputStream inputStream = resource.getInputStream();
                 BufferedReader reader =
                     new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
