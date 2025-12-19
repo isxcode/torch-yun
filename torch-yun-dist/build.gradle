@@ -92,6 +92,12 @@ tasks.register('build_zhishuyun', Tar) {
 tasks.register('copy_version') {
 
     doLast {
+        // 获取当前版本号
+        def process = ['git', 'branch', '--show-current'].execute(null, rootDir)
+        process.waitFor()
+        file("${rootDir}/VERSION").text = process.text.trim()
+
+        // 写入到版本文件中
         delete '../torch-yun-backend/torch-yun-main/src/main/resources/VERSION'
         delete '../torch-yun-frontend/VERSION'
         delete '../docs/VERSION'
