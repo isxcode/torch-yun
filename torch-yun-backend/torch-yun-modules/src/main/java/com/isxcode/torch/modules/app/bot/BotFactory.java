@@ -15,6 +15,6 @@ public class BotFactory {
     public Bot getBot(String modelCode) {
 
         return applicationContext.getBeansOfType(Bot.class).values().stream()
-            .filter(bot -> bot.name().equals(modelCode)).findFirst().orElseThrow(() -> new IsxAppException("模型不支持"));
+            .filter(bot -> bot.name().contains(modelCode)).findFirst().orElseThrow(() -> new IsxAppException("模型不支持"));
     }
 }
