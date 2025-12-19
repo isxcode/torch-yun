@@ -22,7 +22,7 @@ tasks.register('build_agent_lib', Copy) {
 }
 
 // 构建至数云代理
-tasks.register('build_agent', Tar) {
+tasks.register('build_zhishuyun_agent', Tar) {
 
     mustRunAfter(":torch-yun-frontend:make")
 
@@ -88,28 +88,27 @@ tasks.register('build_zhishuyun', Tar) {
     }
 }
 
-// 打包前替换版本号文件
-tasks.register('delete_version', Delete) {
+// 打包前先替换版本号文件
+tasks.register('copy_version') {
 
-    delete '../torch-yun-backend/torch-yun-main/src/main/resources/VERSION'
-    delete '../torch-yun-frontend/VERSION'
-}
-
-tasks.register('copy_version', Copy) {
-
-    mustRunAfter("delete_version")
-
-    from '../VERSION'
-    into '../torch-yun-backend/torch-yun-main/src/main/resources/'
-    into '../torch-yun-frontend/'
+    doLast {
+        delete '../torch-yun-backend/torch-yun-main/src/main/resources/VERSION'
+        delete '../torch-yun-frontend/VERSION'
+        copy {
+            from '../VERSION'
+            into '../torch-yun-backend/torch-yun-main/src/main/resources/'
+        }
+        copy {
+            from '../VERSION'
+            into '../torch-yun-frontend/'
+        }
+    }
 }
 
 // 打包
 tasks.register('make') {
 
-    mustRunAfter(":copy_version")
-
-    dependsOn(":torch-yun-frontend:make", "build_agent", ":torch-yun-backend:make", "build_zhishuyun")
+    dependsOn("copy_version", ":torch-yun-frontend:make", "build_zhishuyun_agent", ":torch-yun-backend:make", "build_zhishuyun")
 }
 
 // 添加依赖

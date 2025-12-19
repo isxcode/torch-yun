@@ -49,3 +49,4 @@ torch-yun-plugins/**/__pycache__
 
 # 后端版本号文件不提交
 torch-yun-backend/torch-yun-main/src/main/resources/VERSION
+torch-yun-frontend/VERSION

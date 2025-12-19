@@ -54,8 +54,10 @@ tasks.register('coty_to_vip_plugins', Copy) {
 }
 
 // 打包并安装前端项目
-tasks.register('make', GradleBuild) {
+tasks.register('make') {
+
+    mustRunAfter(":torch-yun-dist:copy_version")
 
     // 串行执行
-    tasks = ["clean_backend_resources", "npm_build", "coty_to_templates", "coty_to_static","coty_to_plugins","coty_to_vip_plugins"]
+    dependsOn("clean_backend_resources", "npm_build", "coty_to_templates", "coty_to_static", "coty_to_plugins", "coty_to_vip_plugins")
 }
