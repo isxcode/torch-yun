@@ -47,7 +47,7 @@ public class TextApp extends App {
         botChatContext.getChats().add(userChat);
 
         // 找到对应的ai体
-        Bot bot = botFactory.getBot(botChatContext.getModelPlazaId());
+        Bot bot = botFactory.getBot(botChatContext.getModelCode());
         ChatResponse chatResponse = bot.sendChat(botChatContext, sseEmitter);
 
         // 获取当前会话实体
