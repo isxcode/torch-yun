@@ -8,6 +8,7 @@ set -e  # 遇到错误立即退出
 
 # 路径配置
 readonly BASE_PATH=$(cd "$(dirname "$0")" && pwd)
+readonly RESOURCE_DIR="${BASE_PATH}/resources"
 
 # =============================================================================
 # 工具函数
@@ -31,30 +32,6 @@ create_dir() {
     if [[ ! -d "$dir" ]]; then
         mkdir -p "$dir"
         echo "创建目录: $dir"
-    fi
-}
-
-# 下载文件
-download_file() {
-    local url=$1
-    local output_path=$2
-    local description=$3
-
-    if [[ -f "$output_path" ]]; then
-        echo "$description 已存在，跳过下载"
-        return 0
-    fi
-
-    echo "开始下载 $description..."
-    if curl -ssL "$url" -o "$output_path"; then
-      if head -n 1 "$output_path" | grep -q "<?xml"; then
-        if grep -q "<Error>" "$output_path" && grep -q "<Code>NoSuchKey</Code>" "$output_path"; then
-            rm -rf "$output_path"
-            echo "下载失败，请联系管理员: ispong@outlook.com" >&2
-            exit 1
-        fi
-      fi
-      echo "$description 下载成功"
     fi
 }
 
@@ -91,6 +68,14 @@ check_system_dependencies() {
     fi
 }
 
+# 拷贝默认模型
+copy_model() {
+    echo "拷贝默认模型..."
+
+    create_dir "${RESOURCE_DIR}"/file/zhishuyun/
+    cp "${RESOURCE_DIR}"/tmp/Qwen2.5-0.5B.zip "${RESOURCE_DIR}"/file/zhishuyun/
+}
+
 # =============================================================================
 # 主要安装流程
 # =============================================================================
@@ -100,6 +85,9 @@ main() {
 
     # 1. 检查系统依赖
     check_system_dependencies
+
+    # 2. 把默认模型拷贝到file目录下
+    copy_model
 
     echo "项目依赖安装完成！"
 }
