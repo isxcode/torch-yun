@@ -199,13 +199,29 @@ function showModal(cb: () => void, data: any): void {
         renderSence.value = 'edit'
         nextTick(() => {
             Object.keys(formData).forEach((key: string) => {
-                if (key === 'authConfig' && !data[key]) {
-                    formData[key] = {
-                        apiKey: ''
+                if (key === 'authConfig') {
+                    if (!data[key]) {
+                        formData[key] = { apiKey: '', endpointId: '' }
+                    } else if (typeof data[key] === 'string') {
+                        try {
+                            formData[key] = JSON.parse(data[key])
+                        } catch {
+                            formData[key] = { apiKey: '', endpointId: '' }
+                        }
+                    } else {
+                        formData[key] = data[key]
                     }
-                } else if (key === 'clusterConfig' && !data[key]) {
-                    formData[key] = {
-                        clusterId: ''
+                } else if (key === 'clusterConfig') {
+                    if (!data[key]) {
+                        formData[key] = { clusterId: '' }
+                    } else if (typeof data[key] === 'string') {
+                        try {
+                            formData[key] = JSON.parse(data[key])
+                        } catch {
+                            formData[key] = { clusterId: '' }
+                        }
+                    } else {
+                        formData[key] = data[key]
                     }
                 } else {
                     formData[key] = data[key]

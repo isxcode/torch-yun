@@ -154,39 +154,38 @@ public class AiBizService {
 
     public void updateAi(UpdateAiReq updateAiReq) {
 
-        // // 检测数据源名称重复
-        // Optional<AiEntity> aiEntityByName = aiRepository.findByName(updateAiReq.getName());
-        // if (aiEntityByName.isPresent() && !aiEntityByName.get().getId().equals(updateAiReq.getId())) {
-        // throw new IsxAppException("ai名称重复");
-        // }
-        //
-        // AiEntity ai = aiService.getAi(updateAiReq.getId());
-        // if (AiStatus.DEPLOYING.equals(ai.getStatus())) {
-        // throw new IsxAppException("部署中，不可编辑");
-        // }
-        //
-        // AiEntity aiEntity = aiMapper.updateAiReqToAiEntity(updateAiReq, ai);
-        //
-        // JPA_TENANT_MODE.set(false);
-        // ModelEntity model = modelService.getModel(ai.getModelId());
-        // JPA_TENANT_MODE.set(true);
-        //
-        // if (ModelType.API.equals(model.getModelType())) {
-        // if (updateAiReq.getAuthConfig() == null) {
-        // throw new IsxAppException("验证信息缺失");
-        // }
-        // aiEntity.setAuthConfig(JSON.toJSONString(updateAiReq.getAuthConfig()));
-        // } else if (ModelType.MANUAL.equals(model.getModelType())) {
-        // if (updateAiReq.getClusterConfig() == null) {
-        // throw new IsxAppException("集群配置缺失");
-        // }
-        // aiEntity.setClusterConfig(updateAiReq.getClusterConfig().getClusterId());
-        // aiEntity.setStatus(AiStatus.DISABLE);
-        // } else {
-        // throw new IsxAppException("当前模型不支持");
-        // }
-        //
-        // aiRepository.save(aiEntity);
+        // 检测数据源名称重复
+        Optional<AiEntity> aiEntityByName = aiRepository.findByName(updateAiReq.getName());
+        if (aiEntityByName.isPresent() && !aiEntityByName.get().getId().equals(updateAiReq.getId())) {
+            throw new IsxAppException("ai名称重复");
+        }
+
+        AiEntity ai = aiService.getAi(updateAiReq.getId());
+        if (AiStatus.DEPLOYING.equals(ai.getStatus())) {
+            throw new IsxAppException("部署中，不可编辑");
+        }
+        if (AiStatus.ENABLE.equals(ai.getStatus())) {
+            throw new IsxAppException("先下线，再编辑");
+        }
+
+        AiEntity aiEntity = aiMapper.updateAiReqToAiEntity(updateAiReq, ai);
+
+        if (ModelType.API.equals(aiEntity.getAiType())) {
+            if (updateAiReq.getAuthConfig() == null) {
+                throw new IsxAppException("验证信息缺失");
+            }
+            aiEntity.setAuthConfig(JSON.toJSONString(updateAiReq.getAuthConfig()));
+        } else if (ModelType.MANUAL.equals(aiEntity.getAiType())) {
+            if (updateAiReq.getClusterConfig() == null) {
+                throw new IsxAppException("集群配置缺失");
+            }
+            aiEntity.setClusterConfig(updateAiReq.getClusterConfig().getClusterId());
+            aiEntity.setStatus(AiStatus.DISABLE);
+        } else {
+            throw new IsxAppException("当前模型不支持");
+        }
+
+        aiRepository.save(aiEntity);
     }
 
     public Page<PageAiRes> pageAi(PageAiReq pageAiReq) {
