@@ -31,3 +31,12 @@ export function UpdateModelData(params: any): Promise<any> {
         params: params
     })
 }
+
+// 删除
+export function DeleteModelData(params: { id: string }): Promise<any> {
+    return http.request({
+        method: 'post',
+        url: '/model/deleteModel',
+        params: params
+    })
+}
