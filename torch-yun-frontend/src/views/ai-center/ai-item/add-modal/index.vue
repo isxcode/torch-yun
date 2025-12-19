@@ -38,7 +38,7 @@
                     />
                 </el-select>
             </el-form-item>
-            <el-form-item v-if="formData.aiType === 'API' && formData.modelId === 'doubao'" label="EndPointId" prop="authConfig.endpointId">
+            <el-form-item v-if="formData.aiType === 'API' && selectedOrgName === 'Volcengine'" label="EndPointId" prop="authConfig.endpointId">
                 <el-input v-model="formData.authConfig.endpointId" maxlength="100" show-password placeholder="请输入" />
             </el-form-item>
             <el-form-item v-if="formData.aiType === 'API'" label="Key" prop="authConfig.apiKey">
@@ -148,14 +148,38 @@ const rules = reactive<FormRules>({
     aiType: [{ required: true, message: '请选择类型', trigger: ['change', 'blur']}],
     orgName: [{ required: true, message: '请选择组织名称', trigger: ['change', 'blur'], validator: validateOrgName }],
     modelId: [{ required: true, message: '请选择模型', trigger: ['change', 'blur']}],
-    'authConfig.apiKey': [{ required: true, message: '请输入Key', trigger: ['change', 'blur']}],
-    'authConfig.endpointId': [{ required: true, message: '请输入EndPointId', trigger: ['change', 'blur']}],
-    'clusterConfig.clusterId': [{ required: true, message: '请选择集群', trigger: ['change', 'blur']}],
+    'authConfig.apiKey': [{ required: true, message: '请输入Key', trigger: ['change', 'blur'], validator: validateApiKey }],
+    'authConfig.endpointId': [{ required: true, message: '请输入EndPointId', trigger: ['change', 'blur'], validator: validateEndpointId }],
+    'clusterConfig.clusterId': [{ required: true, message: '请选择集群', trigger: ['change', 'blur'], validator: validateClusterId }],
 })
 
 function validateOrgName(rule: any, value: any, callback: any) {
     if (formData.aiType === 'API' && !selectedOrgName.value) {
         callback(new Error('请选择组织名称'))
+    } else {
+        callback()
+    }
+}
+
+function validateApiKey(rule: any, value: any, callback: any) {
+    if (formData.aiType === 'API' && !formData.authConfig.apiKey) {
+        callback(new Error('请输入Key'))
+    } else {
+        callback()
+    }
+}
+
+function validateEndpointId(rule: any, value: any, callback: any) {
+    if (formData.aiType === 'API' && selectedOrgName.value === 'Volcengine' && !formData.authConfig.endpointId) {
+        callback(new Error('请输入EndPointId'))
+    } else {
+        callback()
+    }
+}
+
+function validateClusterId(rule: any, value: any, callback: any) {
+    if (formData.aiType === 'local' && !formData.clusterConfig.clusterId) {
+        callback(new Error('请选择集群'))
     } else {
         callback()
     }
