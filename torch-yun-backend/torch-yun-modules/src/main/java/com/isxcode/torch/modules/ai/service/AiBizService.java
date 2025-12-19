@@ -467,5 +467,8 @@ public class AiBizService {
 
         // 删除智能体
         aiRepository.deleteById(ai.getId());
+
+        // 删除相关的应用
+        appRepository.deleteAllByAiId(ai.getId());
     }
 }

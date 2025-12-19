@@ -26,4 +26,6 @@ public interface AppRepository extends JpaRepository<AppEntity, String> {
     List<AppEntity> findByStatusAndAiId(String status, String aiId);
 
     Optional<AppEntity> findByDefaultApp(String defaultApp);
+
+    void deleteAllByAiId(String aiId);
 }
