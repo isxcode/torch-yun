@@ -36,7 +36,7 @@ public class TorchYunAgentBizService {
 
     public DeployAiRes deployAi(DeployAiReq deployAiReq) {
 
-        // 先解压
+        // 先解压模型文件
         String unzipModelCommand =
             "unzip -oj " + deployAiReq.getAgentHomePath() + "/zhishuyun-agent/file/" + deployAiReq.getModelFileId()
                 + " -d " + deployAiReq.getAgentHomePath() + "/zhishuyun-agent/ai/" + deployAiReq.getAiId();
@@ -51,23 +51,17 @@ public class TorchYunAgentBizService {
             throw new IsxAppException(e.getMessage());
         }
 
-        // 然后找到对应的插件
-        String pluginName = "";
-        if ("Qwen2.5-0.5B".equals(deployAiReq.getModelCode())) {
-            pluginName = "qwen2.5";
-        } else if ("Gemma3-270M".equals(deployAiReq.getModelCode())) {
-            pluginName = "gemma3";
-        }
-
         // 获取端口
         int aiPort = findUnusedPort();
 
         // 部署命令
         String aiPath = deployAiReq.getAgentHomePath() + "/zhishuyun-agent/ai/" + deployAiReq.getAiId();
-        String pluginPath = deployAiReq.getAgentHomePath() + "/zhishuyun-agent/plugins/" + pluginName;
+
+        // 将启动脚本复制到服务器上
+        FileUtil.writeUtf8String(deployAiReq.getDeployScript(), aiPath + "/ai.py");
         String[] deployCommand =
             {"bash", "-c", "nohup bash -c \"MODEL_PATH='" + aiPath + "' uvicorn ai:app --host 127.0.0.1 --app-dir "
-                + pluginPath + " --port " + aiPort + " \" > " + aiPath + "/ai.log 2>&1 & echo $!"};
+                + aiPath + " --port " + aiPort + " \" > " + aiPath + "/ai.log 2>&1 & echo $!"};
         String pid = RuntimeUtil.execForStr(deployCommand);
         return DeployAiRes.builder().aiPort(String.valueOf(aiPort)).aiPid(pid.replace("\n", "")).build();
     }
