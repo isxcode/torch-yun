@@ -86,7 +86,7 @@ public class DeployAiService {
 
             // 非系统模型需要上传
             String srcPath = PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + File.separator + "file"
-                + File.separator + engineNode.getTenantId() + File.separator + deployAiContext.getModelFileId();
+                + File.separator + file.getTenantId() + File.separator + deployAiContext.getModelFileId();
 
             // 如果docker部署，使用指定目录获取系统驱动
             if (isxAppProperties.isDockerMode() && "zhishuyun".equals(file.getTenantId())) {
@@ -111,6 +111,7 @@ public class DeployAiService {
                 scpFileService.listenScpPercent(scpFileEngineNodeDto, srcPath, distPath, ai);
             } else {
                 // 添加日志
+                ai = aiService.getAi(deployAiContext.getAiId());
                 ai.setAiLog(LocalDateTime.now() + WorkLog.SUCCESS_INFO + "模型已经上传，开始部署模型");
                 ai = aiRepository.saveAndFlush(ai);
             }
