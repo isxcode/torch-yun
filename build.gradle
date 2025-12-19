@@ -83,7 +83,8 @@ spotless {
 }
 
 tasks.register("format") {
-    dependsOn(":spotlessApply", ":checkstyleMain")
+
+    dependsOn(":torch-yun-dist:copy_version", ":spotlessApply", ":checkstyleMain")
 }
 
 tasks.register("package") {
