@@ -21,14 +21,6 @@ tasks.register('build_agent_lib', Copy) {
     into 'build/zhishuyun-agent/lib'
 }
 
-// 构建plugins文件夹
-tasks.register('build_agent_plugins', Copy) {
-
-    from rootDir.getAbsolutePath() + '/torch-yun-plugins/'
-    from rootDir.getAbsolutePath() + '/torch-yun-vip/torch-yun-plugins/'
-    into 'build/zhishuyun-agent/plugins'
-}
-
 // 构建ai文件夹
 tasks.register('build_agent_model', Copy) {
 
@@ -42,7 +34,6 @@ tasks.register('build_agent', Tar) {
     mustRunAfter(":torch-yun-frontend:make")
 
     dependsOn('build_agent_lib')
-    dependsOn('build_agent_plugins')
     dependsOn('build_agent_model')
 
     compression = Compression.GZIP

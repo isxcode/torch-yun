@@ -2,6 +2,7 @@ package com.isxcode.torch.modules.model.controller;
 
 import com.isxcode.torch.api.main.constants.ModuleCode;
 import com.isxcode.torch.api.model.req.AddModelReq;
+import com.isxcode.torch.api.model.req.DeleteModelReq;
 import com.isxcode.torch.api.model.req.PageModelReq;
 import com.isxcode.torch.api.model.req.UpdateModelReq;
 import com.isxcode.torch.api.model.res.PageModelRes;
@@ -51,5 +52,14 @@ public class ModelController {
     public void updateModel(@Valid @RequestBody UpdateModelReq updateModelReq) {
 
         modelBizService.updateModel(updateModelReq);
+    }
+
+    @Secured({RoleType.TENANT_MEMBER, RoleType.TENANT_ADMIN})
+    @Operation(summary = "删除模型仓库接口")
+    @PostMapping("/deleteModel")
+    @SuccessResponse("删除成功")
+    public void deleteModel(@Valid @RequestBody DeleteModelReq deleteModelReq) {
+
+        modelBizService.deleteModel(deleteModelReq);
     }
 }

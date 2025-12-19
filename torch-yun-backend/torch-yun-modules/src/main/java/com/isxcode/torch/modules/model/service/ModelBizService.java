@@ -4,6 +4,7 @@ import com.isxcode.torch.api.datasource.req.*;
 import com.isxcode.torch.api.datasource.res.*;
 import com.isxcode.torch.api.model.constant.ModelStatus;
 import com.isxcode.torch.api.model.req.AddModelReq;
+import com.isxcode.torch.api.model.req.DeleteModelReq;
 import com.isxcode.torch.api.model.req.PageModelReq;
 import com.isxcode.torch.api.model.req.UpdateModelReq;
 import com.isxcode.torch.api.model.res.PageModelRes;
@@ -86,15 +87,8 @@ public class ModelBizService {
 
         // 如果脚本为空，则添加默认脚本
         if (addModelReq.getDeployScript().isEmpty()) {
-            Resource resource = resourceLoader.getResource("classpath:ai/qwen2.5/ai.py");
-            try (InputStream inputStream = resource.getInputStream();
-                BufferedReader reader =
-                    new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
-                String content = reader.lines().collect(Collectors.joining("\n"));
-                modelEntity.setDeployScript(content);
-            } catch (IOException e) {
-                throw new IsxAppException("安装包部署异常");
-            }
+            ModelPlazaEntity modelPlaza = modelPlazaService.getModelPlaza(addModelReq.getModelPlazaId());
+            modelEntity.setDeployScript(getDeployScript(modelPlaza.getOrgName() + "/" + modelPlaza.getModelName()));
         }
 
         // 持久化
@@ -118,5 +112,32 @@ public class ModelBizService {
 
         // 持久化
         modelRepository.save(model);
+    }
+
+    public void deleteModel(DeleteModelReq deleteModelReq) {
+
+        // 判断模型是否存在
+        ModelEntity model = modelService.getModel(deleteModelReq.getId());
+        modelRepository.delete(model);
+    }
+
+    public String getDeployScript(String modelCode) {
+
+        String aiPyPath = "";
+        if ("Qwen/Qwen2.5-0.5B".equals(modelCode)) {
+            aiPyPath = "qwen2.5";
+        } else if ("Google/gemma-3-270m".equals(modelCode)) {
+            aiPyPath = "gemma3";
+        } else {
+            aiPyPath = "basic";
+        }
+
+        Resource resource = resourceLoader.getResource("classpath:ai/" + aiPyPath + "/ai.py");
+        try (InputStream inputStream = resource.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+            return reader.lines().collect(Collectors.joining("\n"));
+        } catch (IOException e) {
+            throw new IsxAppException("安装包部署异常");
+        }
     }
 }

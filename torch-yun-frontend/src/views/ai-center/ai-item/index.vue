@@ -41,9 +41,9 @@
                                     <el-dropdown-menu>
                                         <el-dropdown-item @click="editEvent(scopeSlot.row)">编辑</el-dropdown-item>
                                         <el-dropdown-item v-if="['ENABLE'].includes(scopeSlot.row.status)" @click="stopData(scopeSlot.row)">下线</el-dropdown-item>
-                                        <el-dropdown-item v-else @click="publishData(scopeSlot.row)">启动</el-dropdown-item>
+                                        <el-dropdown-item v-else @click="publishData(scopeSlot.row)">部署</el-dropdown-item>
                                         <el-dropdown-item v-if="scopeSlot.row.aiType !== 'API' && ['ENABLE'].includes(scopeSlot.row.status)" @click="showRunLog(scopeSlot.row)">运行日志</el-dropdown-item>
-                                        <el-dropdown-item v-if="scopeSlot.row.aiType !== 'API'" @click="showDeployLog(scopeSlot.row)">部署日志</el-dropdown-item>
+                                        <el-dropdown-item v-if="scopeSlot.row.aiType !== 'API'" @click="showDeployLog(scopeSlot.row)">日志</el-dropdown-item>
                                         <el-dropdown-item @click="deleteData(scopeSlot.row)">删除</el-dropdown-item>
                                     </el-dropdown-menu>
                                 </template>
