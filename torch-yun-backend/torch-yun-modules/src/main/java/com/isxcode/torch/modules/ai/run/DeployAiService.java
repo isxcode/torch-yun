@@ -24,6 +24,8 @@ import com.isxcode.torch.modules.app.repository.AppRepository;
 import com.isxcode.torch.modules.cluster.entity.ClusterNodeEntity;
 import com.isxcode.torch.modules.cluster.mapper.ClusterNodeMapper;
 import com.isxcode.torch.modules.cluster.repository.ClusterNodeRepository;
+import com.isxcode.torch.modules.file.entity.FileEntity;
+import com.isxcode.torch.modules.file.service.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -58,6 +60,8 @@ public class DeployAiService {
 
     private final AppRepository appRepository;
 
+    private final FileService fileService;
+
     @Async
     public void deployAi(DeployAiContext deployAiContext) {
 
@@ -78,9 +82,17 @@ public class DeployAiService {
 
         try {
 
+            FileEntity file = fileService.getFile(deployAiContext.getModelFileId());
+
             // 非系统模型需要上传
             String srcPath = PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + File.separator + "file"
                 + File.separator + engineNode.getTenantId() + File.separator + deployAiContext.getModelFileId();
+
+            // 如果docker部署，使用指定目录获取系统驱动
+            if (isxAppProperties.isDockerMode() && "zhishuyun".equals(file.getTenantId())) {
+                srcPath = "/var/lib/zhishuyun-system" + File.separator + deployAiContext.getModelFileId();
+            }
+
             String distPath =
                 engineNode.getAgentHomePath() + "/zhishuyun-agent/file/" + deployAiContext.getModelFileId();
 

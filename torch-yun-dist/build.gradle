@@ -21,20 +21,12 @@ tasks.register('build_agent_lib', Copy) {
     into 'build/zhishuyun-agent/lib'
 }
 
-// 构建ai文件夹
-tasks.register('build_agent_model', Copy) {
-
-    from rootDir.getAbsolutePath() + '/resources/tmp'
-    into 'zhishuyun-agent/file'
-}
-
 // 构建至数云代理
 tasks.register('build_agent', Tar) {
 
     mustRunAfter(":torch-yun-frontend:make")
 
     dependsOn('build_agent_lib')
-    dependsOn('build_agent_model')
 
     compression = Compression.GZIP
     archiveFileName = 'zhishuyun-agent.tar.gz'
