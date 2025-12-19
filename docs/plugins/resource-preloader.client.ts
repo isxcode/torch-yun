@@ -45,7 +45,6 @@ export default defineNuxtPlugin({
 
         // 所有关键资源加载完成
         if (loadedCount >= totalResources) {
-          console.log('所有关键资源加载完成');
         }
       };
 
@@ -65,7 +64,6 @@ export default defineNuxtPlugin({
           const handleSuccess = () => {
             clearTimeout(timeout);
             const loadTime = Date.now() - startTime;
-            console.log(`资源加载成功 (${loadTime}ms): ${url}`);
             onResourceLoaded();
             resolve();
           };
@@ -117,7 +115,6 @@ export default defineNuxtPlugin({
       // 优先加载并显示背景图
       const loadCriticalBackground = () => {
         return new Promise<void>((resolve) => {
-          console.log('开始预加载关键背景图: bg-0.jpg');
 
           // 先隐藏背景图区域，避免渐进式显示
           const moduleIntro = document.querySelector('.module-intro') as HTMLElement;
@@ -132,7 +129,6 @@ export default defineNuxtPlugin({
 
             // 如果图片已在缓存中，complete会立即为true
             if (img.complete && img.naturalWidth > 0) {
-              console.log('✓ 背景图已在缓存中，立即显示');
               if (moduleIntro) {
                 moduleIntro.style.backgroundImage = `url("${criticalBackgroundUrl}")`;
                 moduleIntro.style.backgroundSize = 'cover';
@@ -220,15 +216,12 @@ export default defineNuxtPlugin({
 
       // 单进程顺序预加载其他资源
       const preloadResourcesInOrder = async () => {
-        console.log('开始单进程顺序预加载其他资源...');
 
         for (let i = 0; i < orderedResources.length; i++) {
           const resource = orderedResources[i];
-          console.log(`正在加载第 ${i + 1}/${orderedResources.length} 个资源: ${resource.url}`);
 
           try {
             await preloadResource(resource, i);
-            console.log(`✓ 第 ${i + 1} 个资源加载完成`);
           } catch (error) {
             console.warn(`✗ 第 ${i + 1} 个资源加载失败:`, error);
           }
@@ -238,8 +231,6 @@ export default defineNuxtPlugin({
             await new Promise(resolve => setTimeout(resolve, 100));
           }
         }
-
-        console.log('所有资源预加载完成！');
       };
 
       // 智能预加载策略
@@ -264,7 +255,6 @@ export default defineNuxtPlugin({
             }
           } else {
             // 第二步：背景图显示完成后，单进程顺序预加载其他资源
-            console.log('背景图已显示，开始加载其他资源');
             await preloadResourcesInOrder();
           }
         } catch (error) {
@@ -281,7 +271,6 @@ export default defineNuxtPlugin({
       const initPreloading = () => {
         // 等待页面基本渲染完成
         setTimeout(() => {
-          console.log('开始初始化资源预加载...');
           startPreloading();
         }, 200);
       };
