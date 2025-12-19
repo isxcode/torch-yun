@@ -149,14 +149,17 @@ public class ChatBizService {
         AiEntity ai = aiService.getAi(app.getAiId());
 
         // 获取模型的id
+        String modelId = "";
         String modelCode = "";
         if (AiType.LOCAL.equals(ai.getAiType())) {
             ModelEntity model = modelService.getModel(ai.getModelId());
             ModelPlazaEntity modelPlaza = modelPlazaService.getModelPlaza(model.getModelPlazaId());
             modelCode = modelPlaza.getId();
+            modelId = modelPlaza.getModelName();
         } else {
             ModelPlazaEntity modelPlaza = modelPlazaService.getModelPlaza(ai.getModelId());
             modelCode = modelPlaza.getId();
+            modelId = modelPlaza.getModelName();
         }
 
         // 判断会话index是否存在，防止重复对话
@@ -201,7 +204,7 @@ public class ChatBizService {
         // 封装对话上下文
         BotChatContext botChatContext = chatService.transSessionListToBotChatContext(chatSessionList, app, ai,
             sendChatReq.getMaxChatIndexId(), sendChatReq.getChatId(), userAskSession.getId(), aiAnswerSession.getId(),
-            modelCode, USER_ID.get(), TENANT_ID.get());
+            modelCode, modelId, USER_ID.get(), TENANT_ID.get());
 
         // 异步提交应用开始对话
         App application = appFactory.getApp(app.getAppType());
