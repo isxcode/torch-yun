@@ -77,8 +77,8 @@ tasks.register('build_zhishuyun', Tar) {
     from(rootDir.getAbsolutePath() + '/torch-yun-backend/torch-yun-main/src/main/resources/application-local.yml') {
         into 'zhishuyun/conf'
     }
-    from(rootDir.getAbsolutePath() + '/resources/jdbc/system') {
-        into 'zhishuyun/resources/jdbc/system'
+    from(rootDir.getAbsolutePath() + '/resources/file/zhishuyun/Qwen2.5-0.5B.zip') {
+        into 'zhishuyun/resources/file/zhishuyun'
     }
     from(rootDir.getAbsolutePath() + '/torch-yun-backend/torch-yun-main/build/libs/zhishuyun.jar') {
         into 'zhishuyun/lib'
