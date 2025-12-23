@@ -16,7 +16,7 @@ public class ChatAgentAiReq {
 
     private Integer maxTokens;
 
-    private String modelId;
+    private String modelName;
 
     private Integer topK;
 

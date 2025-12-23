@@ -21,7 +21,7 @@ public class BotChatContext {
 
     private String aiType;
 
-    private String modelId;
+    private String modelName;
 
     private String modelCode;
 
