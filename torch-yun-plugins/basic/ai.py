@@ -15,13 +15,14 @@ app = FastAPI()
 
 # 模型加载（使用你本地路径）
 model_path = os.getenv("MODEL_PATH")
-config = AutoConfig.from_pretrained(f"{model_path}/config.json")
-tokenizer = AutoTokenizer.from_pretrained(model_path)
+config = AutoConfig.from_pretrained(model_path, trust_remote_code=True)
+tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
 model = AutoModelForCausalLM.from_pretrained(
     model_path,
     config=config,
     torch_dtype=torch.float16 if torch.cuda.is_available() else torch.float32,
-    device_map="auto"
+    device_map="auto",
+    trust_remote_code=True
 )
 
 # 自定义 stopping criteria：当生成中包含指定字符串时停止
