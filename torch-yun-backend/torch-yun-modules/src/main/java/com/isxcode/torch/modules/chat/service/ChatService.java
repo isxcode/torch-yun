@@ -51,7 +51,7 @@ public class ChatService {
         return BotChatContext.builder().chatId(chatId).chats(chatContents).nowChatIndex(nowIndex + 1)
             .baseConfig(JSON.parseObject(app.getBaseConfig(), BaseConfig.class)).prompt(app.getPrompt())
             .authConfig(JSON.parseObject(ai.getAuthConfig(), AuthConfig.class)).aiType(ai.getAiType())
-            .modelId(ai.getModelId()).modelCode(modelCode).aiPort(ai.getAiPort()).modelId(modelId)
+            .modelName(ai.getModelId()).modelCode(modelCode).aiPort(ai.getAiPort()).modelName(modelId)
             .clusterConfig(JSON.parseObject(ai.getClusterConfig(), ClusterConfig.class)).aiSessionId(aiSessionId)
             .tenantId(tenantId).userId(userId).userAskSessionId(chatSessionId).build();
     }
