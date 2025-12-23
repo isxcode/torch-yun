@@ -58,13 +58,6 @@ VALUES ('google_gemma-3-270m', 'Google', 'gemma-3-270m', 'DISABLE', 'Natural Lan
         '270M',
         'Gemma is a family of lightweight, state-of-the-art open models from Google, built from the same research and technology used to create the Gemini models. ',
         'zhishuyun', '2025-12-18 16:17:19.000000', 'zhishuyun', '2025-12-18 16:17:23.000000', 0, 0);
-INSERT INTO PUBLIC.TY_MODEL_PLAZA (ID, ORG_NAME, MODEL_NAME, IS_ONLINE, LABEL, MODEL_TYPE, MODEL_PARAM, REMARK,
-                                   CREATE_BY, CREATE_DATE_TIME, LAST_MODIFIED_BY, LAST_MODIFIED_DATE_TIME, DELETED,
-                                   VERSION_NUMBER)
-VALUES ('openai_circuit-sparsity', 'Openai', 'circuit-sparsity', 'DISABLE', 'Natural Language Processing',
-        'Text Generation', '0.4B',
-        'Weights for a sparse model from Gao et al. 2025, used for the qualitative results from the paper.',
-        'zhishuyun', '2025-12-18 16:17:19.000000', 'zhishuyun', '2025-12-18 16:17:23.000000', 0, 0);
 
 -- 清空模型仓库
 DELETE
