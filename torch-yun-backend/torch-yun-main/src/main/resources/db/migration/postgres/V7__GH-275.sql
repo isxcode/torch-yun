@@ -137,3 +137,7 @@ INSERT INTO TY_MODEL (ID, NAME, MODEL_PLAZA_ID, MODEL_FILE, STATUS, REMARK, CREA
                       DEPLOY_SCRIPT)
 VALUES ('Qwen2.5-0.5B', 'Qwen2.5-0.5B', 'qwen_Qwen2.5-0.5B', 'Qwen2.5-0.5B.zip', 'ENABLE', '系统默认模型', 'zhishuyun',
         '2025-12-19 15:36:55.516000', 'zhishuyun', '2025-12-19 15:36:55.516000', 0, 0, 'zhishuyun', '');
+
+-- 修改字段
+ALTER TABLE TY_CHAT_SESSION
+    ALTER COLUMN session_content TYPE TEXT;
