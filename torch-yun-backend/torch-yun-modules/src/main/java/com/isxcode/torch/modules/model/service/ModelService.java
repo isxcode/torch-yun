@@ -5,9 +5,17 @@ import com.isxcode.torch.modules.model.entity.ModelEntity;
 import com.isxcode.torch.modules.model.repository.ModelRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -15,6 +23,8 @@ import java.util.*;
 public class ModelService {
 
     private final ModelRepository modelRepository;
+
+    private final ResourceLoader resourceLoader;
 
     public ModelEntity getModel(String modelId) {
 
@@ -27,9 +37,23 @@ public class ModelService {
         return model == null ? modelId : model.getName();
     }
 
-    public String getModelType(String modelId) {
+    public String getDeployScript(String modelCode) {
 
-        ModelEntity model = modelRepository.findById(modelId).orElse(null);
-        return model == null ? modelId : model.getModelType();
+        String aiPyPath = "";
+        if ("Qwen/Qwen2.5-0.5B".equals(modelCode)) {
+            aiPyPath = "qwen2.5";
+        } else if ("Google/gemma-3-270m".equals(modelCode)) {
+            aiPyPath = "gemma3";
+        } else {
+            aiPyPath = "basic";
+        }
+
+        Resource resource = resourceLoader.getResource("classpath:ai/" + aiPyPath + "/ai.py");
+        try (InputStream inputStream = resource.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+            return reader.lines().collect(Collectors.joining("\n"));
+        } catch (IOException e) {
+            throw new IsxAppException("安装包部署异常");
+        }
     }
 }

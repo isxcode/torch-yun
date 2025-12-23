@@ -5,13 +5,15 @@ import com.isxcode.torch.backend.api.base.exceptions.IsxAppException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.util.List;
+
 @Slf4j
 public abstract class Bot {
 
     /**
      * 智能体名称.
      */
-    public abstract String name();
+    public abstract List<String> name();
 
     /**
      * 对话方法.

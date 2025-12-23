@@ -19,18 +19,8 @@
                     </template>
                     <template #options="scopeSlot">
                         <div class="btn-group btn-group-msg">
-                            <!-- <span>检测</span> -->
-                            <span v-if="scopeSlot.row.modelType !== 'API' && scopeSlot.row.tenantId !== 'zhishuyun'" @click="editEvent(scopeSlot.row)">编辑</span>
-                            <!-- <el-dropdown trigger="click">
-                                <span class="click-show-more">更多</span>
-                                <template #dropdown>
-                                    <el-dropdown-menu>
-                                        <el-dropdown-item>编辑</el-dropdown-item>
-                                        <el-dropdown-item>删除</el-dropdown-item>
-                                        <el-dropdown-item>备注</el-dropdown-item>
-                                    </el-dropdown-menu>
-                                </template>
-                            </el-dropdown> -->
+                            <span v-if="scopeSlot.row.tenantId !== 'zhishuyun'" @click="editEvent(scopeSlot.row)">编辑</span>
+                            <span v-if="scopeSlot.row.tenantId !== 'zhishuyun'" @click="deleteEvent(scopeSlot.row)">删除</span>
                         </div>
                     </template>
                 </BlockTable>
@@ -45,15 +35,15 @@ import { reactive, ref, onMounted } from 'vue'
 import Breadcrumb from '@/layout/bread-crumb/index.vue'
 import LoadingPage from '@/components/loading/index.vue'
 import { BreadCrumbList, TableConfig } from './list.config'
-import { AddModelData, QueryModelList, UpdateModelData } from '@/services/model-management.service'
+import { AddModelData, QueryModelList, UpdateModelData, DeleteModelData } from '@/services/model-management.service'
 import AddModal from './add-modal/index.vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 interface FormParams {
     name: string
-    code: string
-    modelLabel: string
+    modelPlazaId: string
     modelFile: string
+    deployScript: string
     remark: string
     id?: string
 }
@@ -92,6 +82,19 @@ function editEvent(data: any) {
             })
         })
     }, data)
+}
+
+function deleteEvent(data: any) {
+    ElMessageBox.confirm('确定删除该模型吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+    }).then(() => {
+        DeleteModelData({ id: data.id }).then((res: any) => {
+            ElMessage.success(res.msg)
+            initData()
+        })
+    }).catch(() => {})
 }
 
 function initData(tableLoading?: boolean) {

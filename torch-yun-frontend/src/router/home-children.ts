@@ -12,6 +12,7 @@ import fileCenter from '@/views/file-center/index.vue'
 
 import AiItem from '@/views/ai-center/ai-item/index.vue'
 import ModelManagement from '@/views/ai-center/model-management/index.vue'
+import ModelPlaza from '@/views/ai-center/model-plaza/index.vue'
 import AppManagement from '@/views/ai-center/app-management/index.vue'
 import AppDetail from '@/views/ai-center/app-management/detail-page/index.vue'
 
@@ -60,6 +61,11 @@ export default [
     path: 'personal-info',
     name: 'personalInfo',
     component: PersonalInfo
+  },
+  {
+    path: 'model-plaza',
+    name: 'model-plaza',
+    component: ModelPlaza
   },
   {
     path: 'model-management',

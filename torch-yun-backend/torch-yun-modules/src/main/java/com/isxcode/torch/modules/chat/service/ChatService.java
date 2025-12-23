@@ -37,8 +37,8 @@ public class ChatService {
     }
 
     public BotChatContext transSessionListToBotChatContext(List<ChatSessionEntity> chatSessionList, AppEntity app,
-        AiEntity ai, Integer nowIndex, String chatId, String modelCode, String chatSessionId, String aiSessionId,
-        String userId, String tenantId) {
+        AiEntity ai, Integer nowIndex, String chatId, String chatSessionId, String aiSessionId, String modelCode,
+        String modelId, String userId, String tenantId) {
 
         List<ChatContent> chatContents = new ArrayList<>();
         chatSessionList.forEach(session -> {
@@ -50,9 +50,10 @@ public class ChatService {
 
         return BotChatContext.builder().chatId(chatId).chats(chatContents).nowChatIndex(nowIndex + 1)
             .baseConfig(JSON.parseObject(app.getBaseConfig(), BaseConfig.class)).prompt(app.getPrompt())
-            .authConfig(JSON.parseObject(ai.getAuthConfig(), AuthConfig.class)).modelCode(modelCode)
-            .aiPort(ai.getAiPort()).clusterConfig(JSON.parseObject(ai.getClusterConfig(), ClusterConfig.class))
-            .aiSessionId(aiSessionId).tenantId(tenantId).userId(userId).userAskSessionId(chatSessionId).build();
+            .authConfig(JSON.parseObject(ai.getAuthConfig(), AuthConfig.class)).aiType(ai.getAiType())
+            .modelName(ai.getModelId()).modelCode(modelCode).aiPort(ai.getAiPort()).modelName(modelId)
+            .clusterConfig(JSON.parseObject(ai.getClusterConfig(), ClusterConfig.class)).aiSessionId(aiSessionId)
+            .tenantId(tenantId).userId(userId).userAskSessionId(chatSessionId).build();
     }
 
 }

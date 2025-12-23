@@ -1,6 +1,7 @@
 package com.isxcode.torch.modules.chat.service;
 
 import com.alibaba.fastjson.JSON;
+import com.isxcode.torch.api.ai.constant.AiType;
 import com.isxcode.torch.api.app.constants.DefaultAppStatus;
 import com.isxcode.torch.api.app.req.QuerySubSessionReq;
 import com.isxcode.torch.api.app.res.QuerySubSessionRes;
@@ -28,6 +29,8 @@ import com.isxcode.torch.modules.chat.repository.ChatRepository;
 import com.isxcode.torch.modules.chat.repository.ChatSessionRepository;
 import com.isxcode.torch.modules.chat.repository.ChatSubSessionRepository;
 import com.isxcode.torch.modules.model.entity.ModelEntity;
+import com.isxcode.torch.modules.model.plaza.entity.ModelPlazaEntity;
+import com.isxcode.torch.modules.model.plaza.service.ModelPlazaService;
 import com.isxcode.torch.modules.model.service.ModelService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -70,6 +73,7 @@ public class ChatBizService {
     private final ChatSubSessionRepository chatSubSessionRepository;
 
     public static final Map<String, Thread> CHAT_THREAD_MAP = new HashMap<>();
+    private final ModelPlazaService modelPlazaService;
 
     public GetMaxChatIdRes getMaxChatId(GetMaxChatIdReq getMaxChatIdReq) {
 
@@ -144,10 +148,19 @@ public class ChatBizService {
         ChatEntity chat = chatService.getChat(sendChatReq.getChatId());
         AiEntity ai = aiService.getAi(app.getAiId());
 
-        // 获取模型信息
-        JPA_TENANT_MODE.set(false);
-        ModelEntity model = modelService.getModel(ai.getModelId());
-        JPA_TENANT_MODE.set(true);
+        // 获取模型的id
+        String modelId = "";
+        String modelCode = "";
+        if (AiType.LOCAL.equals(ai.getAiType())) {
+            ModelEntity model = modelService.getModel(ai.getModelId());
+            ModelPlazaEntity modelPlaza = modelPlazaService.getModelPlaza(model.getModelPlazaId());
+            modelCode = modelPlaza.getId();
+            modelId = modelPlaza.getModelName();
+        } else {
+            ModelPlazaEntity modelPlaza = modelPlazaService.getModelPlaza(ai.getModelId());
+            modelCode = modelPlaza.getId();
+            modelId = modelPlaza.getModelName();
+        }
 
         // 判断会话index是否存在，防止重复对话
         if (chatSessionRepository.existsBySessionIndexAndChatId(sendChatReq.getMaxChatIndexId(),
@@ -190,8 +203,8 @@ public class ChatBizService {
 
         // 封装对话上下文
         BotChatContext botChatContext = chatService.transSessionListToBotChatContext(chatSessionList, app, ai,
-            sendChatReq.getMaxChatIndexId(), sendChatReq.getChatId(), model.getCode(), userAskSession.getId(),
-            aiAnswerSession.getId(), USER_ID.get(), TENANT_ID.get());
+            sendChatReq.getMaxChatIndexId(), sendChatReq.getChatId(), userAskSession.getId(), aiAnswerSession.getId(),
+            modelCode, modelId, USER_ID.get(), TENANT_ID.get());
 
         // 异步提交应用开始对话
         App application = appFactory.getApp(app.getAppType());

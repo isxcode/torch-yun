@@ -45,15 +45,15 @@ export const colConfigs: colConfig[] = [
         showOverflowTooltip: true
     },
     {
-        prop: 'modelName',
-        title: '模型',
-        minWidth: 140,
+        prop: 'clusterName',
+        title: '引擎',
+        minWidth: 120,
         showOverflowTooltip: true
     },
     {
-        prop: 'clusterName',
-        title: '集群',
-        minWidth: 120,
+        prop: 'modelName',
+        title: '模型',
+        minWidth: 140,
         showOverflowTooltip: true
     },
     {
@@ -67,7 +67,7 @@ export const colConfigs: colConfig[] = [
                     return '本地部署';
                 case 'API':
                     return '远程接入';
-                case 'local':
+                case 'LOCAL':
                     return '本地部署';
                 default:
                     return aiType || '';

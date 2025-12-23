@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -117,7 +118,7 @@ public class QwenPlus extends Bot {
     }
 
     @Override
-    public String name() {
-        return ModelCode.QWEN_PLUS;
+    public List<String> name() {
+        return Arrays.asList(ModelCode.ALIYUN_DEEPSEEK_V3_2, ModelCode.ALIYUN_QWEN3_MAX);
     }
 }

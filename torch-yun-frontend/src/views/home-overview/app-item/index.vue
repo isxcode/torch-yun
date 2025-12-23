@@ -27,14 +27,23 @@
                                 <el-avatar
                                     :style="{
                                         color: '#FFFFFF',
-                                        'background-color': '#fde3d0'
+                                        'background-color': getAvatarColor(app.name)
                                     }"
-                                    :icon="UserFilled"
-                                    :size="30"
-                                />
+                                    :size="36"
+                                >
+                                    {{ getAvatarText(app.name) }}
+                                </el-avatar>
                             </div>
-                            <div class="app-name">
-                                <EllipsisTooltip :label="app.name" />
+                            <div class="app-info">
+                                <div class="app-name">
+                                    <EllipsisTooltip :label="app.name" />
+                                </div>
+                                <div class="app-desc" v-if="app.remark">
+                                    <EllipsisTooltip :label="app.remark" />
+                                </div>
+                            </div>
+                            <div class="app-arrow">
+                                <el-icon><ArrowRight /></el-icon>
                             </div>
                         </div>
                         <template v-for="card in appItemEmptyList">
@@ -61,11 +70,39 @@
 import { onMounted, reactive, ref, defineEmits, computed } from 'vue'
 import { QueryAppList } from '@/services/app-management.service';
 import LoadingPage from '@/components/loading/index.vue'
-import { UserFilled } from '@element-plus/icons-vue'
+import { ArrowRight } from '@element-plus/icons-vue'
 import EllipsisTooltip from '@/components/ellipsis-tooltip/ellipsis-tooltip.vue'
 import EmptyPage from '@/components/empty-page/index.vue'
 
 const emit = defineEmits(['clickAppEvent'])
+
+// 头像颜色列表
+const avatarColors = [
+    '#409EFF', // 蓝色
+    '#67C23A', // 绿色
+    '#E6A23C', // 橙色
+    '#F56C6C', // 红色
+    '#909399', // 灰色
+    '#9B59B6', // 紫色
+    '#1ABC9C', // 青色
+    '#3498DB', // 天蓝色
+]
+
+// 根据应用名称生成头像颜色
+function getAvatarColor(name: string): string {
+    if (!name) return avatarColors[0]
+    let hash = 0
+    for (let i = 0; i < name.length; i++) {
+        hash = name.charCodeAt(i) + ((hash << 5) - hash)
+    }
+    return avatarColors[Math.abs(hash) % avatarColors.length]
+}
+
+// 获取头像显示文字（取名称前两个字符）
+function getAvatarText(name: string): string {
+    if (!name) return ''
+    return name.substring(0, 2)
+}
 
 // 应用部分loading
 const loading = ref(false)
@@ -160,8 +197,9 @@ defineExpose({
         padding: 0 5px;
         box-sizing: border-box;
         .app-label {
-            font-size: 14px;
-            color: getCssVar('color', 'info')
+            font-size: 16px;
+            font-weight: 500;
+            color: getCssVar('text-color', 'primary');
         }
         .el-input {
             width: 260px;
@@ -173,38 +211,106 @@ defineExpose({
     .ai-app-item {
         .app-item-container {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start;
             flex-wrap: wrap;
+            gap: 16px;
             max-height: calc(50vh - 28px);
             overflow: auto;
-            padding: 0 4px;
+            padding: 8px 4px;
             box-sizing: border-box;
             .app-item {
-                height: 60px;
-                width: 24%;
-                border: 1px solid getCssVar('color', 'primary', 'light-9');
-                border-radius: 8px;
-                margin-top: 12px;
-                margin-bottom: 12px;
+                height: 72px;
+                width: calc(25% - 12px);
+                min-width: 200px;
+                background: #ffffff;
+                border: 1px solid #e8eaed;
+                border-radius: 12px;
                 display: inline-flex;
                 align-items: center;
-                padding: 0 20px;
+                padding: 0 16px;
                 box-sizing: border-box;
                 cursor: pointer;
-                transition: all 0.15s linear;
-                background-image: linear-gradient(to bottom, #c6d6f5, #e9effc);
-                .app-name {
-                    font-size: 12px;
-                    margin-left: 8px;
+                transition: all 0.2s ease;
+                position: relative;
+                overflow: hidden;
+
+                &::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: linear-gradient(135deg, rgba(64, 158, 255, 0.03) 0%, rgba(64, 158, 255, 0.08) 100%);
+                    opacity: 0;
+                    transition: opacity 0.2s ease;
                 }
+
+                .app-logo {
+                    flex-shrink: 0;
+                    z-index: 1;
+                    .el-avatar {
+                        font-size: 14px;
+                        font-weight: 500;
+                        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                    }
+                }
+
+                .app-info {
+                    flex: 1;
+                    margin-left: 12px;
+                    min-width: 0;
+                    z-index: 1;
+                    .app-name {
+                        font-size: 14px;
+                        font-weight: 500;
+                        color: getCssVar('text-color', 'primary');
+                        line-height: 1.4;
+                    }
+                    .app-desc {
+                        font-size: 12px;
+                        color: getCssVar('text-color', 'secondary');
+                        margin-top: 4px;
+                        line-height: 1.3;
+                    }
+                }
+
+                .app-arrow {
+                    flex-shrink: 0;
+                    color: getCssVar('text-color', 'placeholder');
+                    transition: all 0.2s ease;
+                    z-index: 1;
+                    .el-icon {
+                        font-size: 14px;
+                    }
+                }
+
                 &:hover {
-                    box-shadow: getCssVar('box-shadow', 'lighter');
-                    transition: all 0.15s linear;
+                    border-color: getCssVar('color', 'primary', 'light-5');
+                    box-shadow: 0 4px 12px rgba(64, 158, 255, 0.15);
+                    transform: translateY(-2px);
+
+                    &::before {
+                        opacity: 1;
+                    }
+
+                    .app-arrow {
+                        color: getCssVar('color', 'primary');
+                        transform: translateX(3px);
+                    }
                 }
+
+                &:active {
+                    transform: translateY(0);
+                    box-shadow: 0 2px 6px rgba(64, 158, 255, 0.1);
+                }
+
                 &.app-item__empty {
                     opacity: 0;
                     cursor: default;
                     pointer-events: none;
+                    border: none;
+                    background: transparent;
                 }
             }
         }
@@ -215,6 +321,25 @@ defineExpose({
             padding: 0 20px;
             box-sizing: border-box;
         }
+    }
+}
+
+// 响应式布局
+@media screen and (max-width: 1200px) {
+    .ai-app-list .ai-app-item .app-item-container .app-item {
+        width: calc(33.33% - 11px);
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .ai-app-list .ai-app-item .app-item-container .app-item {
+        width: calc(50% - 8px);
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .ai-app-list .ai-app-item .app-item-container .app-item {
+        width: 100%;
     }
 }
 </style>

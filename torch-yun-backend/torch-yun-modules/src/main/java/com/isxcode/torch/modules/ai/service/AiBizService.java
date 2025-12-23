@@ -43,6 +43,8 @@ import com.isxcode.torch.modules.cluster.mapper.ClusterNodeMapper;
 import com.isxcode.torch.modules.cluster.repository.ClusterNodeRepository;
 import com.isxcode.torch.modules.cluster.service.ClusterService;
 import com.isxcode.torch.modules.model.entity.ModelEntity;
+import com.isxcode.torch.modules.model.plaza.entity.ModelPlazaEntity;
+import com.isxcode.torch.modules.model.plaza.service.ModelPlazaService;
 import com.isxcode.torch.modules.model.service.ModelService;
 import com.isxcode.torch.modules.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -61,7 +63,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-import static com.isxcode.torch.common.config.CommonConfig.JPA_TENANT_MODE;
 
 @Service
 @Slf4j
@@ -82,6 +83,8 @@ public class AiBizService {
     private final ModelService modelService;
 
     private final AppRepository appRepository;
+
+    private final ModelPlazaService modelPlazaService;
 
     private final DeployAiService deployAiService;
 
@@ -104,29 +107,24 @@ public class AiBizService {
         // 封装智能体对象
         AiEntity aiEntity = aiMapper.addAiReqToAiEntity(addAiReq);
 
-        // 通过模型id判断当前所需参数
-        JPA_TENANT_MODE.set(false);
-        ModelEntity model = modelService.getModel(addAiReq.getModelId());
-        JPA_TENANT_MODE.set(true);
-
         // 自动创建对应的应用
         AppEntity appEntity = new AppEntity();
-        if (ModelType.API.equals(model.getModelType())) {
-            if (addAiReq.getAuthConfig() == null) {
-                throw new IsxAppException("验证信息缺失");
-            }
-            aiEntity.setAuthConfig(JSON.toJSONString(addAiReq.getAuthConfig()));
-            aiEntity.setStatus(AiStatus.ENABLE);
-            appEntity.setStatus(AiStatus.ENABLE);
-        } else if (ModelType.MANUAL.equals(model.getModelType())) {
+        if (AiType.LOCAL.equals(aiEntity.getAiType())) {
             if (addAiReq.getClusterConfig() == null) {
                 throw new IsxAppException("集群配置缺失");
             }
             aiEntity.setClusterConfig(JSON.toJSONString(addAiReq.getClusterConfig()));
             aiEntity.setStatus(AiStatus.DISABLE);
+            aiEntity.setAiType(AiType.LOCAL);
             appEntity.setStatus(AppStatus.INIT);
         } else {
-            throw new IsxAppException("当前模型不支持");
+            if (addAiReq.getAuthConfig() == null) {
+                throw new IsxAppException("验证信息缺失");
+            }
+            aiEntity.setAuthConfig(JSON.toJSONString(addAiReq.getAuthConfig()));
+            aiEntity.setStatus(AiStatus.ENABLE);
+            aiEntity.setAiType(AiType.API);
+            appEntity.setStatus(AiStatus.ENABLE);
         }
 
         aiEntity.setCheckDateTime(LocalDateTime.now());
@@ -166,19 +164,18 @@ public class AiBizService {
         if (AiStatus.DEPLOYING.equals(ai.getStatus())) {
             throw new IsxAppException("部署中，不可编辑");
         }
+        if (AiStatus.ENABLE.equals(ai.getStatus())) {
+            throw new IsxAppException("先下线，再编辑");
+        }
 
         AiEntity aiEntity = aiMapper.updateAiReqToAiEntity(updateAiReq, ai);
 
-        JPA_TENANT_MODE.set(false);
-        ModelEntity model = modelService.getModel(ai.getModelId());
-        JPA_TENANT_MODE.set(true);
-
-        if (ModelType.API.equals(model.getModelType())) {
+        if (ModelType.API.equals(aiEntity.getAiType())) {
             if (updateAiReq.getAuthConfig() == null) {
                 throw new IsxAppException("验证信息缺失");
             }
             aiEntity.setAuthConfig(JSON.toJSONString(updateAiReq.getAuthConfig()));
-        } else if (ModelType.MANUAL.equals(model.getModelType())) {
+        } else if (ModelType.MANUAL.equals(aiEntity.getAiType())) {
             if (updateAiReq.getClusterConfig() == null) {
                 throw new IsxAppException("集群配置缺失");
             }
@@ -198,16 +195,17 @@ public class AiBizService {
 
         Page<PageAiRes> result = aiEntityPage.map(aiMapper::aiEntityToPageAiRes);
         result.forEach(aiEntity -> {
-            if (aiEntity.getClusterConfig() != null) {
+
+            if (AiType.LOCAL.equals(aiEntity.getAiType())) {
                 aiEntity.setClusterName(clusterService
                     .getClusterName(JSON.parseObject(aiEntity.getClusterConfig(), ClusterConfig.class).getClusterId()));
+                aiEntity.setModelName(modelService.getModelName(aiEntity.getModelId()));
+            } else {
+                ModelPlazaEntity modelPlaza = modelPlazaService.getModelPlaza(aiEntity.getModelId());
+                aiEntity.setModelName(modelPlaza.getModelName());
+                aiEntity.setClusterName(modelPlaza.getOrgName());
             }
             aiEntity.setCreateByUsername(userService.getUserName(aiEntity.getCreateBy()));
-            JPA_TENANT_MODE.set(false);
-            aiEntity.setModelName(modelService.getModelName(aiEntity.getModelId()));
-            JPA_TENANT_MODE.set(true);
-
-            aiEntity.setAiType(modelService.getModelType(aiEntity.getModelId()));
         });
 
         return result;
@@ -223,32 +221,29 @@ public class AiBizService {
             throw new IsxAppException("当前状态不可部署");
         }
 
-        // 获取模型仓库
-        ModelEntity model;
-        if ("Qwen2.5-0.5B".equals(ai.getModelId())) {
-            model = new ModelEntity();
-            model.setCode("Qwen2.5-0.5B");
-            model.setModelFile("Qwen2.5-0.5B.zip");
-            model.setModelType(ModelType.MANUAL);
-        } else {
-            JPA_TENANT_MODE.set(false);
-            model = modelService.getModel(ai.getModelId());
-            JPA_TENANT_MODE.set(true);
-        }
-
         // 修改状态
         ai.setStatus(AiStatus.DEPLOYING);
-        if (ModelType.API.equals(model.getModelType())) {
+        if (ModelType.API.equals(ai.getAiType())) {
             ai.setStatus(AiStatus.ENABLE);
         }
         aiRepository.saveAndFlush(ai);
 
         // 本地部署需要启动服务、
-        if (ModelType.MANUAL.equals(model.getModelType())) {
+        if (ModelType.LOCAL.equals(ai.getAiType())) {
+
+            ModelEntity model = modelService.getModel(ai.getModelId());
+            ModelPlazaEntity modelPlaza = modelPlazaService.getModelPlaza(model.getModelPlazaId());
+
+            if (Strings.isEmpty(model.getDeployScript())) {
+                model.setDeployScript(
+                    modelService.getDeployScript(modelPlaza.getOrgName() + "/" + modelPlaza.getModelName()));
+            }
+
             // 封装请求体
             DeployAiContext deployAiContext = DeployAiContext.builder().aiId(ai.getId())
-                .clusterConfig(JSON.parseObject(ai.getClusterConfig(), ClusterConfig.class)).modelCode(model.getCode())
-                .modelFileId(model.getModelFile()).build();
+                .clusterConfig(JSON.parseObject(ai.getClusterConfig(), ClusterConfig.class))
+                .modelCode(modelPlaza.getId()).modelFileId(model.getModelFile()).deployScript(model.getDeployScript())
+                .build();
             deployAiService.deployAi(deployAiContext);
         }
     }
@@ -259,10 +254,7 @@ public class AiBizService {
         AiEntity ai = aiService.getAi(stopAiReq.getId());
 
         // 本地模型，需要停止服务
-        JPA_TENANT_MODE.set(false);
-        ModelEntity model = modelService.getModel(ai.getModelId());
-        JPA_TENANT_MODE.set(true);
-        if (ModelType.MANUAL.equals(model.getModelType())) {
+        if (ModelType.LOCAL.equals(ai.getAiType())) {
             // 判断pid值
             if (Strings.isEmpty(ai.getAiPid())) {
                 throw new IsxAppException("智能体启动异常");
@@ -271,7 +263,7 @@ public class AiBizService {
             List<ClusterNodeEntity> allEngineNodes = clusterNodeRepository.findAllByClusterIdAndStatus(
                 JSON.parseObject(ai.getClusterConfig(), ClusterConfig.class).getClusterId(), ClusterNodeStatus.RUNNING);
             if (allEngineNodes.isEmpty()) {
-                throw new IsxAppException("申请资源失败 : 集群不存在可用节点，请切换一个集群  \n");
+                throw new IsxAppException("申请资源失败 : 集群不存在可用节点，请切换一个集群 \n");
             }
             ClusterNodeEntity engineNode = allEngineNodes.get(new Random().nextInt(allEngineNodes.size()));
 
@@ -299,7 +291,7 @@ public class AiBizService {
 
         // 修改智能体状态
         ai.setStatus(AiStatus.DISABLE);
-        ai.setAiLog(ai.getAiLog() + "\n" + LocalDateTime.now() + WorkLog.SUCCESS_INFO + " 已停止");
+        ai.setAiLog(ai.getAiLog() + "\n" + LocalDateTime.now() + WorkLog.SUCCESS_INFO + "已手动下线");
         aiRepository.save(ai);
     }
 
@@ -352,12 +344,8 @@ public class AiBizService {
         // 判断ai是否存在
         AiEntity ai = aiService.getAi(checkAiReq.getId());
 
-        JPA_TENANT_MODE.set(false);
-        ModelEntity model = modelService.getModel(ai.getModelId());
-        JPA_TENANT_MODE.set(true);
-
         // 根据智能体类型选择不同的检测方式
-        if (AiType.API.equals(model.getModelType())) {
+        if (AiType.API.equals(ai.getAiType())) {
             // API类型智能体检测
             return checkApiAi(ai);
         } else {
@@ -450,11 +438,7 @@ public class AiBizService {
             throw new IsxAppException("智能体正在部署中，请等待部署完成后再删除");
         }
 
-        JPA_TENANT_MODE.set(false);
-        ModelEntity model = modelService.getModel(ai.getModelId());
-        JPA_TENANT_MODE.set(true);
-
-        if (ModelType.MANUAL.equals(model.getModelType())) {
+        if (ModelType.LOCAL.equals(ai.getAiType())) {
 
             // 随机一个集群节点
             List<ClusterNodeEntity> allEngineNodes = clusterNodeRepository.findAllByClusterIdAndStatus(
@@ -482,5 +466,8 @@ public class AiBizService {
 
         // 删除智能体
         aiRepository.deleteById(ai.getId());
+
+        // 删除相关的应用
+        appRepository.deleteAllByAiId(ai.getId());
     }
 }

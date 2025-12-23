@@ -42,7 +42,6 @@ export default defineNuxtPlugin({
           }, 1000);
         });
       } else {
-        console.warn('预加载loading条未找到，创建备用loading条');
 
         // 如果没有内联loading条，创建备用的loading条
         // 创建内联样式，确保loading条样式立即可用

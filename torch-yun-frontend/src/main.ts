@@ -3,6 +3,9 @@ import App from './App.vue'
 import router from './router'
 import pinia from './store'
 
+// 打印版本号
+console.log(`%c 至数云 %c ${__APP_VERSION__} `, 'background:#35495e; padding: 1px; border-radius: 3px 0 0 3px; color: #fff', 'background:#41b883; padding: 1px; border-radius: 0 3px 3px 0; color: #fff')
+
 import "normalize.css"
 
 import VXETable from 'vxe-table'

@@ -139,7 +139,12 @@ public class FileBizService {
         // 获取文件信息
         FileEntity file = fileService.getFile(downloadFileReq.getFileId());
         String fileDir = PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + File.separator + "file"
-            + File.separator + TENANT_ID.get();
+            + File.separator + file.getTenantId();
+
+        // 如果docker部署，使用指定目录获取系统驱动
+        if (isxAppProperties.isDockerMode() && "zhishuyun".equals(file.getTenantId())) {
+            fileDir = "/var/lib/zhishuyun-system";
+        }
 
         try {
             InputStreamResource resource =

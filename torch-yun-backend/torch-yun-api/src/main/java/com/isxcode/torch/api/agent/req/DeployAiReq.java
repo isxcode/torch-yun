@@ -14,4 +14,6 @@ public class DeployAiReq {
     private String agentHomePath;
 
     private String aiId;
+
+    private String deployScript;
 }

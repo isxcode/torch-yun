@@ -15,17 +15,19 @@ public class PageModelRes {
 
     private String name;
 
-    private String code;
+    private String orgName;
 
-    private String modelType;
+    private String modelPlazaId;
 
-    private String modelLabel;
+    private String modelName;
 
     private String modelFile;
 
     private String modelFileName;
 
     private String status;
+
+    private String deployScript;
 
     private String remark;
 

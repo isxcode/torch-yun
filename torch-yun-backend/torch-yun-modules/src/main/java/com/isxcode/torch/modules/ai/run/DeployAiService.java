@@ -24,6 +24,8 @@ import com.isxcode.torch.modules.app.repository.AppRepository;
 import com.isxcode.torch.modules.cluster.entity.ClusterNodeEntity;
 import com.isxcode.torch.modules.cluster.mapper.ClusterNodeMapper;
 import com.isxcode.torch.modules.cluster.repository.ClusterNodeRepository;
+import com.isxcode.torch.modules.file.entity.FileEntity;
+import com.isxcode.torch.modules.file.service.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -58,6 +60,8 @@ public class DeployAiService {
 
     private final AppRepository appRepository;
 
+    private final FileService fileService;
+
     @Async
     public void deployAi(DeployAiContext deployAiContext) {
 
@@ -78,43 +82,44 @@ public class DeployAiService {
 
         try {
 
+            FileEntity file = fileService.getFile(deployAiContext.getModelFileId());
+
             // 非系统模型需要上传
-            if (!"Qwen2.5-0.5B.zip".equals(deployAiContext.getModelFileId())) {
-                String srcPath =
-                    PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + File.separator + "file"
-                        + File.separator + engineNode.getTenantId() + File.separator + deployAiContext.getModelFileId();
-                String distPath =
-                    engineNode.getAgentHomePath() + "/zhishuyun-agent/file/" + deployAiContext.getModelFileId();
+            String srcPath = PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + File.separator + "file"
+                + File.separator + file.getTenantId() + File.separator + deployAiContext.getModelFileId();
 
-                // 看看模型是否存在
-                boolean fileIsUpload = scpFileService.modelFileIsUpload(scpFileEngineNodeDto, srcPath, distPath);
-                if (!fileIsUpload) {
-                    // 异步上传安装包
-                    scpFileService.scpFile(scpFileEngineNodeDto, srcPath, distPath);
+            // 如果docker部署，使用指定目录获取系统驱动
+            if (isxAppProperties.isDockerMode() && "zhishuyun".equals(file.getTenantId())) {
+                srcPath = "/var/lib/zhishuyun-system" + File.separator + deployAiContext.getModelFileId();
+            }
 
-                    // 添加日志
-                    ai = aiService.getAi(deployAiContext.getAiId());
-                    ai.setAiLog(LocalDateTime.now() + WorkLog.SUCCESS_INFO + "开始上传模型");
-                    ai = aiRepository.saveAndFlush(ai);
+            String distPath =
+                engineNode.getAgentHomePath() + "/zhishuyun-agent/file/" + deployAiContext.getModelFileId();
 
-                    // 同步监听进度
-                    scpFileService.listenScpPercent(scpFileEngineNodeDto, srcPath, distPath, ai);
-                } else {
-                    // 添加日志
-                    ai = aiService.getAi(deployAiContext.getAiId());
-                    ai.setAiLog(LocalDateTime.now() + WorkLog.SUCCESS_INFO + "模型已经上传，开始部署模型");
-                    ai = aiRepository.saveAndFlush(ai);
-                }
+            // 看看模型是否存在
+            boolean fileIsUpload = scpFileService.modelFileIsUpload(scpFileEngineNodeDto, srcPath, distPath);
+            if (!fileIsUpload) {
+                // 异步上传安装包
+                scpFileService.scpFile(scpFileEngineNodeDto, srcPath, distPath);
+
+                // 添加日志
+                ai = aiService.getAi(deployAiContext.getAiId());
+                ai.setAiLog(LocalDateTime.now() + WorkLog.SUCCESS_INFO + "开始上传模型");
+                ai = aiRepository.saveAndFlush(ai);
+
+                // 同步监听进度
+                scpFileService.listenScpPercent(scpFileEngineNodeDto, srcPath, distPath, ai);
             } else {
                 // 添加日志
+                ai = aiService.getAi(deployAiContext.getAiId());
                 ai.setAiLog(LocalDateTime.now() + WorkLog.SUCCESS_INFO + "模型已经上传，开始部署模型");
                 ai = aiRepository.saveAndFlush(ai);
             }
 
             // 调用模型部署接口
             DeployAiReq deployAiReq = DeployAiReq.builder().agentHomePath(engineNode.getAgentHomePath())
-                .modelCode(deployAiContext.getModelCode()).modelFileId(deployAiContext.getModelFileId())
-                .aiId(ai.getId()).build();
+                .deployScript(deployAiContext.getDeployScript()).modelCode(deployAiContext.getModelCode())
+                .modelFileId(deployAiContext.getModelFileId()).aiId(ai.getId()).build();
             BaseResponse<?> baseResponse = HttpUtils.doPost(
                 httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), AgentUrl.DEPLOY_AI_URL),
                 deployAiReq, BaseResponse.class);

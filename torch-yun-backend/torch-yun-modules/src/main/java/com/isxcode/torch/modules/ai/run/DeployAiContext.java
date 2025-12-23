@@ -15,4 +15,6 @@ public class DeployAiContext {
     private String modelCode;
 
     private String modelFileId;
+
+    private String deployScript;
 }

@@ -19,6 +19,10 @@ public class BotChatContext {
 
     private String aiPort;
 
+    private String aiType;
+
+    private String modelName;
+
     private String modelCode;
 
     private AuthConfig authConfig;
