@@ -4,7 +4,9 @@ import com.isxcode.torch.backend.api.base.exceptions.AbstractIsxAppException;
 import com.isxcode.torch.backend.api.base.exceptions.IsxErrorException;
 import com.isxcode.torch.backend.api.base.exceptions.SuccessResponseException;
 import com.isxcode.torch.backend.api.base.pojos.BaseResponse;
+
 import java.nio.file.AccessDeniedException;
+
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
@@ -12,6 +14,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.validation.ObjectError;
@@ -38,15 +41,18 @@ public class GlobalExceptionAdvice extends ResponseEntityExceptionHandler {
                 : abstractSparkYunException.getCode());
         errorResponse.setErr(abstractSparkYunException.getErr() == null ? null : abstractSparkYunException.getErr());
 
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
         if ("401".equals(abstractSparkYunException.getCode())) {
-            return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(errorResponse, headers, HttpStatus.UNAUTHORIZED);
         }
 
         if ("403".equals(abstractSparkYunException.getCode())) {
-            return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(errorResponse, headers, HttpStatus.FORBIDDEN);
         }
 
-        return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+        return new ResponseEntity<>(errorResponse, headers, HttpStatus.OK);
     }
 
     @ExceptionHandler(IsxErrorException.class)
