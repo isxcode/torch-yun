@@ -138,13 +138,12 @@ public class FileBizService {
 
         // 获取文件信息
         FileEntity file = fileService.getFile(downloadFileReq.getFileId());
+
+        // 判断系统数据
+        checkTenantData(file.getTenantId());
+
         String fileDir = PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + File.separator + "file"
             + File.separator + file.getTenantId();
-
-        // 如果docker部署，使用指定目录获取系统驱动
-        if (isxAppProperties.isDockerMode() && "zhishuyun".equals(file.getTenantId())) {
-            fileDir = "/var/lib/zhishuyun-system";
-        }
 
         try {
             InputStreamResource resource =
@@ -165,6 +164,9 @@ public class FileBizService {
 
         // 获取文件内容
         FileEntity file = fileService.getFile(deleteFileReq.getFileId());
+
+        // 判断系统数据
+        checkTenantData(file.getTenantId());
 
         // 将原有的文件，加一个deleted的后缀
         String fileDir = PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + File.separator + "file"
@@ -191,5 +193,12 @@ public class FileBizService {
         map.getContent().forEach(e -> e.setCreateUsername(userService.getUserName(e.getCreateBy())));
 
         return map;
+    }
+
+    public void checkTenantData(String tenantId) {
+
+        if ("zhishuyun".equals(tenantId)) {
+            throw new IsxAppException("系统数据当前无法操作");
+        }
     }
 }
