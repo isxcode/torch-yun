@@ -86,17 +86,6 @@ jobs:
             yum install -y python39
             pip3 install torch 'transformers[torch]' fastapi uvicorn
 
-      - name: Install env3
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ inputs.dev_server_ip }}
-          username: ${{ inputs.dev_server_username }}
-          password: ${{ inputs.dev_server_password }}
-          script_stop: true
-          timeout: 3600s
-          script: |
-            pip3 install yfinance mplfinance akshare
-
       - name: Start agent
         uses: appleboy/ssh-action@v1.0.3
         with:
