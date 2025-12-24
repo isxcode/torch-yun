@@ -57,6 +57,7 @@ import org.springframework.http.HttpStatus;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.ResourceAccessException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -175,11 +176,11 @@ public class AiBizService {
                 throw new IsxAppException("验证信息缺失");
             }
             aiEntity.setAuthConfig(JSON.toJSONString(updateAiReq.getAuthConfig()));
-        } else if (ModelType.MANUAL.equals(aiEntity.getAiType())) {
+        } else if (ModelType.LOCAL.equals(aiEntity.getAiType())) {
             if (updateAiReq.getClusterConfig() == null) {
                 throw new IsxAppException("集群配置缺失");
             }
-            aiEntity.setClusterConfig(updateAiReq.getClusterConfig().getClusterId());
+            aiEntity.setClusterConfig(JSON.toJSONString(updateAiReq.getClusterConfig()));
             aiEntity.setStatus(AiStatus.DISABLE);
         } else {
             throw new IsxAppException("当前模型不支持");
@@ -276,9 +277,18 @@ public class AiBizService {
             StopAgentAiReq stopAgentAiReq = StopAgentAiReq.builder().pid(ai.getAiPid()).build();
 
             // 调用代理停止
-            BaseResponse<?> baseResponse = HttpUtils.doPost(
-                httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), AgentUrl.STOP_AI_URL),
-                stopAgentAiReq, BaseResponse.class);
+            BaseResponse<?> baseResponse;
+            try {
+                baseResponse = HttpUtils.doPost(
+                    httpUrlUtils.genHttpUrl(engineNode.getHost(), engineNode.getAgentPort(), AgentUrl.STOP_AI_URL),
+                    stopAgentAiReq, BaseResponse.class);
+            } catch (ResourceAccessException e) {
+                // 修改智能体状态
+                ai.setStatus(AiStatus.DISABLE);
+                ai.setAiLog(ai.getAiLog() + "\n" + LocalDateTime.now() + WorkLog.SUCCESS_INFO + "已下线");
+                aiRepository.save(ai);
+                return;
+            }
 
             // 停止失败
             if (!String.valueOf(HttpStatus.OK.value()).equals(baseResponse.getCode())) {
