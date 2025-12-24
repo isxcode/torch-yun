@@ -68,14 +68,6 @@ check_system_dependencies() {
     fi
 }
 
-# 拷贝默认模型
-copy_model() {
-    echo "拷贝默认模型..."
-
-    create_dir "${RESOURCE_DIR}"/file/zhishuyun/
-    cp "${RESOURCE_DIR}"/tmp/Qwen2.5-0.5B.zip "${RESOURCE_DIR}"/file/zhishuyun/
-}
-
 # =============================================================================
 # 主要安装流程
 # =============================================================================
@@ -85,9 +77,6 @@ main() {
 
     # 1. 检查系统依赖
     check_system_dependencies
-
-    # 2. 把默认模型拷贝到file目录下
-    copy_model
 
     echo "项目依赖安装完成！"
 }
