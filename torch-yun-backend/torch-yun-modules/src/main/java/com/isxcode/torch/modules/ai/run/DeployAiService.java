@@ -91,11 +91,9 @@ public class DeployAiService {
             String distPath =
                 engineNode.getAgentHomePath() + "/zhishuyun-agent/file/" + deployAiContext.getModelFileId();
 
-            // 看看模型是否存在
-            boolean fileIsUpload = scpFileService.modelFileIsUpload(scpFileEngineNodeDto, srcPath, distPath);
-
-            // 系统默认模型不需要上传，通过tenantId为zhishuyun判断
-            if (!fileIsUpload && !"zhishuyun".equals(file.getTenantId())) {
+            // 看看模型是否存在 系统默认模型不需要上传，通过tenantId为zhishuyun判断
+            boolean fileNotUpload = !"zhishuyun".equals(file.getTenantId()) && !scpFileService.modelFileIsUpload(scpFileEngineNodeDto, srcPath, distPath);
+            if (fileNotUpload) {
                 // 异步上传安装包
                 scpFileService.scpFile(scpFileEngineNodeDto, srcPath, distPath);
 
