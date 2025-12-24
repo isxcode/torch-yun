@@ -88,17 +88,14 @@ public class DeployAiService {
             String srcPath = PathUtils.parseProjectPath(isxAppProperties.getResourcesPath()) + File.separator + "file"
                 + File.separator + file.getTenantId() + File.separator + deployAiContext.getModelFileId();
 
-            // 如果docker部署，使用指定目录获取系统驱动
-            if (isxAppProperties.isDockerMode() && "zhishuyun".equals(file.getTenantId())) {
-                srcPath = "/var/lib/zhishuyun-system" + File.separator + deployAiContext.getModelFileId();
-            }
-
             String distPath =
                 engineNode.getAgentHomePath() + "/zhishuyun-agent/file/" + deployAiContext.getModelFileId();
 
             // 看看模型是否存在
             boolean fileIsUpload = scpFileService.modelFileIsUpload(scpFileEngineNodeDto, srcPath, distPath);
-            if (!fileIsUpload) {
+
+            // 系统默认模型不需要上传，通过tenantId为zhishuyun判断
+            if (!fileIsUpload && !"zhishuyun".equals(file.getTenantId())) {
                 // 异步上传安装包
                 scpFileService.scpFile(scpFileEngineNodeDto, srcPath, distPath);
 

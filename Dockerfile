@@ -11,7 +11,6 @@ ARG LOG_LEVEL='info'
 
 COPY ./torch-yun-backend/torch-yun-main/build/libs/zhishuyun.jar /opt/zhishuyun/zhishuyun.jar
 COPY ./torch-yun-backend/torch-yun-main/src/main/resources/application-docker.yml /etc/zhishuyun/conf/
-COPY ./resources/file/zhishuyun /var/lib/zhishuyun-system
 
 EXPOSE 8080
 
