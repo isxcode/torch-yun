@@ -281,7 +281,7 @@ onMounted(() => {
     playBtn.style.transform = 'translate(-50%, -50%)';
     playBtn.style.width = '60px';
     playBtn.style.height = '60px';
-    playBtn.style.backgroundColor = 'rgba(80, 107, 254, 0.9)';
+    playBtn.style.backgroundColor = '#506bfe';
     playBtn.style.borderRadius = '50%';
     playBtn.style.display = 'flex';
     playBtn.style.alignItems = 'center';
@@ -312,7 +312,7 @@ onMounted(() => {
     // 点击封面后才创建 iframe，这样可以绕过浏览器的自动播放静音限制
     posterWrapper.addEventListener('click', () => {
       const iframe = document.createElement('iframe');
-      iframe.src = '//player.bilibili.com/player.html?isOutside=true&aid=115802065869006&bvid=BV1E5vsBXEzx&cid=35055272687&p=1&autoplay=1&muted=0&high_quality=1&danmaku=0';
+      iframe.src = '//player.bilibili.com/player.html?isOutside=true&aid=115813692610548&bvid=BV1mdiTBREmA&cid=35099904986&p=1&autoplay=1&muted=0&high_quality=1&danmaku=0';
       iframe.allowFullscreen = true;
       iframe.style.width = '100%';
       iframe.style.height = '100%';
