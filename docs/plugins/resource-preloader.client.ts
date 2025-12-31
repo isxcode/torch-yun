@@ -286,7 +286,7 @@
           loadedCount = totalResources;
           onResourceLoaded();
         }
-      }, 30000); // 30秒超时
+      }, 15000); // 15秒超时
     }
   }
 });
