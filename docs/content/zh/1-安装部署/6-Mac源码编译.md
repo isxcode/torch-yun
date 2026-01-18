@@ -71,3 +71,26 @@ org.gradle.parallel.threads=2
 # 最大可用8个并发
 org.gradle.workers.max=8
 ```
+
+### 6. 本地完全体代码编译
+
+> 邮箱中检查压缩包
+
+- torch-yun-main.zip
+- torch-yun-vip-main.zip
+- resources.zip
+- license.lic
+
+```bash
+cd ~/Downloads/
+unzip torch-yun-main.zip
+mv torch-yun-main torch-yun
+unzip torch-yun-vip-main.zip
+mv torch-yun-vip-main ./torch-yun/torch-yun-vip
+unzip resources.zip
+mv resources ./torch-yun
+cd torch-yun
+gradle install package
+# 启动项目
+gradle start
+```

@@ -22,7 +22,7 @@
           <div class="title">{{ $t("community") }}</div>
           <div class="link" @click="clickGithub">{{ $t("github") }}</div>
           <div class="link" @click="clickGitee">{{ $t("gitee") }}</div>
-          <div class="link" @click="clickDiscord">{{ $t("discord") }}</div>
+          <div class="link" @click="clickDiscussions">{{ $t("discord") }}</div>
         </div>
         <div class="column">
           <div class="title">{{ $t("resources") }}</div>
@@ -365,6 +365,10 @@ function clickGitee() {
 }
 
 function clickGithub() {
+  window.open("https://github.com/isxcode/torch-yun/issues");
+}
+
+function clickDiscussions() {
   window.open("https://github.com/isxcode/torch-yun/discussions");
 }
 

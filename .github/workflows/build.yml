@@ -148,12 +148,12 @@ jobs:
         uses: actions/cache@v4
         id: download-cache
         with:
-          path: /home/runner/work/torch-yun/torch-yun/resources
+          path: /home/runner/work/torch-yun/torch-yun/resources/tmp
           key: ${{ runner.os }}-file-${{ hashFiles('/home/runner/work/torch-yun/torch-yun/download.sh') }}
 
       - name: Download dependencies
         if: steps.download-cache.outputs.cache-hit != 'true'
-        run: sudo bash /home/runner/work/torch-yun/torch-yun/download.sh
+        run: bash /home/runner/work/torch-yun/torch-yun/download.sh
 
       - name: Build with gradle
         run: gradle install package
