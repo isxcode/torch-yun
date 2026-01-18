@@ -17,6 +17,10 @@
         <td><a href="https://github.com/isxcode/torch-yun">https://github.com/isxcode/torch-yun</a></td>
     </tr>
     <tr>
+        <td>Gitee仓库</td>
+        <td><a href="https://gitee.com/isxcode/torch-yun">https://gitee.com/isxcode/torch-yun</a></td>
+    </tr>
+    <tr>
         <td>演示环境</td>
         <td><a href="https://zhishuyun-demo.isxcode.com">https://zhishuyun-demo.isxcode.com</a></td>
     </tr>
