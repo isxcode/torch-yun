@@ -401,7 +401,7 @@ function downloadPackage() {
 }
 
 function clickBlogs() {
-  window.open("https://ispong.isxcode.com/tags/pytorch/");
+  window.open("https://ispong.isxcode.com");
 }
 
 function clickDocs() {
