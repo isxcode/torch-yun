@@ -1,95 +1,95 @@
 #!/bin/bash
 
 # =============================================================================
-# 至数云依赖安装脚本
+# ZhiShuYun Dependency Installation Script
 # =============================================================================
 
-set -e  # 遇到错误立即退出
+set -e  # Exit immediately on error
 
-# 路径配置
-readonly BASE_PATH=$(cd "$(dirname "$0")" && pwd)
+# Path configuration
+readonly BASE_PATH=$(cd "$(dirname "$0)" && pwd)
 readonly RESOURCE_DIR="${BASE_PATH}/resources"
 
 # =============================================================================
-# 工具函数
+# Utility functions
 # =============================================================================
 
-# 检查命令是否存在
+# Check if a command exists
 check_command() {
     local cmd=$1
     local install_msg=$2
 
     if ! command -v "$cmd" &>/dev/null; then
-        echo "未检测到 $cmd 命令，$install_msg" >&2
+        echo "$cmd command not detected, $install_msg" >&2
         exit 1
     fi
-    echo "$cmd 命令检查通过"
+    echo "$cmd command check passed"
 }
 
-# 创建目录
+# Create directory
 create_dir() {
     local dir=$1
     if [[ ! -d "$dir" ]]; then
         mkdir -p "$dir"
-        echo "创建目录: $dir"
+        echo "Created directory: $dir"
     fi
 }
 
 # =============================================================================
-# 安装函数
+# Installation functions
 # =============================================================================
 
-# 检查系统依赖
+# Check system dependencies
 check_system_dependencies() {
-    echo "检查系统依赖..."
+    echo "Checking system dependencies..."
 
-    check_command "java" "请安装 Java"
-    check_command "node" "请安装 Node.js"
+    check_command "java" "Please install Java"
+    check_command "node" "Please install Node.js"
 
-    # 检查并安装 pnpm
+    # Check and install pnpm
     if ! command -v pnpm &>/dev/null; then
-        echo "未检测到 pnpm，正在安装..."
+        echo "pnpm not detected, installing..."
         npm install pnpm@9.0.6 -g
-        echo "pnpm 安装完成"
+        echo "pnpm installation complete"
     else
-        echo "pnpm 命令检查通过"
+        echo "pnpm command check passed"
     fi
 
-    # 检查并安装 langChain
-    check_command "python" "请安装 Python"
-    check_command "pip" "请安装 Pip"
+    # Check and install langChain
+    check_command "python" "Please install Python"
+    check_command "pip" "Please install Pip"
 
     if ! python -c "import langchain_core, langchain_openai" &>/dev/null; then
-        echo "未检测到 pip，正在安装..."
+        echo "langChain not detected, installing..."
         pip install langchain-openai langchain-core
-        echo "langChain 安装完成"
+        echo "langChain installation complete"
     else
-        echo "langChain 环境检查通过"
+        echo "langChain environment check passed"
     fi
 }
 
 # =============================================================================
-# 主要安装流程
+# Main installation process
 # =============================================================================
 
 main() {
-    echo "开始安装至数云项目依赖..."
+    echo "Starting ZhiShuYun project dependency installation..."
 
-    # 1. 检查系统依赖
+    # 1. Check system dependencies
     check_system_dependencies
 
-    echo "项目依赖安装完成！"
+    echo "Project dependency installation complete!"
 }
 
 # =============================================================================
-# 脚本入口
+# Script entry point
 # =============================================================================
 
-# 切换到脚本所在目录
+# Switch to script directory
 cd "$BASE_PATH" || {
-    echo "无法切换到项目目录: $BASE_PATH" >&2
+    echo "Cannot switch to project directory: $BASE_PATH" >&2
     exit 1
 }
 
-# 执行主函数
+# Execute main function
 main

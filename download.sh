@@ -1,122 +1,122 @@
 #!/bin/bash
 
 # =============================================================================
-# 至数云依赖下载脚本
+# ZhiShuYun Dependency Download Script
 # =============================================================================
 
-set -e  # 遇到错误立即退出
+set -e  # Exit immediately on error
 
-# 配置项
+# Configuration
 readonly MODEL_FILE="Qwen2.5-0.5B.zip"
 readonly OSS_DOWNLOAD_URL="https://zhishuyun-demo.isxcode.com/tools/open/file"
 
-# 路径配置
+# Path configuration
 readonly BASE_PATH=$(cd "$(dirname "$0")" && pwd)
 readonly TMP_DIR="${BASE_PATH}/resources/tmp"
 
 # =============================================================================
-# 工具函数
+# Utility functions
 # =============================================================================
 
-# 检查命令是否存在
+# Check if a command exists
 check_command() {
     local cmd=$1
     local install_msg=$2
 
     if ! command -v "$cmd" &>/dev/null; then
-        echo "未检测到 $cmd 命令，$install_msg" >&2
+        echo "$cmd command not detected, $install_msg" >&2
         exit 1
     fi
-    echo "$cmd 命令检查通过"
+    echo "$cmd command check passed"
 }
 
-# 创建目录
+# Create directory
 create_dir() {
     local dir=$1
     if [[ ! -d "$dir" ]]; then
         mkdir -p "$dir"
-        echo "创建目录: $dir"
+        echo "Created directory: $dir"
     fi
 }
 
-# 下载文件
+# Download file
 download_file() {
     local url=$1
     local output_path=$2
     local description=$3
 
     if [[ -f "$output_path" ]]; then
-        echo "$description 已存在，跳过下载"
+        echo "$description already exists, skipping download"
         return 0
     fi
 
-    echo "开始下载 $description..."
+    echo "Starting download of $description..."
     if curl -ssL "$url" -o "$output_path"; then
       if head -n 1 "$output_path" | grep -q "<?xml"; then
         if grep -q "<Error>" "$output_path" && grep -q "<Code>NoSuchKey</Code>" "$output_path"; then
             rm -rf "$output_path"
-            echo "下载失败，请联系管理员: ispong@outlook.com" >&2
+            echo "Download failed, please contact administrator: ispong@outlook.com" >&2
             exit 1
         fi
       fi
-      echo "$description 下载成功"
+      echo "$description downloaded successfully"
     fi
 }
 
 # =============================================================================
-# 下载函数
+# Download functions
 # =============================================================================
 
-# 下载模型
+# Download model
 download_model() {
-    echo "下载 模型 ${MODEL_FILE}..."
+    echo "Downloading model ${MODEL_FILE}..."
 
-    # 创建必要目录
+    # Create necessary directories
     create_dir "$TMP_DIR"
 
-    # 下载 Spark
+    # Download model
     local model_url="${OSS_DOWNLOAD_URL}/${MODEL_FILE}"
     local model_path="${TMP_DIR}/${MODEL_FILE}"
-    download_file "$model_url" "$model_path" "大模型文件 ${MODEL_FILE} 二进制文件，请耐心等待"
+    download_file "$model_url" "$model_path" "Large model file ${MODEL_FILE} binary, please be patient"
 }
 
-# 下载项目依赖
+# Download project dependencies
 install_project_dependencies() {
-    echo "下载项目依赖..."
+    echo "Downloading project dependencies..."
 
-    # 创建项目依赖目录
+    # Create project dependencies directory
     create_dir "$LIBS_DIR"
 
-    # 下载项目 JAR 依赖
+    # Download project JAR dependencies
     for jar in "${PROJECT_JARS[@]}"; do
         local jar_url="${OSS_DOWNLOAD_URL}/${jar}"
         local jar_path="${LIBS_DIR}/${jar}"
-        download_file "$jar_url" "$jar_path" "项目依赖: $jar"
+        download_file "$jar_url" "$jar_path" "Project dependency: $jar"
     done
 }
 
 # =============================================================================
-# 主要下载流程
+# Main download process
 # =============================================================================
 
 main() {
-    echo "开始下载至数云项目依赖..."
+    echo "Starting ZhiShuYun project dependency download..."
 
-    # 1. 下载模型
+    # 1. Download model
     download_model
 
-    echo "项目依赖下载完成！"
+    echo "Project dependency download complete!"
 }
 
 # =============================================================================
-# 脚本入口
+# Script entry point
 # =============================================================================
 
-# 切换到脚本所在目录
+# Switch to script directory
 cd "$BASE_PATH" || {
-    echo "无法切换到项目目录: $BASE_PATH" >&2
+    echo "Cannot switch to project directory: $BASE_PATH" >&2
     exit 1
 }
 
-# 执行主函数
+# Execute main function
 main
