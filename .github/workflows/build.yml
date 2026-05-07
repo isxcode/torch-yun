@@ -151,6 +151,18 @@ jobs:
           path: /home/runner/work/torch-yun/torch-yun/resources/tmp
           key: ${{ runner.os }}-file-${{ hashFiles('/home/runner/work/torch-yun/torch-yun/download.sh') }}
 
+      - name: Download tmp dependencies
+        if: steps.download-cache.outputs.cache-hit != 'true'
+        run: |
+          docker pull registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun-tmp-download:latest
+          docker run -itd --name=zhishuyun-tmp-download registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun-tmp-download:latest
+          docker cp zhishuyun-tmp-download:/downloads/resources.zip /tmp/resources.zip
+          unzip /tmp/resources.zip -d /home/runner/work/torch-yun/torch-yun/
+          rm -rf /tmp/resources.zip
+          docker stop zhishuyun-tmp-download
+          docker rm zhishuyun-tmp-download
+          docker rmi registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun-tmp-download:latest
+
       - name: Download dependencies
         if: steps.download-cache.outputs.cache-hit != 'true'
         run: bash /home/runner/work/torch-yun/torch-yun/download.sh
