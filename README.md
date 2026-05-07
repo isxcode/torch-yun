@@ -17,7 +17,7 @@
         <td><a href="https://github.com/isxcode/torch-yun">https://github.com/isxcode/torch-yun</a></td>
     </tr>
     <tr>
-        <td>Gitee仓库</td>
+        <td>码云仓库</td>
         <td><a href="https://gitee.com/isxcode/torch-yun">https://gitee.com/isxcode/torch-yun</a></td>
     </tr>
     <tr>
@@ -32,11 +32,7 @@
         <td><a href="https://zhishuyun-demo.isxcode.com/tools/open/file/zhishuyun.tar.gz">https://zhishuyun-demo.isxcode.com/tools/open/file/zhishuyun.tar.gz</a></td>
     </tr>
     <tr>
-        <td>许可证下载</td>
-        <td><a href="https://zhishuyun-demo.isxcode.com/tools/open/file/license.lic">https://zhishuyun-demo.isxcode.com/tools/open/file/license.lic</a></td>
-    </tr>
-    <tr>
-        <td>友情链接</td>
+        <td>产品推荐</td>
         <td><a href="https://zhiqingyun.isxcode.com">[至轻云] - 超轻量级智能化大数据中心</a></td>
     </tr>
     <tr>
@@ -51,7 +47,7 @@
 
 ### 功能列表
 
-| 模块   | 功能                  |
+| 模块   | 功能(包含商业版)           |
 |:-----|:--------------------|
 | 首页   | AI对话、历史记录、应用列表      |
 | 资源管理 | 计算集群、资源中心           |
@@ -62,14 +58,15 @@
 
 演示地址：https://zhishuyun-demo.isxcode.com </br>
 体验账号：zhiyao </br>
-账号密码：zhiyao123
+账号密码：zhiyao123 [已禁用，联系管理员] </br>
+添加微信：wx_ispong
 
 ### 相关文档
 
-- [快速入门](https://zhishuyun.isxcode.com/zh/docs/zh/1/0)
+- [快速体验](https://zhishuyun.isxcode.com/zh/docs/zh/1/0)
 - [产品手册](https://zhishuyun.isxcode.com/zh/docs/zh/2/0)
 - [开发手册](https://zhishuyun.isxcode.com/zh/docs/zh/5/1)
-- [博客](https://ispong.isxcode.com/tags/pytorch/)
+- [博客](https://ispong.isxcode.com)
 
 ### 快速部署
 
@@ -83,14 +80,14 @@ docker run -p 8080:8080 -d isxcode/zhishuyun
 ### 源码构建
 
 ```bash
+# 系统环境: Mac或Linux
 # 安装包路径: /tmp/torch-yun/torch-yun-dist/build/distributions/zhishuyun.tar.gz
 cd /tmp
 git clone https://github.com/isxcode/torch-yun.git
 docker run --rm \
   -v /tmp/torch-yun:/torch-yun \
-  -w /torch-yun \
-  -it registry.cn-shanghai.aliyuncs.com/isxcode/zhishuyun-build:amd-latest \
-  /bin/bash -c "source /etc/profile && gradle install clean package"
+  -it isxcode/zhishuyun-build \
+  gradle package
 ```
 
 ### 产品展示

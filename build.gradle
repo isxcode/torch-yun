@@ -87,8 +87,9 @@ tasks.register("format") {
     dependsOn(":torch-yun-dist:copy_version", ":spotlessApply", ":checkstyleMain")
 }
 
-tasks.register("package") {
-    dependsOn(":torch-yun-dist:make")
+tasks.register('package', GradleBuild) {
+
+    tasks = ["install", "clean", ":torch-yun-dist:make"]
 }
 
 tasks.register('start', Exec) {
