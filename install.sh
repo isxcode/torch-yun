@@ -7,7 +7,7 @@
 set -e  # Exit immediately on error
 
 # Path configuration
-readonly BASE_PATH=$(cd "$(dirname "$0)" && pwd)
+readonly BASE_PATH=$(cd "$(dirname "$0")" && pwd)
 readonly RESOURCE_DIR="${BASE_PATH}/resources"
 
 # =============================================================================
