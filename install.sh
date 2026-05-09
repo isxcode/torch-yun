@@ -7,7 +7,7 @@
 set -e  # Exit immediately on error
 
 # Path configuration
-readonly BASE_PATH=$(cd "$(dirname "$0)" && pwd)
+readonly BASE_PATH=$(cd "$(dirname "$0")" && pwd)
 readonly RESOURCE_DIR="${BASE_PATH}/resources"
 
 # =============================================================================
@@ -56,10 +56,10 @@ check_system_dependencies() {
     fi
 
     # Check and install langChain
-    check_command "python" "Please install Python"
-    check_command "pip" "Please install Pip"
+    check_command "python3" "Please install Python3"
+    check_command "pip3" "Please install Pip"
 
-    if ! python -c "import langchain_core, langchain_openai" &>/dev/null; then
+    if ! python3 -c "import langchain_core, langchain_openai" &>/dev/null; then
         echo "langChain not detected, installing..."
         pip install langchain-openai langchain-core
         echo "langChain installation complete"
