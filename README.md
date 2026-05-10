@@ -90,6 +90,17 @@ docker run --rm \
   gradle package
 ```
 
+```bash
+# 系统环境: Windows
+# 安装包路径: C:\Users\isxcode\Downloads\torch-yun\torch-yun-dist\build\distributions\zhishuyun.tar.gz
+cd Downloads
+git clone https://github.com/isxcode/torch-yun.git
+docker run --rm ^
+  -v C:\Users\isxcode\Downloads\torch-yun:/torch-yun ^
+  -it isxcode/zhishuyun-build ^
+  gradle package
+```
+
 ### 产品展示
 
 <table>
