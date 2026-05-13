@@ -206,8 +206,11 @@ function startSSEChatStream(params: any) {
                 talkMsgList.value.pop()
             }
 
-            // 显示错误消息
-            ElMessage.error(getSSEErrorMessage(error))
+            // 将异常信息展示在对话框中（灰色文本样式由聊天组件控制）
+            talkMsgList.value.push({
+                type: 'error',
+                content: getSSEErrorMessage(error)
+            })
 
             // 清理 SSE 客户端
             sseClient.value = null

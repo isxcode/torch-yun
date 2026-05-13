@@ -5,9 +5,13 @@
                 v-for="(item, index) in talkMsgList"
                 class="card-item"
                 :key="index"
-                :class="{ 'card-item__ai': item.type !== 'user' }"
+                :class="{
+                    'card-item__ai': item.type !== 'user',
+                    'card-item__error': item.type === 'error'
+                }"
             >
                 <el-avatar
+                    v-if="item.type !== 'error'"
                     :style="{
                         left: item.type === 'user' ? '' : '-44px',
                         right: item.type === 'user' ? '-44px' : '',
@@ -17,7 +21,13 @@
                     :icon="UserFilled"
                     :size="30"
                 />
-                <div class="chat-message-item" :class="{ 'chat-message-item__loading': item.loading }">
+                <div
+                    class="chat-message-item"
+                    :class="{
+                        'chat-message-item__loading': item.loading,
+                        'chat-message-item__error': item.type === 'error'
+                    }"
+                >
                     <div v-if="item.loading" class="loading-text__chat">
                         <el-icon class="is-loading">
                             <Loading />
@@ -189,6 +199,9 @@ defineExpose({
             &.card-item__ai {
                 justify-content: flex-start;
             }
+            &.card-item__error {
+                justify-content: center;
+            }
             .el-avatar {
                 position: absolute;
             }
@@ -210,6 +223,13 @@ defineExpose({
                     display: flex;
                     align-items: center;
                     justify-content: center;
+                }
+                &.chat-message-item__error {
+                    background: transparent;
+                    border: none;
+                    color: #909399;
+                    padding: 3px 0;
+                    text-align: center;
                 }
 
                 .loading-text__chat {
