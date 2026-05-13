@@ -79,6 +79,30 @@ const sseClient = ref<SSEClient | null>(null)  // SSE 客户端实例
 const currentAiMessage = ref<string>('')        // 当前 AI 回复的消息（用于流式显示）
 const chatSessionId = ref<string>('')           // 当前聊天会话ID
 
+function getSSEErrorMessage(error: any) {
+    if (!error) {
+        return '聊天连接失败，请重试'
+    }
+    if (typeof error === 'string') {
+        return error
+    }
+    const rawMessage = error?.message
+    if (typeof rawMessage === 'string') {
+        try {
+            const parsed = JSON.parse(rawMessage)
+            if (parsed?.msg) {
+                return parsed.msg
+            }
+        } catch {
+            // message 不是 JSON，继续使用原始文本
+        }
+        if (rawMessage) {
+            return rawMessage
+        }
+    }
+    return '聊天连接失败，请重试'
+}
+
 // 结束对话
 function stopChat() {
     // 断开 SSE 连接
@@ -183,7 +207,7 @@ function startSSEChatStream(params: any) {
             }
 
             // 显示错误消息
-            ElMessage.error(typeof error === 'string' ? error : '聊天连接失败，请重试')
+            ElMessage.error(getSSEErrorMessage(error))
 
             // 清理 SSE 客户端
             sseClient.value = null
