@@ -66,7 +66,6 @@ public abstract class App {
             } catch (Exception ignored) {
             }
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
             try {
                 sseEmitter.send(SseEmitter.event().name(ChatSseEvent.ERROR_EVENT)
                     .data(JSON.toJSONString(SseBody.builder().msg(e.getMessage()).build())));
