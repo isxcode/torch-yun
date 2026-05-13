@@ -54,7 +54,8 @@ public class TextApp extends App {
         ChatSessionEntity nowChatSession = chatSessionRepository.findById(botChatContext.getAiSessionId()).get();
 
         // 保存聊天对话状态和内容
-        ChatContent chatContent = ChatContent.builder().content(chatResponse.getContent()).build();
+        ChatContent chatContent =
+            ChatContent.builder().content(chatResponse.getContent()).threadId(chatResponse.getThreadId()).build();
         nowChatSession.setSessionContent(JSON.toJSONString(chatContent));
         nowChatSession.setStatus(ChatSessionStatus.OVER);
         chatSessionRepository.saveAndFlush(nowChatSession);

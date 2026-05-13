@@ -13,6 +13,8 @@ public class ChatContent {
 
     private String content;
 
+    private String threadId;
+
     private Integer index;
 
     private String role;

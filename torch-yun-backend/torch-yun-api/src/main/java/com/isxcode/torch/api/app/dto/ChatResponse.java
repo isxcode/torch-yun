@@ -13,6 +13,8 @@ public class ChatResponse {
 
     private String content;
 
+    private String threadId;
+
     private String picName;
 
     private String script;
