@@ -16,5 +16,5 @@ public interface ModelCode {
 
     String OPENAI_CIRCUIT_SPARSITY = "openai_circuit-sparsity";
 
-    String OPENAI_CODEX_CLI = "openai_codex_cli";
+    String OPENAI_CODEX_CLI = "Codex-cli";
 }

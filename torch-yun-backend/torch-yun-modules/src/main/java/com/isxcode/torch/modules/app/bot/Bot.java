@@ -28,6 +28,7 @@ public abstract class Bot {
         try {
             return chat(botChatContext, sseEmitter);
         } catch (Exception e) {
+            log.error(e.getMessage(), e);
             throw new IsxAppException("对话异常");
         }
     }
