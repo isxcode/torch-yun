@@ -89,7 +89,7 @@ export const menuListData: Array<Menu> = [
       },
       {
         code: 'project-assets',
-        name: '项目资产',
+        name: '项目设计',
         icon: 'FolderOpened',
         authType: [ 'ROLE_TENANT_MEMBER', 'ROLE_TENANT_ADMIN' ],
         childPage: []
