@@ -164,10 +164,18 @@ function getSSEErrorMessage(error: any) {
 }
 
 function stopChat() {
+  const needStopSession = !!chatSessionId.value && requestLoading.value
+  const stopSessionId = chatSessionId.value
+
   if (sseClient.value) {
     sseClient.value.disconnect()
     sseClient.value = null
   }
+
+  if (needStopSession) {
+    StopChatThink({ chatSessionId: stopSessionId }).catch(() => {})
+  }
+
   isTalking.value = false
   talkMessage.value = ''
   maxChatIndexId.value = 0
@@ -322,7 +330,9 @@ function enterChatMode(row: any) {
   currentChatDesignName.value = row.name
   appInfo.value = { id: currentProject.designAppId, name: row.name }
   isChatMode.value = true
-  getMaxChatData().then(() => getChatDetailListData()).catch(() => {
+  getChatDetailListData().then(() => {
+    getMaxChatData().catch(() => {})
+  }).catch(() => {
     talkMsgList.value = []
     isTalking.value = false
   })

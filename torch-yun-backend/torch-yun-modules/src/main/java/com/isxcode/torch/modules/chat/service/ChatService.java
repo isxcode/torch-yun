@@ -53,8 +53,8 @@ public class ChatService {
             .authConfig(JSON.parseObject(ai.getAuthConfig(), AuthConfig.class)).aiType(ai.getAiType())
             .modelName(ai.getModelId()).modelCode(modelCode).aiPort(ai.getAiPort()).modelName(modelId)
             .clusterConfig(JSON.parseObject(ai.getClusterConfig(), ClusterConfig.class)).aiSessionId(aiSessionId)
-            .tenantId(tenantId).userId(userId).userAskSessionId(chatSessionId).workspace(workspace)
-            .assetsDir(assetsDir).build();
+            .tenantId(tenantId).userId(userId).userAskSessionId(chatSessionId).workspace(workspace).assetsDir(assetsDir)
+            .build();
     }
 
 }

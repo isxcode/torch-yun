@@ -70,8 +70,8 @@ public class ProjectBizService {
 
     public Page<PageProjectRes> pageProject(PageProjectReq pageProjectReq) {
 
-        Page<ProjectEntity> projectEntityPage =
-            projectRepository.searchAll(pageProjectReq.getSearchKeyWord(), PageRequest.of(pageProjectReq.getPage(), pageProjectReq.getPageSize()));
+        Page<ProjectEntity> projectEntityPage = projectRepository.searchAll(pageProjectReq.getSearchKeyWord(),
+            PageRequest.of(pageProjectReq.getPage(), pageProjectReq.getPageSize()));
 
         Page<PageProjectRes> result = projectEntityPage.map(projectMapper::projectEntityToPageProjectRes);
         result.forEach(project -> {

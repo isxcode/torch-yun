@@ -67,5 +67,7 @@ public class ProjectDesignEntity {
     private String tenantId;
 
     @PrePersist
-    public void prePersist() { this.tenantId = TENANT_ID.get(); }
+    public void prePersist() {
+        this.tenantId = TENANT_ID.get();
+    }
 }
