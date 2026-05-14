@@ -15,6 +15,8 @@ public class PageProjectDesignRes {
 
     private String projectId;
 
+    private String lastChatId;
+
     private String name;
 
     private String remark;

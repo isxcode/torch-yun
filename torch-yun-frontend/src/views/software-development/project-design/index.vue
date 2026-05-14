@@ -58,7 +58,7 @@ import { QueryProjectList } from '@/services/project-management.service'
 import AddModal from './add-modal/index.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import ZhyChat from '@/views/home-overview/zhy-chat/index.vue'
-import { StopChatThink } from '@/services/ai-cheat.service'
+import { GetChatDetailList, StopChatThink } from '@/services/ai-cheat.service'
 import { SSEClient } from '@/utils/sse-client'
 
 const keyword = ref('')
@@ -72,6 +72,7 @@ const tableConfig: any = reactive(TableConfig)
 
 const isChatMode = ref(false)
 const currentChatDesignName = ref('')
+const currentProjectDesignId = ref('')
 const talkMessage = ref('')
 const appInfo = ref<any>(null)
 const chatId = ref('')
@@ -180,6 +181,7 @@ function stopChat() {
 function exitChatMode() {
   stopChat()
   appInfo.value = null
+  currentProjectDesignId.value = ''
   isChatMode.value = false
 }
 
@@ -235,6 +237,7 @@ async function sendQuestionEvent() {
     if (!chatId.value) await getMaxChatData()
     startSSEChatStream({
       projectId: currentProjectId.value,
+      projectDesignId: currentProjectDesignId.value,
       chatId: chatId.value || null,
       maxChatIndexId: maxChatIndexId.value,
       chatContent: { content: userMessage }
@@ -251,11 +254,28 @@ function getMaxChatData() {
   return new Promise((resolve: any, reject: any) => {
     GetProjectDesignMaxChatData({
       projectId: currentProjectId.value,
+      projectDesignId: currentProjectDesignId.value,
       chatId: chatId.value || null,
       chatType: 'PROD'
     }).then((res: any) => {
       chatId.value = res.data.chatId
       maxChatIndexId.value = res.data.chatIndexId
+      resolve(null)
+    }).catch((err: any) => reject(err))
+  })
+}
+
+function getChatDetailListData() {
+  return new Promise((resolve: any, reject: any) => {
+    if (!chatId.value) {
+      talkMsgList.value = []
+      isTalking.value = false
+      resolve(null)
+      return
+    }
+    GetChatDetailList({ chatId: chatId.value }).then((res: any) => {
+      talkMsgList.value = (res.data?.chatSessions || []).map((item: any) => ({ type: item.role, content: item.content }))
+      isTalking.value = talkMsgList.value.length > 0
       resolve(null)
     }).catch((err: any) => reject(err))
   })
@@ -296,9 +316,15 @@ function enterChatMode(row: any) {
     return
   }
   stopChat()
+  currentProjectDesignId.value = row.id
+  chatId.value = row.lastChatId || ''
   currentChatDesignName.value = row.name
   appInfo.value = { id: currentProject.designAppId, name: row.name }
   isChatMode.value = true
+  getMaxChatData().then(() => getChatDetailListData()).catch(() => {
+    talkMsgList.value = []
+    isTalking.value = false
+  })
 }
 
 onMounted(() => {
