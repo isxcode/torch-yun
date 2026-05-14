@@ -450,5 +450,11 @@ onUnmounted(() => {
       transition: bottom 0.15s 0.3s cubic-bezier(0, 0, 0.48, 1.18);
     }
   }
+
+  .zhy-chat {
+    .el-avatar {
+      display: none !important;
+    }
+  }
 }
 </style>
