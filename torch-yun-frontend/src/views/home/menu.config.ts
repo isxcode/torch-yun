@@ -75,6 +75,42 @@ export const menuListData: Array<Menu> = [
     ]
   },
   {
+    code: 'software-development',
+    name: '软件开发',
+    icon: 'Management',
+    authType: [ 'ROLE_TENANT_MEMBER', 'ROLE_TENANT_ADMIN' ],
+    children: [
+      {
+        code: 'project-management',
+        name: '项目管理',
+        icon: 'Briefcase',
+        authType: [ 'ROLE_TENANT_MEMBER', 'ROLE_TENANT_ADMIN' ],
+        childPage: []
+      },
+      {
+        code: 'project-assets',
+        name: '项目资产',
+        icon: 'FolderOpened',
+        authType: [ 'ROLE_TENANT_MEMBER', 'ROLE_TENANT_ADMIN' ],
+        childPage: []
+      },
+      {
+        code: 'project-plan',
+        name: '项目计划',
+        icon: 'Calendar',
+        authType: [ 'ROLE_TENANT_MEMBER', 'ROLE_TENANT_ADMIN' ],
+        childPage: []
+      },
+      {
+        code: 'project-development',
+        name: '项目开发',
+        icon: 'Edit',
+        authType: [ 'ROLE_TENANT_MEMBER', 'ROLE_TENANT_ADMIN' ],
+        childPage: []
+      }
+    ]
+  },
+  {
     code: 'tenant-management',
     name: '租户管理',
     icon: 'OfficeBuilding',
