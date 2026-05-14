@@ -139,4 +139,9 @@ public interface ModuleCode {
      * 模型广场.
      */
     String MODEL_PLAZA = "/model/plaza";
+
+    /**
+     * 项目管理模块.
+     */
+    String PROJECT = "project";
 }
