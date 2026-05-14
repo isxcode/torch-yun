@@ -14,6 +14,10 @@ public class SendProjectDesignChatReq {
     @NotEmpty(message = "项目ID不能为空")
     private String projectId;
 
+    @Schema(title = "项目设计ID", example = "ty_design_1")
+    @NotEmpty(message = "项目设计ID不能为空")
+    private String projectDesignId;
+
     @Schema(title = "会话ID", example = "ty_chat_1")
     @NotEmpty(message = "会话ID不能为空")
     private String chatId;

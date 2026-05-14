@@ -42,6 +42,8 @@ public class ProjectDesignEntity {
 
     private String projectId;
 
+    private String lastChatId;
+
     private String remark;
 
     @CreatedDate

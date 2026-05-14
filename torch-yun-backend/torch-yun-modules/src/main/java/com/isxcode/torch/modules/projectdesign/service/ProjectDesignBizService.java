@@ -67,6 +67,7 @@ public class ProjectDesignBizService {
 
     public GetMaxChatIdRes getProjectDesignMaxChatId(GetProjectDesignMaxChatIdReq req) {
 
+        ProjectDesignEntity projectDesign = service.getProjectDesign(req.getProjectDesignId());
         ProjectEntity project = projectService.getProject(req.getProjectId());
         String designAppId = project.getDesignAppId();
         if (designAppId == null || designAppId.trim().isEmpty()) {
@@ -74,14 +75,27 @@ public class ProjectDesignBizService {
         }
 
         GetMaxChatIdReq chatReq = new GetMaxChatIdReq();
-        chatReq.setChatId(req.getChatId());
+        String chatId = req.getChatId();
+        if ((chatId == null || chatId.trim().isEmpty()) && projectDesign.getLastChatId() != null
+            && !projectDesign.getLastChatId().trim().isEmpty()) {
+            chatId = projectDesign.getLastChatId();
+        }
+        chatReq.setChatId(chatId);
         chatReq.setChatType(req.getChatType());
         chatReq.setAppId(designAppId);
-        return chatBizService.getMaxChatId(chatReq);
+        GetMaxChatIdRes res = chatBizService.getMaxChatId(chatReq);
+
+        if (res.getChatId() != null && !res.getChatId().trim().isEmpty()
+            && !res.getChatId().equals(projectDesign.getLastChatId())) {
+            projectDesign.setLastChatId(res.getChatId());
+            repository.save(projectDesign);
+        }
+        return res;
     }
 
     public SseEmitter sendProjectDesignChat(SendProjectDesignChatReq req) {
 
+        ProjectDesignEntity projectDesign = service.getProjectDesign(req.getProjectDesignId());
         ProjectEntity project = projectService.getProject(req.getProjectId());
         String designAppId = project.getDesignAppId();
         if (designAppId == null || designAppId.trim().isEmpty()) {
@@ -95,6 +109,11 @@ public class ProjectDesignBizService {
         chatReq.setChatContent(req.getChatContent());
         chatReq.setWorkspace(project.getWorkspace());
         chatReq.setAssetsDir(project.getAssetsDir());
+        if (req.getChatId() != null && !req.getChatId().trim().isEmpty()
+            && !req.getChatId().equals(projectDesign.getLastChatId())) {
+            projectDesign.setLastChatId(req.getChatId());
+            repository.save(projectDesign);
+        }
         return chatBizService.sendChat(chatReq);
     }
 }
