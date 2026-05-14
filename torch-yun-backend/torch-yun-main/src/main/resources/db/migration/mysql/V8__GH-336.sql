@@ -1,0 +1,18 @@
+CREATE TABLE IF NOT EXISTS TY_PROJECT
+(
+    ID                      VARCHAR(200)  NOT NULL PRIMARY KEY COMMENT '项目ID',
+    NAME                    VARCHAR(200)  NOT NULL COMMENT '项目名',
+    WORKSPACE               VARCHAR(500)  NOT NULL COMMENT '工作空间',
+    ASSETS_DIR              VARCHAR(500)  NOT NULL COMMENT '资产目录',
+    DESIGN_APP_ID           VARCHAR(200)  NOT NULL COMMENT '项目设计模型应用ID',
+    PLAN_APP_ID             VARCHAR(200)  NOT NULL COMMENT '项目计划模型应用ID',
+    DEVELOP_APP_ID          VARCHAR(200)  NOT NULL COMMENT '项目开发模型应用ID',
+    REMARK                  VARCHAR(200)  NULL COMMENT '备注',
+    CREATE_BY               VARCHAR(200)  NOT NULL COMMENT '创建人',
+    CREATE_DATE_TIME        DATETIME      NOT NULL COMMENT '创建时间',
+    LAST_MODIFIED_BY        VARCHAR(200)  NOT NULL COMMENT '修改人',
+    LAST_MODIFIED_DATE_TIME DATETIME      NOT NULL COMMENT '修改时间',
+    DELETED                 INT DEFAULT 0 NOT NULL COMMENT '逻辑删除',
+    VERSION_NUMBER          BIGINT        NOT NULL COMMENT '版本号',
+    TENANT_ID               VARCHAR(200)  NULL COMMENT '租户ID'
+) COMMENT='项目管理表';

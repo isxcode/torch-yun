@@ -22,3 +22,22 @@ VALUES ('codex-cli', 'codex-cli', 'log_id', 'Codex-cli', '系统默认', 'ENABLE
         null, 'ENABLE',
         'zhishuyun', '2026-05-13 15:35:41.000000', 'zhishuyun', '2026-05-13 15:35:44.000000', 0, 0, 'zhishuyun',
         'TEXT_APP');
+
+CREATE TABLE IF NOT EXISTS TY_PROJECT
+(
+    ID                      VARCHAR(200)  NOT NULL PRIMARY KEY,
+    NAME                    VARCHAR(200)  NOT NULL,
+    WORKSPACE               VARCHAR(500)  NOT NULL,
+    ASSETS_DIR              VARCHAR(500)  NOT NULL,
+    DESIGN_APP_ID           VARCHAR(200)  NOT NULL,
+    PLAN_APP_ID             VARCHAR(200)  NOT NULL,
+    DEVELOP_APP_ID          VARCHAR(200)  NOT NULL,
+    REMARK                  VARCHAR(200),
+    CREATE_BY               VARCHAR(200)  NOT NULL,
+    CREATE_DATE_TIME        TIMESTAMP     NOT NULL,
+    LAST_MODIFIED_BY        VARCHAR(200)  NOT NULL,
+    LAST_MODIFIED_DATE_TIME TIMESTAMP     NOT NULL,
+    DELETED                 INT DEFAULT 0 NOT NULL,
+    VERSION_NUMBER          BIGINT        NOT NULL,
+    TENANT_ID               VARCHAR(200)
+);
