@@ -12,6 +12,7 @@ import com.isxcode.torch.modules.projectdesign.mapper.ProjectDesignMapper;
 import com.isxcode.torch.modules.projectdesign.repository.ProjectDesignRepository;
 import com.isxcode.torch.modules.chat.service.ChatBizService;
 import com.isxcode.torch.modules.project.service.ProjectService;
+import com.isxcode.torch.modules.project.entity.ProjectEntity;
 import com.isxcode.torch.modules.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -66,7 +67,8 @@ public class ProjectDesignBizService {
 
     public GetMaxChatIdRes getProjectDesignMaxChatId(GetProjectDesignMaxChatIdReq req) {
 
-        String designAppId = projectService.getProject(req.getProjectId()).getDesignAppId();
+        ProjectEntity project = projectService.getProject(req.getProjectId());
+        String designAppId = project.getDesignAppId();
         if (designAppId == null || designAppId.trim().isEmpty()) {
             throw new IsxAppException("当前项目未配置项目设计模型应用");
         }
@@ -80,7 +82,8 @@ public class ProjectDesignBizService {
 
     public SseEmitter sendProjectDesignChat(SendProjectDesignChatReq req) {
 
-        String designAppId = projectService.getProject(req.getProjectId()).getDesignAppId();
+        ProjectEntity project = projectService.getProject(req.getProjectId());
+        String designAppId = project.getDesignAppId();
         if (designAppId == null || designAppId.trim().isEmpty()) {
             throw new IsxAppException("当前项目未配置项目设计模型应用");
         }
@@ -90,6 +93,8 @@ public class ProjectDesignBizService {
         chatReq.setChatId(req.getChatId());
         chatReq.setMaxChatIndexId(req.getMaxChatIndexId());
         chatReq.setChatContent(req.getChatContent());
+        chatReq.setWorkspace(project.getWorkspace());
+        chatReq.setAssetsDir(project.getAssetsDir());
         return chatBizService.sendChat(chatReq);
     }
 }

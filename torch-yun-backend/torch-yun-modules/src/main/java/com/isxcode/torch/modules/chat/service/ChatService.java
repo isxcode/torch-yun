@@ -38,7 +38,7 @@ public class ChatService {
 
     public BotChatContext transSessionListToBotChatContext(List<ChatSessionEntity> chatSessionList, AppEntity app,
         AiEntity ai, Integer nowIndex, String chatId, String chatSessionId, String aiSessionId, String modelCode,
-        String modelId, String userId, String tenantId) {
+        String modelId, String userId, String tenantId, String workspace, String assetsDir) {
 
         List<ChatContent> chatContents = new ArrayList<>();
         chatSessionList.forEach(session -> {
@@ -53,7 +53,8 @@ public class ChatService {
             .authConfig(JSON.parseObject(ai.getAuthConfig(), AuthConfig.class)).aiType(ai.getAiType())
             .modelName(ai.getModelId()).modelCode(modelCode).aiPort(ai.getAiPort()).modelName(modelId)
             .clusterConfig(JSON.parseObject(ai.getClusterConfig(), ClusterConfig.class)).aiSessionId(aiSessionId)
-            .tenantId(tenantId).userId(userId).userAskSessionId(chatSessionId).build();
+            .tenantId(tenantId).userId(userId).userAskSessionId(chatSessionId).workspace(workspace)
+            .assetsDir(assetsDir).build();
     }
 
 }

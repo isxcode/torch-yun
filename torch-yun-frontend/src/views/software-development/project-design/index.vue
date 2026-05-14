@@ -42,7 +42,6 @@
         @compositionend="onCompositionEnd"
       />
       <div class="option-container">
-        <el-button v-if="isTalking" link @click="stopChat">新对话</el-button>
         <el-button type="primary" :disabled="!talkMessage" :loading="requestLoading" @click="sendQuestionEvent"><el-icon><Promotion /></el-icon></el-button>
       </div>
     </div>
