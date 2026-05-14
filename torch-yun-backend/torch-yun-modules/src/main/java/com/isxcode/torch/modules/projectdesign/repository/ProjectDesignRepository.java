@@ -14,7 +14,8 @@ import java.util.Optional;
 public interface ProjectDesignRepository extends JpaRepository<ProjectDesignEntity, String> {
 
     @Query("SELECT P FROM ProjectDesignEntity P WHERE P.projectId = :projectId AND (P.name LIKE %:keyword% OR P.remark LIKE %:keyword%) ORDER BY P.createDateTime DESC")
-    Page<ProjectDesignEntity> searchAll(@Param("projectId") String projectId, @Param("keyword") String keyword, Pageable pageable);
+    Page<ProjectDesignEntity> searchAll(@Param("projectId") String projectId, @Param("keyword") String keyword,
+        Pageable pageable);
 
     Optional<ProjectDesignEntity> findByProjectIdAndName(String projectId, String name);
 }
