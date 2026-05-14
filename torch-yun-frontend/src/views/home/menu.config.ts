@@ -40,7 +40,7 @@ export const menuListData: Array<Menu> = [
   },
   {
     code: 'ai-center',
-    name: 'AI中心',
+    name: '模型中心',
     icon: 'Service',
     authType: [ 'ROLE_TENANT_MEMBER', 'ROLE_TENANT_ADMIN' ],
     children: [
@@ -60,14 +60,14 @@ export const menuListData: Array<Menu> = [
       },
       {
         code: 'ai-item',
-        name: '智能体',
+        name: '模型管理',
         icon: 'ChatLineSquare',
         authType: [ 'ROLE_TENANT_MEMBER', 'ROLE_TENANT_ADMIN' ],
         childPage: []
       },
       {
         code: 'app-management',
-        name: '应用管理',
+        name: '模型应用',
         icon: 'HelpFilled',
         authType: [ 'ROLE_TENANT_MEMBER', 'ROLE_TENANT_ADMIN' ],
         childPage: ['app-detail']

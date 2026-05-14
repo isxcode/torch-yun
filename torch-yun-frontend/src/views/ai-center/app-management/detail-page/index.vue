@@ -62,7 +62,7 @@ const talkMsgList = ref<any[]>([])          // 当前对话的记录
 
 const breadCrumbList = reactive([
     {
-        name: '应用管理',
+        name: '模型应用',
         code: 'app-management'
     },
     {
