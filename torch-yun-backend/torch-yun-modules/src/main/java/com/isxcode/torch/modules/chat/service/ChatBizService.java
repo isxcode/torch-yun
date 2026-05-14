@@ -204,7 +204,8 @@ public class ChatBizService {
         // 封装对话上下文
         BotChatContext botChatContext = chatService.transSessionListToBotChatContext(chatSessionList, app, ai,
             sendChatReq.getMaxChatIndexId(), sendChatReq.getChatId(), userAskSession.getId(), aiAnswerSession.getId(),
-            modelCode, modelId, USER_ID.get(), TENANT_ID.get());
+            modelCode, modelId, USER_ID.get(), TENANT_ID.get(), sendChatReq.getWorkspace(),
+            sendChatReq.getAssetsDir());
 
         // 异步提交应用开始对话
         App application = appFactory.getApp(app.getAppType());

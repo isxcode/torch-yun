@@ -21,4 +21,10 @@ public class SendChatReq {
 
     @Schema(title = "内容", example = "")
     private ChatContent chatContent;
+
+    @Schema(title = "工作空间", example = "/workspace/demo")
+    private String workspace;
+
+    @Schema(title = "资产目录", example = "spec")
+    private String assetsDir;
 }
