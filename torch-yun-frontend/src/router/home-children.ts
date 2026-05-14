@@ -16,6 +16,7 @@ import ModelPlaza from '@/views/ai-center/model-plaza/index.vue'
 import AppManagement from '@/views/ai-center/app-management/index.vue'
 import AppDetail from '@/views/ai-center/app-management/detail-page/index.vue'
 import ProjectManagement from '@/views/software-development/project-management/index.vue'
+import ProjectDesign from '@/views/software-development/project-design/index.vue'
 
 export default [
   {
@@ -92,5 +93,10 @@ export default [
     path: 'project-management',
     name: 'project-management',
     component: ProjectManagement
+  },
+  {
+    path: 'project-assets',
+    name: 'project-assets',
+    component: ProjectDesign
   }
 ]
