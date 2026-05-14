@@ -235,12 +235,13 @@ async function sendQuestionEvent() {
   try {
     if (!appInfo.value) return
     if (!chatId.value) await getMaxChatData()
+    const sendContent = maxChatIndexId.value === 0 ? `use brainstorming.\n${userMessage}` : userMessage
     startSSEChatStream({
       projectId: currentProjectId.value,
       projectDesignId: currentProjectDesignId.value,
       chatId: chatId.value || null,
       maxChatIndexId: maxChatIndexId.value,
-      chatContent: { content: userMessage }
+      chatContent: { content: sendContent }
     })
     talkMessage.value = ''
   } catch {
