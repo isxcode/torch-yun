@@ -9,31 +9,31 @@ importers:
   .:
     dependencies:
       '@antv/hierarchy':
-        specifier: ^0.6.11
+        specifier: ^0.6.14
         version: 0.6.14
       '@antv/layout':
-        specifier: ^0.3.17
+        specifier: ^0.3.25
         version: 0.3.25(dagre@0.8.5)
       '@antv/x6':
-        specifier: ^1.29.5
+        specifier: ^1.35.1
         version: 1.35.1
       '@antv/x6-vue-shape':
-        specifier: ^1.3.0
+        specifier: ^1.5.4
         version: 1.5.4(@antv/x6@1.35.1)(vue@3.5.13(typescript@5.0.4))
       '@codemirror/lang-json':
         specifier: ^6.0.1
         version: 6.0.1
       '@codemirror/lang-python':
-        specifier: ^6.1.3
+        specifier: ^6.1.7
         version: 6.1.7
       '@codemirror/lang-sql':
-        specifier: ^6.5.4
+        specifier: ^6.8.0
         version: 6.8.0
       '@element-plus/icons-vue':
         specifier: 2.1.0
         version: 2.1.0(vue@3.5.13(typescript@5.0.4))
       axios:
-        specifier: ^1.4.0
+        specifier: ^1.8.2
         version: 1.8.2
       clipboard:
         specifier: ^2.0.11
@@ -42,10 +42,10 @@ importers:
         specifier: ^0.8.5
         version: 0.8.5
       dayjs:
-        specifier: ^1.11.10
+        specifier: ^1.11.13
         version: 1.11.13
       echarts:
-        specifier: ^5.4.3
+        specifier: ^5.6.0
         version: 5.6.0
       element-plus:
         specifier: 2.3.5
@@ -66,31 +66,31 @@ importers:
         specifier: ^15.0.7
         version: 15.0.7
       mitt:
-        specifier: ^3.0.0
+        specifier: ^3.0.1
         version: 3.0.1
       normalize.css:
         specifier: 8.0.1
         version: 8.0.1
       pinia:
-        specifier: ^2.1.6
+        specifier: ^2.3.1
         version: 2.3.1(typescript@5.0.4)(vue@3.5.13(typescript@5.0.4))
       pinia-plugin-persistedstate:
-        specifier: ^3.2.0
+        specifier: ^3.2.3
         version: 3.2.3(pinia@2.3.1(typescript@5.0.4)(vue@3.5.13(typescript@5.0.4)))
       qs:
-        specifier: ^6.11.2
+        specifier: ^6.14.0
         version: 6.14.0
       vue:
-        specifier: ^3.3.2
+        specifier: ^3.5.13
         version: 3.5.13(typescript@5.0.4)
       vue-codemirror6:
-        specifier: ^1.1.24
+        specifier: ^1.3.12
         version: 1.3.12(vue@3.5.13(typescript@5.0.4))
       vue-grid-layout:
         specifier: 3.0.0-beta1
         version: 3.0.0-beta1(@interactjs/core@1.10.27(@interactjs/utils@1.10.27))(@interactjs/utils@1.10.27)(typescript@5.0.4)
       vue-router:
-        specifier: ^4.2.0
+        specifier: ^4.5.0
         version: 4.5.0(vue@3.5.13(typescript@5.0.4))
       vuedraggable:
         specifier: 4.1.0
@@ -103,28 +103,28 @@ importers:
         version: 3.5.10
     devDependencies:
       '@playwright/test':
-        specifier: ^1.33.0
+        specifier: ^1.51.0
         version: 1.51.0
       '@rushstack/eslint-patch':
-        specifier: ^1.2.0
+        specifier: ^1.10.5
         version: 1.10.5
       '@tsconfig/node18':
         specifier: ^2.0.1
         version: 2.0.1
       '@types/jsdom':
-        specifier: ^21.1.1
+        specifier: ^21.1.7
         version: 21.1.7
       '@types/lodash-es':
-        specifier: ^4.17.9
+        specifier: ^4.17.12
         version: 4.17.12
       '@types/node':
-        specifier: ^18.16.8
+        specifier: ^18.19.80
         version: 18.19.80
       '@vitejs/plugin-vue':
-        specifier: ^4.2.3
+        specifier: ^4.6.2
         version: 4.6.2(vite@4.5.9(@types/node@18.19.80)(sass@1.62.1))(vue@3.5.13(typescript@5.0.4))
       '@vitejs/plugin-vue-jsx':
-        specifier: ^3.0.2
+        specifier: ^3.1.0
         version: 3.1.0(vite@4.5.9(@types/node@18.19.80)(sass@1.62.1))(vue@3.5.13(typescript@5.0.4))
       '@vue/eslint-config-prettier':
         specifier: ^7.1.0
@@ -133,19 +133,19 @@ importers:
         specifier: ^11.0.3
         version: 11.0.3(eslint-plugin-vue@9.33.0(eslint@8.57.1))(eslint@8.57.1)(typescript@5.0.4)
       '@vue/test-utils':
-        specifier: ^2.3.2
+        specifier: ^2.4.6
         version: 2.4.6
       '@vue/tsconfig':
         specifier: ^0.4.0
         version: 0.4.0
       eslint:
-        specifier: ^8.39.0
+        specifier: ^8.57.1
         version: 8.57.1
       eslint-plugin-vue:
-        specifier: ^9.11.0
+        specifier: ^9.33.0
         version: 9.33.0(eslint@8.57.1)
       jsdom:
-        specifier: ^22.0.0
+        specifier: ^22.1.0
         version: 22.1.0
       npm-run-all:
         specifier: ^4.1.5
@@ -163,16 +163,16 @@ importers:
         specifier: ^0.25.2
         version: 0.25.2(@babel/parser@7.26.9)(rollup@3.29.5)(vue@3.5.13(typescript@5.0.4))
       vite:
-        specifier: ^4.3.5
+        specifier: ^4.5.9
         version: 4.5.9(@types/node@18.19.80)(sass@1.62.1)
       vite-plugin-static-copy:
         specifier: ^0.15.0
         version: 0.15.0(vite@4.5.9(@types/node@18.19.80)(sass@1.62.1))
       vitest:
-        specifier: ^0.31.0
+        specifier: ^0.31.4
         version: 0.31.4(jsdom@22.1.0)(playwright@1.51.0)(sass@1.62.1)
       vue-tsc:
-        specifier: ^1.6.4
+        specifier: ^1.8.27
         version: 1.8.27(typescript@5.0.4)
 
 packages:
@@ -704,8 +704,8 @@ packages:
   '@rushstack/eslint-patch@1.10.5':
     resolution: {integrity: sha512-kkKUDVlII2DQiKy7UstOR1ErJP8kUKAQ4oa+SQtM0K+lPdmmjj0YnnxBgtTVYH7mUKtbsxeFC9y0AmK7Yb78/A==}
 
-  '@sxzz/popperjs-es@2.11.7':
-    resolution: {integrity: sha512-Ccy0NlLkzr0Ex2FKvh2X+OyERHXJ88XJ1MXtsI9y9fGexlaXaVTPzBCRBwIxFkORuOb+uBqeu+RqnpgYTEZRUQ==}
+  '@sxzz/popperjs-es@2.11.8':
+    resolution: {integrity: sha512-wOwESXvvED3S8xBmcPWHs2dUuzrE4XiZeFu7e1hROIJkm02a49N120pmOXxY33sBb6hArItm5W5tcg1cBtV+HQ==}
 
   '@tootallnate/once@2.0.0':
     resolution: {integrity: sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==}
@@ -809,6 +809,7 @@ packages:
 
   '@ungap/structured-clone@1.3.0':
     resolution: {integrity: sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==}
+    deprecated: Potential CWE-502 - Update to 1.3.1 or higher
 
   '@vitejs/plugin-vue-jsx@3.1.0':
     resolution: {integrity: sha512-w9M6F3LSEU5kszVb9An2/MmXNxocAnUb3WhRr8bHlimhDrXNt6n6D2nJQR3UXpGlZHh/EsgouOHCsM8V3Ln+WA==}
@@ -1543,11 +1544,12 @@ packages:
 
   glob@10.4.5:
     resolution: {integrity: sha512-7Bv8RF0k6xjo7d4A/PxYLbUCfb6c+Vpd2/mB2yRDlew7Jb5hEXiCD9ibfO7wpk8i4sevK6DFny9h7EYbM3/sHg==}
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
     hasBin: true
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
-    deprecated: Glob versions prior to v9 are no longer supported
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   globals@11.12.0:
     resolution: {integrity: sha512-WOBp/EEGUiIsJSp7wcv/y6MO+lV9UoncWqxuFfm8eBwzWNgyfBd6Gz+IeKQ9jCmyhoH99g15M3T+QaVHFjizVA==}
@@ -1805,9 +1807,9 @@ packages:
     engines: {node: '>=14'}
     hasBin: true
 
-  js-cookie@3.0.5:
-    resolution: {integrity: sha512-cEiJEAEoIbWfCZYKWhVwFuvPX1gETRYPw6LlaTKoxD3s2AkXzkCjnp6h0V77ozyqj0jakteJ4YqDJT830+lVGw==}
-    engines: {node: '>=14'}
+  js-cookie@3.0.7:
+    resolution: {integrity: sha512-z/wZZgDrkNV1eA0ULjM/F9/50Ya8fbzgKneSpoPsXSGd0KnpdtHfOZWK+GcwLk+EZbS4F9RBhU+K2RgzuDaItw==}
+    engines: {node: '>=20'}
 
   js-string-escape@1.0.1:
     resolution: {integrity: sha512-Smw4xcfIQ5LVjAOuJCvN/zIodzA/BBSsluuoSykP+lUvScIi4U6RJLfwHet5cxFnCswUjISV8oAXaqaJDY3chg==}
@@ -2758,6 +2760,7 @@ packages:
   whatwg-encoding@2.0.0:
     resolution: {integrity: sha512-p41ogyeMUrw3jWclHWTQg1k05DSVXPLcVxRTYsXUk+ZooOCZLcoYgPZ/HL/D/N+uQPOtcp1me1WhBEaX02mhWg==}
     engines: {node: '>=12'}
+    deprecated: Use @exodus/bytes instead for a more spec-conformant and faster implementation
 
   whatwg-mimetype@3.0.0:
     resolution: {integrity: sha512-nt+N2dzIutVRxARx1nghPKGv1xHikU7HKdfafKkLNLindmPU/ch3U31NOCGGA/dmPcmb1VlofO0vnKAcsm0o/Q==}
@@ -3466,7 +3469,7 @@ snapshots:
 
   '@rushstack/eslint-patch@1.10.5': {}
 
-  '@sxzz/popperjs-es@2.11.7': {}
+  '@sxzz/popperjs-es@2.11.8': {}
 
   '@tootallnate/once@2.0.0': {}
 
@@ -4170,7 +4173,7 @@ snapshots:
       '@ctrl/tinycolor': 3.6.1
       '@element-plus/icons-vue': 2.1.0(vue@3.5.13(typescript@5.0.4))
       '@floating-ui/dom': 1.6.13
-      '@popperjs/core': '@sxzz/popperjs-es@2.11.7'
+      '@popperjs/core': '@sxzz/popperjs-es@2.11.8'
       '@types/lodash': 4.17.16
       '@types/lodash-es': 4.17.12
       '@vueuse/core': 9.13.0(vue@3.5.13(typescript@5.0.4))
@@ -4810,10 +4813,10 @@ snapshots:
       config-chain: 1.1.13
       editorconfig: 1.0.4
       glob: 10.4.5
-      js-cookie: 3.0.5
+      js-cookie: 3.0.7
       nopt: 7.2.1
 
-  js-cookie@3.0.5: {}
+  js-cookie@3.0.7: {}
 
   js-string-escape@1.0.1: {}
 
