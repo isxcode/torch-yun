@@ -15,4 +15,6 @@ public interface ModelCode {
     String GOOGLE_GEMMA3_270M = "google_gemma-3-270m";
 
     String OPENAI_CIRCUIT_SPARSITY = "openai_circuit-sparsity";
+
+    String OPENAI_CODEX_CLI = "Codex-cli";
 }

@@ -42,4 +42,8 @@ public class BotChatContext {
     private String userId;
 
     private String tenantId;
+
+    private String workspace;
+
+    private String assetsDir;
 }

@@ -32,7 +32,7 @@ export interface TableConfig {
 
 export const BreadCrumbList: Array<BreadCrumb> = [
     {
-        name: '应用管理',
+        name: '模型应用',
         code: 'app-management'
     }
 ]

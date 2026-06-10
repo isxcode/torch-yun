@@ -40,7 +40,7 @@ export const menuListData: Array<Menu> = [
   },
   {
     code: 'ai-center',
-    name: 'AI中心',
+    name: '模型中心',
     icon: 'Service',
     authType: [ 'ROLE_TENANT_MEMBER', 'ROLE_TENANT_ADMIN' ],
     children: [
@@ -60,17 +60,53 @@ export const menuListData: Array<Menu> = [
       },
       {
         code: 'ai-item',
-        name: '智能体',
+        name: '模型管理',
         icon: 'ChatLineSquare',
         authType: [ 'ROLE_TENANT_MEMBER', 'ROLE_TENANT_ADMIN' ],
         childPage: []
       },
       {
         code: 'app-management',
-        name: '应用管理',
+        name: '模型应用',
         icon: 'HelpFilled',
         authType: [ 'ROLE_TENANT_MEMBER', 'ROLE_TENANT_ADMIN' ],
         childPage: ['app-detail']
+      }
+    ]
+  },
+  {
+    code: 'software-development',
+    name: '软件开发',
+    icon: 'Management',
+    authType: [ 'ROLE_TENANT_MEMBER', 'ROLE_TENANT_ADMIN' ],
+    children: [
+      {
+        code: 'project-management',
+        name: '项目管理',
+        icon: 'Briefcase',
+        authType: [ 'ROLE_TENANT_MEMBER', 'ROLE_TENANT_ADMIN' ],
+        childPage: []
+      },
+      {
+        code: 'project-assets',
+        name: '项目设计',
+        icon: 'FolderOpened',
+        authType: [ 'ROLE_TENANT_MEMBER', 'ROLE_TENANT_ADMIN' ],
+        childPage: []
+      },
+      {
+        code: 'project-plan',
+        name: '项目计划',
+        icon: 'Calendar',
+        authType: [ 'ROLE_TENANT_MEMBER', 'ROLE_TENANT_ADMIN' ],
+        childPage: []
+      },
+      {
+        code: 'project-development',
+        name: '项目开发',
+        icon: 'Edit',
+        authType: [ 'ROLE_TENANT_MEMBER', 'ROLE_TENANT_ADMIN' ],
+        childPage: []
       }
     ]
   },

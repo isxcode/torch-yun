@@ -1,5 +1,13 @@
 # 至数云-超轻量级人工智能应用平台
 
+### 注意：大版本升级维护中，切到稳定版本commit
+
+```bash
+git clone https://github.com/isxcode/torch-yun.git
+cd spark-yun
+git checkout b4a0b0e5f0334b17ef3b5f7f23eaafff187f771f
+```
+
 [![Docker Pulls](https://img.shields.io/docker/pulls/isxcode/zhishuyun)](https://hub.docker.com/r/isxcode/zhishuyun)
 [![build](https://github.com/isxcode/torch-yun/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/isxcode/torch-yun/actions/workflows/build.yml)
 [![GitHub Repo stars](https://img.shields.io/github/stars/isxcode/torch-yun)](https://github.com/isxcode/torch-yun)
@@ -37,7 +45,7 @@
     </tr>
     <tr>
         <td>关键词</td>
-        <td>大模型训练, 智能中心, 模型调用, 模型编排, 人工智能, Pytorch, Docker, HuggingFace</td>
+        <td>大模型训练, 模型中心, 模型调用, 模型编排, 人工智能, Pytorch, Docker, HuggingFace</td>
     </tr>
 </table>
 
@@ -51,7 +59,7 @@
 |:-----|:--------------------|
 | 首页   | AI对话、历史记录、应用列表      |
 | 资源管理 | 计算集群、资源中心           |
-| AI中心 | 模型广场、模型仓库、智能体、应用管理  |
+| 模型中心 | 模型广场、模型仓库、智能体、模型应用  |
 | 后台管理 | 用户中心、租户列表、租户成员、证书安装 |
 
 ### 立即体验

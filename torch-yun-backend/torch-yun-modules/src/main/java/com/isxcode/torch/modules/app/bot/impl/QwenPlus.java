@@ -113,6 +113,7 @@ public class QwenPlus extends Bot {
             }
             return ChatResponse.builder().content(fullContent.toString()).build();
         } catch (NoApiKeyException | InputRequiredException e) {
+            log.error(e.getMessage(), e);
             throw new IsxAppException("对话异常");
         }
     }

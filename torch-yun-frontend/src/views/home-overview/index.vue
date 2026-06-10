@@ -7,15 +7,11 @@
             @loading-refresh="getChatDetailListData"
         >
             <div class="ai-top-container">
-                <div class="guide-title" v-if="!appInfo">欢迎使用至数云</div>
                 <div class="app-title" :class="{ 'app-title__show': !!appInfo }">
                     <div class="close-chat">
                         <el-button link type="primary" @click="stopChat">退出对话</el-button>
                     </div>
                     <div>{{ appInfo?.name }}</div>
-                </div>
-                <div class="history-btn">
-                    <el-button link @click="showHistoryEvent">历史记录</el-button>
                 </div>
             </div>
             <ZhyChat
@@ -31,7 +27,7 @@
                     type="textarea"
                     resize="none"
                     placeholder="请输入对话（Enter 发送，Shift+Enter 换行）"
-                    :autosize="{ minRows: 2, maxRows: 2 }"
+                    :autosize="{ minRows: 1, maxRows: 3 }"
                     @keydown="onKeydownEvent"
                     @compositionstart="onCompositionStart"
                     @compositionend="onCompositionEnd"
@@ -48,13 +44,7 @@
                     </el-button>
                 </div>
             </div>
-            <AppItem
-                class="ai-app-container"
-                :class="{ 'ai-app-container__hide': isTalking }"
-                @clickAppEvent="clickAppEvent"
-            ></AppItem>
         </LoadingPage>
-        <HistoryList ref="historyListRef" @historyClickEvent="historyClickEvent"></HistoryList>
     </div>
 </template>
 
@@ -62,12 +52,10 @@
 import { onMounted, reactive, ref, nextTick, onUnmounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import ZhyChat from './zhy-chat/index.vue'
-import AppItem from './app-item/index.vue'
 import LoadingPage from '@/components/loading/index.vue'
 import { GetChatDetailData, GetChatDetailList, GetMaxChatData, SendMessageToAiStream, StopChatThink } from '@/services/ai-cheat.service.ts'
 import { SSEClient } from '@/utils/sse-client'
 import { useAuthStore } from '@/store/useAuth'
-import HistoryList from './history-list/index.vue'
 
 const authStore = useAuthStore()
 
@@ -80,7 +68,6 @@ const appInfo = ref<any>(null)    // 应用的信息
 const chatId = ref<string>('')
 const maxChatIndexId = ref<number>(0)
 
-const historyListRef = ref<any>()
 const requestLoading = ref<boolean>(false)  // 发送消息-加载状态
 const isTalking = ref<boolean>(false)       // 是否已经开启了对话
 const talkMsgList = ref<any[]>([])          // 当前对话的记录
@@ -92,28 +79,28 @@ const sseClient = ref<SSEClient | null>(null)  // SSE 客户端实例
 const currentAiMessage = ref<string>('')        // 当前 AI 回复的消息（用于流式显示）
 const chatSessionId = ref<string>('')           // 当前聊天会话ID
 
-// 打开历史记录
-function showHistoryEvent() {
-    historyListRef.value.showModal({
-        page: 0,
-        pageSize: 20,
-        searchKeyWord: '',
-        appId: appInfo.value ? appInfo.value.id : null
-    })
-}
-
-// 选择应用
-function clickAppEvent(e: any) {
-    appInfo.value = e
-    isTalking.value = true
-
-    getMaxChatData().then(() => {
-        getChatDetailListData()
-    }).catch(() => {
-        // getMaxChatData 调用失败时，退出对话模式
-        isTalking.value = false
-        appInfo.value = null
-    })
+function getSSEErrorMessage(error: any) {
+    if (!error) {
+        return '聊天连接失败，请重试'
+    }
+    if (typeof error === 'string') {
+        return error
+    }
+    const rawMessage = error?.message
+    if (typeof rawMessage === 'string') {
+        try {
+            const parsed = JSON.parse(rawMessage)
+            if (parsed?.msg) {
+                return parsed.msg
+            }
+        } catch {
+            // message 不是 JSON，继续使用原始文本
+        }
+        if (rawMessage) {
+            return rawMessage
+        }
+    }
+    return '聊天连接失败，请重试'
 }
 
 // 结束对话
@@ -219,8 +206,11 @@ function startSSEChatStream(params: any) {
                 talkMsgList.value.pop()
             }
 
-            // 显示错误消息
-            ElMessage.error(typeof error === 'string' ? error : '聊天连接失败，请重试')
+            // 将异常信息展示在对话框中（灰色文本样式由聊天组件控制）
+            talkMsgList.value.push({
+                type: 'error',
+                content: getSSEErrorMessage(error)
+            })
 
             // 清理 SSE 客户端
             sseClient.value = null
@@ -334,27 +324,6 @@ function getChatDetailListData() {
             networkError.value = false
             reject(err)
         })
-    })
-}
-
-// 选择历史对话
-function historyClickEvent(data: any) {
-    chatId.value = data.chatId
-    isTalking.value = true
-    authStore.setChatInfo({
-        chatId: data.chatId,
-        isTalking: true,
-        appInfo: {
-            id: data.appId,
-            name: data.appName
-        }
-    })
-    getMaxChatData().then(() => {
-        getChatDetailListData()
-    }).catch(() => {
-        // getMaxChatData 调用失败时，退出对话模式
-        isTalking.value = false
-        appInfo.value = null
     })
 }
 
@@ -492,43 +461,52 @@ onUnmounted(() => {
             font-weight: 500;
             margin-bottom: 30px;
         }
-        .history-btn {
-            position: absolute;
-            top: 16px;
-            right: 20px;
-        }
     }
 
     .ai-input-container {
-        width: 80%;
+        display: flex;
+        align-items: center;
+        width: 64%;
         margin: auto;
-        border: 1px solid #0000000f;
-        border-radius: 15px;
-        padding: 12px 20px 12px 20px;
+        border: 1px solid #dcdfe6;
+        border-radius: 999px;
+        padding: 8px 10px 8px 18px;
+        background: #fff;
         box-sizing: border-box;
         transition: bottom 0.15s cubic-bezier(0, 0, 0.48, 1.18);
         position: absolute;
-        left: 10%;
-        bottom: 65%;
+        left: 18%;
+        top: 50%;
+        transform: translateY(-50%);
         z-index: 10;
         .el-textarea {
-            // height: 80px;
+            flex: 1;
+            display: flex;
+            align-items: center;
             .el-textarea__inner {
                 box-shadow: unset;
+                border: none;
+                background: transparent;
+                min-height: 24px !important;
+                line-height: 24px;
+                padding: 2px 8px 2px 0;
             }
         }
         .option-container {
             display: flex;
+            align-items: center;
             justify-content: flex-end;
-            margin-top: 12px;
+            margin-top: 0;
             .el-button {
-                border-radius: 20px;
+                border-radius: 50%;
                 padding: 7px;
             }
         }
 
         &.ai-input-container__bottom {
             position: absolute;
+            top: auto;
+            transform: none;
             bottom: 20px;
             transition: bottom 0.15s 0.3s cubic-bezier(0, 0, 0.48, 1.18);
         }

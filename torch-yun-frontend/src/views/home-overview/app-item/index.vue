@@ -6,7 +6,7 @@
     >
         <div class="ai-app-list">
             <div class="zqy-seach">
-                <span class="app-label">我的应用</span>
+                <span class="app-label">应用列表</span>
                 <el-input
                     v-model="keyword"
                     placeholder="请输入搜索条件 回车进行搜索"
