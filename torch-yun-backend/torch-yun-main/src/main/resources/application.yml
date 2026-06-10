@@ -95,7 +95,7 @@ spring:
   packages-to-scan: com.isxcode.torch
 
   flyway:
-    enabled: false
+    enabled: true
 
 logging:
   level:
