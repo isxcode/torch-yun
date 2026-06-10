@@ -1,5 +1,13 @@
 # 至数云-超轻量级人工智能应用平台
 
+### 注意：大版本升级维护中，切到稳定版本commit
+
+```bash
+git clone https://github.com/isxcode/torch-yun.git
+cd spark-yun
+git checkout b4a0b0e5f0334b17ef3b5f7f23eaafff187f771f
+```
+
 [![Docker Pulls](https://img.shields.io/docker/pulls/isxcode/zhishuyun)](https://hub.docker.com/r/isxcode/zhishuyun)
 [![build](https://github.com/isxcode/torch-yun/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/isxcode/torch-yun/actions/workflows/build.yml)
 [![GitHub Repo stars](https://img.shields.io/github/stars/isxcode/torch-yun)](https://github.com/isxcode/torch-yun)
