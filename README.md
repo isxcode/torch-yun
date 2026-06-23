@@ -1,4 +1,4 @@
-# 至数云-超轻量级人工智能应用平台
+# 至数云-超轻量智能应用平台
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/isxcode/zhishuyun)](https://hub.docker.com/r/isxcode/zhishuyun)
 [![build](https://github.com/isxcode/torch-yun/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/isxcode/torch-yun/actions/workflows/build.yml)
@@ -25,15 +25,8 @@
         <td><a href="https://zhishuyun-demo.isxcode.com">https://zhishuyun-demo.isxcode.com</a></td>
     </tr>
     <tr>
-        <td>部署文档</td>
-        <td><a href="https://zhishuyun.isxcode.com/zh/docs/zh/1/2">https://zhishuyun.isxcode.com/zh/docs/zh/1/2</a></td></tr>
-    <tr>
-        <td>安装包下载</td>
-        <td><a href="https://zhishuyun-demo.isxcode.com/tools/open/file/zhishuyun.tar.gz">https://zhishuyun-demo.isxcode.com/tools/open/file/zhishuyun.tar.gz</a></td>
-    </tr>
-    <tr>
         <td>产品推荐</td>
-        <td><a href="https://zhiqingyun.isxcode.com">[至轻云] - 超轻量级智能化大数据中心</a></td>
+        <td><a href="https://zhiqingyun.isxcode.com">[至轻云] - 超轻量智能数据中心</a></td>
     </tr>
     <tr>
         <td>关键词</td>
@@ -57,15 +50,15 @@
 ### 立即体验
 
 演示地址：https://zhishuyun-demo.isxcode.com </br>
-体验账号：zhiyao </br>
-账号密码：zhiyao123 [已禁用，联系管理员] </br>
+体验账号：邮箱注册 </br>
+体验时间：1天 [已禁用，联系管理员] </br>
 添加微信：wx_ispong
 
 ### 相关文档
 
-- [快速体验](https://zhishuyun.isxcode.com/zh/docs/zh/1/0)
-- [产品手册](https://zhishuyun.isxcode.com/zh/docs/zh/2/0)
-- [开发手册](https://zhishuyun.isxcode.com/zh/docs/zh/5/1)
+- [快速体验](https://zhishuyun.isxcode.com/docs/zh/1/0)
+- [产品手册](https://zhishuyun.isxcode.com/docs/zh/2/0)
+- [开发手册](https://zhishuyun.isxcode.com/docs/zh/5/1)
 - [博客](https://ispong.isxcode.com)
 
 ### 快速部署
@@ -79,8 +72,9 @@ docker run -p 8080:8080 -d isxcode/zhishuyun
 
 ### 源码构建
 
+- Mac或Linux
+
 ```bash
-# 系统环境: Mac或Linux
 # 安装包路径: /tmp/torch-yun/torch-yun-dist/build/distributions/zhishuyun.tar.gz
 cd /tmp
 git clone https://github.com/isxcode/torch-yun.git
@@ -90,8 +84,9 @@ docker run --rm \
   gradle package
 ```
 
+- Windows
+
 ```bash
-# 系统环境: Windows
 # 安装包路径: C:\Users\isxcode\Downloads\torch-yun\torch-yun-dist\build\distributions\zhishuyun.tar.gz
 cd Downloads
 git clone https://github.com/isxcode/torch-yun.git
